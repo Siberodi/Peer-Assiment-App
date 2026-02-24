@@ -4,15 +4,19 @@
 CATME Smarter Teamwork es una plataforma de evaluación entre pares desarrollada por Purdue University, diseñada para analizar el desempeño individual dentro del trabajo en equipo. Su enfoque principal es medir la contribución real de cada integrante mediante evaluaciones anónimas entre compañeros y métricas detalladas que incluyen liderazgo, compromiso, interacción y responsabilidad. El sistema permite identificar miembros con baja participación y genera reportes automáticos que ayudan al docente a tomar decisiones más justas al asignar calificaciones. Aunque su interfaz no es moderna y presenta cierta curva de aprendizaje, su valor radica en la rigurosidad con la que evalúa el aporte individual. Este referente evidencia la importancia de incorporar criterios claros que permitan evaluar la contribución real dentro del grupo, lo cual se refleja en la propuesta mediante la evaluación de aspectos como compromiso, contribución y actitud.
 
 <img width="299" height="100" alt="CATME1" src="https://github.com/user-attachments/assets/e50e7b35-c57a-4de6-b188-f58e79200dd6" />
-<img width="598" height="327" alt="CATME2" src="https://github.com/user-attachments/assets/1d0b76db-d39c-4958-a783-116641ff8df0" />
-
 
 
 ### PeerScholar
 PeerScholar es una plataforma educativa orientada al aprendizaje colaborativo mediante la revisión estructurada entre pares. Permite a los estudiantes evaluar el trabajo de sus compañeros utilizando rúbricas, además de valorar la calidad del feedback recibido, promoviendo así la reflexión crítica y la mejora continua. Este sistema no solo mide el desempeño, sino que también fortalece habilidades analíticas y de pensamiento crítico, al incentivar que los estudiantes analicen tanto el trabajo de otros como el propio. Aunque puede resultar más adecuado para trabajos escritos y puede ser complejo para evaluaciones rápidas, su estructura favorece una retroalimentación significativa y un aprendizaje más profundo. Este referente aporta a la propuesta la idea de que la evaluación entre pares no debe limitarse a asignar una calificación, sino que debe fomentar la reflexión, la responsabilidad y el aprendizaje colaborativo.
 
+<img width="341" height="117" alt="Captura de pantalla 2026-02-24 a la(s) 3 29 54 p m" src="https://github.com/user-attachments/assets/c2143ecb-42f6-46fa-9eac-98cc5482c9e8" />
+
+
 ### Moodle: Workshop Peer Review
 El módulo Workshop Peer Review de Moodle permite implementar evaluaciones entre pares dentro de cursos virtuales, integrándose directamente con el entorno educativo. Esta herramienta automatiza la asignación de evaluaciones entre estudiantes, permite el uso de rúbricas personalizadas, admite evaluaciones anónimas y posibilita calificar tanto el trabajo entregado como la calidad de la evaluación realizada. Su principal fortaleza es la integración con el ecosistema académico y la automatización del proceso, lo que facilita la gestión docente y garantiza coherencia con la estructura del curso. Sin embargo, su configuración inicial puede resultar compleja y la interfaz no siempre es intuitiva para usuarios nuevos. Este referente respalda la importancia de integrar la evaluación entre pares dentro del flujo natural del curso y justifica la integración con plataformas educativas como Brightspace en la solución propuesta.
+
+<img width="295" height="106" alt="Captura de pantalla 2026-02-24 a la(s) 3 30 40 p m" src="https://github.com/user-attachments/assets/ea880321-373e-4c51-9c48-4396eb1b4fbf" />
+
 
 ## 2. Diseño de la solución
 
@@ -23,6 +27,8 @@ El docente podrá crear y gestionar cursos, invitar participantes, importar cate
 Esta separación por roles se implementa mediante control de permisos, rutas protegidas y vistas específicas, garantizando coherencia en la experiencia de usuario sin duplicar funcionalidades ni mantener aplicaciones separadas.
 
 Desde el punto de vista técnico, la aplicación se estructura siguiendo **Clean Architecture**, lo que permite separar la presentación, la lógica de negocio y el acceso a datos, facilitando la escalabilidad, mantenibilidad y pruebas del sistema. **GetX** se emplea para la gestión de estado, navegación e inyección de dependencias, permitiendo interfaces reactivas y organizadas por módulos.
+
+<img width="587" height="253" alt="Captura de pantalla 2026-02-24 a la(s) 3 31 23 p m" src="https://github.com/user-attachments/assets/44507acf-1cc9-41f3-a074-9f21c8e3190b" />
 
 Para la autenticación y persistencia de datos se utiliza **Roble**, que gestiona usuarios, cursos, evaluaciones y resultados. Además, la integración con **Brightspace** permite sincronizar automáticamente las categorías y grupos del curso, garantizando coherencia con la estructura académica oficial.
 
@@ -73,3 +79,7 @@ Por su parte, el módulo **Workshop Peer Review de Moodle** resalta la importanc
 https://www.figma.com/design/UaG4cOGVYFf9znask4ky0l/Peer-Review-App?node-id=0-1&t=SiUXcwRFr1pXpfpb-1
 
 **Docs adicional:** https://docs.google.com/document/d/1_WIdR1pM9a7EVggrL1flk5wtCQurQ1poYbLEBWXNYqs/edit?usp=sharing 
+
+<img width="2448" height="3108" alt="Flujo Juan" src="https://github.com/user-attachments/assets/251c9994-8450-48a7-bcae-3dccf497d222" />
+
+
