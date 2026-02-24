@@ -15,19 +15,39 @@ Adicionalmente, como parte del proceso académico y con el fin de fortalecer el 
 - El enlace al prototipo desarrollado en Figma, acompañado de capturas de pantalla integradas dentro del README.md.
 - Cualquier otro elemento que permita fortalecer la argumentación y claridad de la solución planteada.
 
-1. Tres referentes (aplicaciones, plataformas o soluciones existentes relacionadas con la problemática).
-<svg width="408" height="447" viewBox="0 0 78 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Hug">
-<g id="Vector">
-<path d="M32.9309 26.3952C30.9274 26.3952 29.1412 26.009 27.5722 25.2366C26.0032 24.4642 24.7601 23.3417 23.8428 21.8693C22.9497 20.3727 22.5031 18.5986 22.5031 16.5468C22.5031 14.3985 22.9376 12.5036 23.8066 10.8622C24.6756 9.22083 25.8825 7.95357 27.4274 7.06045C28.9963 6.1432 30.7946 5.68457 32.8223 5.68457C34.9223 5.68457 36.6844 6.1432 38.1086 7.06045C39.5327 7.95357 40.5948 9.24497 41.2948 10.9347C42.019 12.6243 42.369 14.6278 42.3448 16.9451H24.4945V13.5778H39.5568L37.4206 15.1709C37.4206 13.9881 37.2516 12.9502 36.9137 12.0571C36.5999 11.164 36.093 10.4519 35.393 9.92084C34.7171 9.3898 33.8602 9.12428 32.8223 9.12428C31.7602 9.12428 30.8308 9.41394 30.0343 9.99326C29.2377 10.5726 28.6222 11.4174 28.1877 12.5278C27.7532 13.6381 27.536 14.9416 27.536 16.4382C27.536 17.7658 27.7653 18.9124 28.2239 19.8779C28.7067 20.8434 29.3584 21.5796 30.1791 22.0865C31.024 22.5693 31.9533 22.8107 32.9671 22.8107C34.3671 22.8107 35.5258 22.4366 36.443 21.6883C37.3844 20.9158 38.0723 19.9503 38.5068 18.7917L42.5983 21.2538C41.4396 22.9917 40.0275 24.2831 38.362 25.128C36.7206 25.9728 34.9102 26.3952 32.9309 26.3952Z" fill="#1B1B1B"/>
-<path d="M54.2042 26.3952C52.2007 26.3952 50.4145 26.009 48.8455 25.2366C47.2765 24.4642 46.0334 23.3417 45.1161 21.8693C44.223 20.3727 43.7764 18.5986 43.7764 16.5468C43.7764 14.3985 44.2109 12.5036 45.0799 10.8622C45.9489 9.22083 47.1558 7.95357 48.7006 7.06045C50.2696 6.1432 52.0679 5.68457 54.0956 5.68457C56.1956 5.68457 57.9577 6.1432 59.3818 7.06045C60.806 7.95357 61.8681 9.24497 62.5681 10.9347C63.2922 12.6243 63.6423 14.6278 63.6181 16.9451H45.7678V13.5778H60.8301L58.6939 15.1709C58.6939 13.9881 58.5249 12.9502 58.187 12.0571C57.8732 11.164 57.3663 10.4519 56.6663 9.92084C55.9904 9.3898 55.1335 9.12428 54.0956 9.12428C53.0335 9.12428 52.1041 9.41394 51.3076 9.99326C50.511 10.5726 49.8955 11.4174 49.461 12.5278C49.0265 13.6381 48.8093 14.9416 48.8093 16.4382C48.8093 17.7658 49.0386 18.9124 49.4972 19.8779C49.98 20.8434 50.6317 21.5796 51.4524 22.0865C52.2972 22.5693 53.2266 22.8107 54.2404 22.8107C55.6404 22.8107 56.799 22.4366 57.7163 21.6883C58.6577 20.9158 59.3456 19.9503 59.7801 18.7917L63.8716 21.2538C62.7129 22.9917 61.3008 24.2831 59.6353 25.128C57.9939 25.9728 56.1835 26.3952 54.2042 26.3952Z" fill="#1B1B1B"/>
-<path d="M65.2308 0H70.0826V21.1814C70.0826 22.8952 70.167 24.4642 70.336 25.8883H65.2308V0Z" fill="#1B1B1B"/>
-<path d="M0 16.0536C0 8.88282 4.57742 5.69628 9.59667 5.69628C14.1776 5.69628 16.1093 8.60687 16.1093 8.60687V0.00960845H21.0708V21.1967C21.0708 22.9359 21.1306 24.5052 21.252 25.9046H16.1109V23.5265C16.1109 23.5265 14.1423 26.411 9.59829 26.411C4.75405 26.411 0 23.6312 0 16.0536ZM10.8639 22.604C14.3778 22.604 16.6497 19.9295 16.6497 16.0536C16.6497 12.0422 14.3762 9.5032 10.8639 9.5032C7.35158 9.5032 5.16209 11.9168 5.16209 16.0536C5.16209 20.1904 7.4438 22.604 10.8639 22.604Z" fill="#1B1B1B"/>
-</g>
-<path id="." d="M73.2188 21.2539H77.9981V25.8885H73.2188V21.2539Z" fill="#1B1B1B"/>
-</g>
-</svg>
-![logo_revamp_164ddaed0c](https://github.com/user-attachments/assets/04771038-0552-4b71-8b67-cd60cd29cf98)
+##1. Tres referentes (aplicaciones, plataformas o soluciones existentes relacionadas con la problemática).
+<img width="313" height="161" alt="images (1)" src="https://github.com/user-attachments/assets/ee9816f3-6234-403b-a177-4b40ef316a06" />
+
+Deel es una empresa tecnológica fundada en 2019 que ofrece soluciones integrales de recursos humanos enfocadas en la gestión de equipos globales y trabajo remoto. Su modelo de negocio se basa en proveer una plataforma SaaS (Software as a Service) que permite a las organizaciones contratar, pagar y administrar empleados y contratistas en más de 150 países, asegurando el cumplimiento de normativas laborales y fiscales locales (Deel, s. f.-a). La compañía ha experimentado un crecimiento acelerado en el mercado internacional, posicionándose como una de las soluciones más relevantes en el ámbito de la gestión global del talento, especialmente en un contexto donde el trabajo distribuido y remoto se ha vuelto una práctica común en múltiples industrias (Deel, s. f.-a).
+
+La plataforma de **Deel** integra distintos módulos que abarcan todo el ciclo de vida del trabajador, desde la contratación hasta la gestión de nómina, beneficios y cumplimiento normativo. Entre sus principales funcionalidades se encuentra la automatización de pagos internacionales, la administración de contratos conforme a la legislación de cada país y la centralización de información del personal mediante un sistema de gestión de recursos humanos (HRIS) (Deel, s. f.-a). 
+
+Dentro de su ecosistema de soluciones, uno de los componentes más relevantes es Deel Engage, una herramienta orientada a la gestión del desempeño y desarrollo del talento. Este módulo permite a las organizaciones diseñar ciclos de evaluación estructurados, personalizar criterios de valoración y recopilar retroalimentación desde diferentes perspectivas, incluyendo evaluaciones entre pares y evaluaciones 360° (Deel, s. f.-b). Además, facilita la alineación de las evaluaciones con objetivos estratégicos, como los OKR (Objectives and Key Results), permitiendo medir el rendimiento de manera cuantitativa y cualitativa (Deel, s. f.-b). Estas características evidencian un enfoque sistemático en la medición del desempeño, basado en criterios claros, ventanas de evaluación definidas y análisis posterior de resultados.
+
+<img width="1512" height="742" alt="Captura de pantalla 2026-02-24 a la(s) 12 04 00 p m" src="https://github.com/user-attachments/assets/392a522e-57c0-4ed2-a1a7-039e39a48cf9" />
+
+En sus canales oficiales, detallan que “el software de evaluación de desempeño de Deel ofrece un conjunto completo de herramientas diseñadas para agilizar las evaluaciones de desempeño y el intercambio de opiniones. Funciones clave incluyen:
+- Recogida de comentarios de varios evaluadores de gerentes, colegas, subordinados directos y de las propias personas (con autoevaluaciones)
+- Creador personalizado de formularios de evaluación de rendimiento con calificaciones y preguntas abiertas
+- Preguntas ponderadas y tipos de retroalimentación ponderada para cálculos personalizados
+- Configuración de anonimato
+- La opción de vincular modelos de competencias y objetivos para revisar preguntas 
+- Retroalimentación continua
+- Paso de calibración de rendimiento
+- Análisis de retroalimentación (9-box, mapas de calor de habilidades, gráficos de radar de competencias).
+
+El software también admite comentarios de 360 grados para evaluaciones exhaustivas del equipo de múltiples fuentes.” (Deel, s. f.-a).
+
+De igual manera, definen en su canal que: “Un proceso de implementación y puesta en marcha de una evaluación de desempeño que puede durar hasta cuatro semanas, dependiendo de varios aspectos, como el sistema de rendimiento existente, el número de miembros del equipo incorporados y las necesidades de formación.
+
+Los pasos son:
+1. Reúnete con las partes interesadas para evaluar el status quo, revisar los requisitos y alinearse con la fecha deseada de "puesta en marcha"
+2. Diseña y crea el proceso de evaluación de desempeño (preguntas, evaluadores a incluir, cronograma, etc.) 
+3. Define un plan para comunicar el despliegue a empleados y directivos
+4. Capacitar a gerentes y miembros del equipo
+5. Integra a los miembros de tu equipo a la plataforma
+6. Inicia la revisión
+7. Imparte capacitación adicional para gerentes para interpretar y compartir los resultados” (Deel, s. f.-a). 
 
 2. 
 
