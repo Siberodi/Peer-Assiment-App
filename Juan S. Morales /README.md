@@ -80,6 +80,7 @@ https://www.figma.com/design/UaG4cOGVYFf9znask4ky0l/Peer-Review-App?node-id=0-1&
 
 **Docs adicional:** https://docs.google.com/document/d/1_WIdR1pM9a7EVggrL1flk5wtCQurQ1poYbLEBWXNYqs/edit?usp=sharing 
 
-<img width="2448" height="3108" alt="Flujo Juan" src="https://github.com/user-attachments/assets/251c9994-8450-48a7-bcae-3dccf497d222" />
+<img width="2448" height="3108" alt="Flow Chart" src="https://github.com/user-attachments/assets/9725d6f3-7ea3-4427-b7d4-0e384913060d" />
+
 
 
