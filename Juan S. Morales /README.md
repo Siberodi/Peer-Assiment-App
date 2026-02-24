@@ -8,3 +8,17 @@ PeerScholar es una plataforma educativa orientada al aprendizaje colaborativo me
 
 ### Moodle: Workshop Peer Review
 El módulo Workshop Peer Review de Moodle permite implementar evaluaciones entre pares dentro de cursos virtuales, integrándose directamente con el entorno educativo. Esta herramienta automatiza la asignación de evaluaciones entre estudiantes, permite el uso de rúbricas personalizadas, admite evaluaciones anónimas y posibilita calificar tanto el trabajo entregado como la calidad de la evaluación realizada. Su principal fortaleza es la integración con el ecosistema académico y la automatización del proceso, lo que facilita la gestión docente y garantiza coherencia con la estructura del curso. Sin embargo, su configuración inicial puede resultar compleja y la interfaz no siempre es intuitiva para usuarios nuevos. Este referente respalda la importancia de integrar la evaluación entre pares dentro del flujo natural del curso y justifica la integración con plataformas educativas como Brightspace en la solución propuesta.
+
+## 2. Diseño de la solución
+
+La solución propone desarrollar una única aplicación móvil en Flutter que funcione con dos roles diferenciados: docente y estudiante. A través del proceso de autenticación, la aplicación identifica el rol del usuario y habilita las funciones correspondientes, mostrando únicamente las pantallas y permisos permitidos para cada perfil.
+
+El docente podrá crear y gestionar cursos, invitar participantes, importar categorías y grupos desde Brightspace, activar evaluaciones con ventanas de tiempo y visibilidad (pública o privada), y consultar reportes detallados del desempeño individual y grupal. Por su parte, el estudiante podrá acceder a sus cursos, responder evaluaciones dentro del periodo permitido y visualizar los resultados cuando estén disponibles según la configuración de visibilidad definida por el docente.
+
+Esta separación por roles se implementa mediante control de permisos, rutas protegidas y vistas específicas, garantizando coherencia en la experiencia de usuario sin duplicar funcionalidades ni mantener aplicaciones separadas.
+
+Desde el punto de vista técnico, la aplicación se estructura siguiendo **Clean Architecture**, lo que permite separar la presentación, la lógica de negocio y el acceso a datos, facilitando la escalabilidad, mantenibilidad y pruebas del sistema. **GetX** se emplea para la gestión de estado, navegación e inyección de dependencias, permitiendo interfaces reactivas y organizadas por módulos.
+
+Para la autenticación y persistencia de datos se utiliza **Roble**, que gestiona usuarios, cursos, evaluaciones y resultados. Además, la integración con **Brightspace** permite sincronizar automáticamente las categorías y grupos del curso, garantizando coherencia con la estructura académica oficial.
+
+La decisión de utilizar una sola aplicación con roles diferenciados reduce la complejidad de desarrollo, simplifica el mantenimiento y facilita la adopción por parte de los usuarios, ya que docentes y estudiantes acceden a la misma plataforma con experiencias adaptadas a sus necesidades.
