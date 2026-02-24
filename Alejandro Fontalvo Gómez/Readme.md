@@ -48,6 +48,37 @@ Los pasos son:
 5. Integra a los miembros de tu equipo a la plataforma
 6. Inicia la revisión
 7. Imparte capacitación adicional para gerentes para interpretar y compartir los resultados” (Deel, s. f.-a). 
+<img width="1166" height="716" alt="Captura de pantalla 2026-02-24 a la(s) 12 08 59 p m" src="https://github.com/user-attachments/assets/fdbc317b-4f39-4319-ad0e-60807094cd60" />
 
-2. 
+Desde una perspectiva investigativa, Deel Engage puede considerarse un referente pertinente para el desarrollo del presente proyecto, aun cuando su contexto principal sea la gestión de recursos humanos en entornos empresariales. La plataforma ofrece un proceso de evaluación estructurado que permite recopilar retroalimentación tanto cuantitativa como cualitativa, configurable según criterios definidos por la organización, lo cual guarda una relación directa con la propuesta de implementar una rúbrica para evaluar el desempeño de estudiantes dentro de actividades colaborativas. 
+
+Asimismo, Deel Engage incorpora evaluaciones entre pares (peer reviews), posibilitando que los colaboradores realicen comentarios y valoraciones sobre el desempeño de sus colegas, elemento que coincide conceptualmente con la dinámica de evaluación entre compañeros planteada en la aplicación académica. Adicionalmente, el sistema integra herramientas de análisis y visualización de resultados mediante métricas y reportes agregados, lo que puede servir como referencia para diseñar en Flutter módulos de consulta de promedios por criterio, por grupo y por estudiante. Otro aspecto relevante es la personalización de ciclos de evaluación, incluyendo la definición de ventanas de tiempo, criterios específicos y niveles de anonimato, características que pueden adaptarse al contexto educativo para fortalecer la objetividad y organización del proceso evaluativo.
+
+![corubrics](https://github.com/user-attachments/assets/9bf977f2-8445-4b06-96da-ca916ddbbe20)
+CoRubrics es una solución ya existente, fácil de implementar y gratuita que funciona como lo dice dentro de su manual de uso como: 
+
+“Un complemento para hojas de cálculo de Google que permite realizar un proceso completo de evaluación con rúbricas. Sirve para que el profesor evalúe a los alumnos (o grupos de alumnos) con una rúbrica y también para que los alumnos se coevaluen entre ellos con una rúbrica. Sólo se puede utilizar si alumnos y profesores están en el mismo dominio de G suite.
+
+Primero habrá que definir la rúbrica que queremos utilizar y, luego, indicar los alumnos y sus correo electrónicos. Una vez hecho, el complemento (o la plantilla) se encargará de:
+
+- Crear un formulario con los contenidos de la Rúbrica.
+- Enviar por mail este formulario a los alumnos o darnos el enlace (si sólo corrige el profesor).
+- Una vez contestado el formulario (por los alumnos o por el profesor), procesar los datos para obtener las medias.
+- Finalmente, enviar los resultados a los alumnos (cada uno sólo recibe su resultado) con un comentario personalizado.
+<img width="1062" height="467" alt="Captura de pantalla 2026-02-24 a la(s) 12 21 40 p m" src="https://github.com/user-attachments/assets/4ca232bd-f7f5-449a-8e5b-b83c1d06aa8c" />
+<img width="1066" height="506" alt="Captura de pantalla 2026-02-24 a la(s) 12 22 14 p m" src="https://github.com/user-attachments/assets/e16af9bc-f322-414f-acfa-30c99162dc15" />
+<img width="1128" height="477" alt="Captura de pantalla 2026-02-24 a la(s) 12 22 59 p m" src="https://github.com/user-attachments/assets/c18741de-f729-458e-8195-fa7e110f41b5" />
+<img width="1031" height="478" alt="Captura de pantalla 2026-02-24 a la(s) 12 23 31 p m" src="https://github.com/user-attachments/assets/d52d8e46-4a7b-4273-bbb2-3ec79f3d9a1b" />
+
+Además, CoRubrics permite:
+- Hacer comentarios cuando se contesta la rúbrica.
+- Permitir Coevaluación, Autoevaluación y la evaluación del profesor en un solo CoRubrics.”
+
+CoRubrics puede considerarse un referente altamente pertinente para el desarrollo del proyecto, ya que se trata de una solución existente específicamente diseñada para procesos de evaluación con rúbricas en contextos educativos. En primer lugar, evidencia la importancia de estructurar la evaluación a partir de criterios claros previamente definidos, aspecto central en la aplicación propuesta. En segundo lugar, integra en una sola solución la evaluación del docente, la coevaluación entre estudiantes e incluso la autoevaluación, lo cual demuestra la viabilidad de gestionar múltiples tipos de evaluación dentro de una misma plataforma. Asimismo, su capacidad para generar automáticamente formularios, recopilar respuestas, procesar datos y calcular promedios se relaciona con la necesidad de implementar en la aplicación un módulo que no solo recoja valoraciones, sino que también analice y visualice resultados de manera organizada.
+
+Aunque CoRubrics depende del ecosistema de Google y funciona como complemento de hojas de cálculo, su lógica estructural puede trasladarse a una aplicación móvil independiente desarrollada en Flutter, permitiendo mayor flexibilidad en cuanto a roles diferenciados (docente y estudiante), configuración de visibilidad de resultados, control de ventanas de tiempo y acceso a métricas agregadas por grupo o actividad.
+
+
+
+
 
