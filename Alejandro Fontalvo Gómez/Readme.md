@@ -138,5 +138,59 @@ Otro aspecto relevante es la experiencia de usuario. Cuando docentes y estudiant
 
 Desde el punto de vista operativo, una sola aplicación también mejora la gestión de actualizaciones, despliegues y mantenimiento. Cualquier mejora en seguridad, optimización o funcionalidad impacta simultáneamente a todos los usuarios, garantizando uniformidad en el servicio.
 
+Basado en mi opinión, como estudiante, la mejor decisión es desarrollar una sola aplicación con manejo de roles (profesor y estudiante), ya que esta solución resulta más limpia, más escalable, más profesional, más fácil de mantener y más justificable académicamente. 
 
+Es más limpia porque permite aplicar correctamente los principios de Clean Architecture, separando dominio, datos y presentación sin duplicar lógica entre dos aplicaciones distintas; los mismos casos de uso, entidades y repositorios pueden servir para ambos roles, cambiando únicamente la capa de presentación según el tipo de usuario. 
+
+Es más escalable porque, si en el futuro se requiere agregar nuevos roles (por ejemplo, administrador o coordinador), solo sería necesario extender la lógica de roles sin crear una nueva aplicación. Es más profesional porque sigue buenas prácticas de desarrollo móvil moderno, centralizando autenticación, navegación y control de estado mediante GetX, lo que permite gestionar dependencias, rutas protegidas y controladores de forma organizada y eficiente. Además, es más fácil de mantener porque cualquier cambio en modelos, reglas de negocio o servicios (como autenticación con Roble o manejo de evaluaciones) se realiza en un único proyecto, evitando inconsistencias y duplicación de código.
+
+Ahora, la composición general de como se llevaría la app y sus características y funcionamientos bases serían de la siguiente manera:
+Desde la perspectiva Macro, Se desarrollará una sola aplicación móvil, en la cual podrán ingresar tanto docentes como estudiantes. La diferencia entre ambos no será una aplicación distinta, sino que dependerá del rol que tenga cada usuario dentro del curso. Divida en tres componentes claros, que serán: La aplicación móvil de flutter con roles, el servicio backend (Uso de Roble) y la Integración con Brightspace.
+
+Esto significa que:
+- El docente tendrá acceso a funciones de creación, configuración y consulta de evaluaciones.
+- El estudiante tendrá acceso únicamente a las evaluaciones que debe diligenciar y, según la configuración, a los resultados.
+- La aplicación móvil se conectará a servicios externos que se encargarán de:
+- Validar el inicio de sesión (autenticación) con Roble.
+- Guardar la información de cursos, evaluaciones y resultados con base de datos como Firebase o roble (A definir).
+
+Aplicar reglas importantes como:
+- No permitir autoevaluaciones.
+- Respetar las fechas de apertura y cierre.
+- Controlar la visibilidad pública o privada de los resultados.
+
+Un requisito fundamental del proyecto es que los grupos no se creen dentro de la aplicación, sino que se formen previamente en Brightspace.
+La aplicación únicamente:
+- Importará las categorías de grupos.
+- Importará los grupos.
+- Importará los miembros.
+- Permitirá actualizar esta información cuando sea necesario.
+
+![WhatsApp Image 2026-02-24 at 13 35 15](https://github.com/user-attachments/assets/d3745e26-c7c4-4114-976f-5f0c1039695b)
+
+# Importante:  Módulos principales de la aplicación
+1. **Autenticación y perfil**: Inicio de sesión, Identificación automática del rol (docente o estudiante) y Visualización de perfil.
+2. **Cursos e invitaciones**: 
+- El docente podrá: Crear cursos e Invitar estudiantes. 
+- El estudiante podrá: Unirse a un curso mediante código o invitación.
+3. **Sincronización de grupos**: Importar grupos desde Brightspace, actualizar la información cuando haya cambios.
+4. **Evaluaciones**:
+- El docente podrá: Crear una evaluación, Definir nombre, Definir fecha de apertura y cierre y Definir si los resultados serán públicos o privados.
+- El estudiante podrá: Ver evaluaciones activas, Evaluar únicamente a sus compañeros de grupo y No podrá evaluarse a sí mismo.
+5. **Resultados y análisis**:
+- El docente podrá consultar: Promedio general por actividad, Promedio por grupo, Promedio por estudiante, Detalle por criterio.
+- El estudiante: Solo podrá ver resultados si la evaluación fue configurada como pública y Si es privada, solo el docente podrá verlos.
+6. **Permisos y funcionamiento en segundo plano**: La aplicación solicitará permisos como: Permisos de ejecución en segundo plano.
+Estos pueden justificarse para: Recordatorios cuando una evaluación esté por cerrar y Sincronización automática de grupos.
+
+# Descripción detallada del flujo funcional, desde el trabajo en equipo hasta la evaluación y visualización de resultados.
+<img width="2472" height="1146" alt="Group 1" src="https://github.com/user-attachments/assets/2cd829a1-93f4-451b-aeb3-61df1271f132" />
+Link: https://www.figma.com/design/51czOcjJ2NY01pD6DYmlzd/Sin-t%C3%ADtulo?node-id=0-1&t=OUk1M8fb0FLOdxp5-1
+
+# Justificación de la propuesta con base en los referentes analizados y en entrevistas realizadas a profesores que implementen trabajos colaborativos.
+En el marco de la validación de la solución, sostuve una reunión con dos profesores, entre ellos una docente de Cálculo reconocida por innovar constantemente en sus procesos pedagógicos, especialmente mediante el desarrollo de proyectos en grupos y equipos de trabajo que permiten a sus estudiantes representar y aplicar las matemáticas en distintos campos de formación. Durante el encuentro le presenté la idea de la herramienta de evaluación entre pares, y manifestó que le parecía altamente pertinente, particularmente en su contexto como profesora de materias de primer semestre, donde frecuentemente se enfrenta a estudiantes desmotivados y poco dispuestos a trabajar en equipo. Considera que una solución como esta podría contribuir significativamente a fortalecer la participación, promover la corresponsabilidad y generar evaluaciones más justas entre compañeros, permitiendo conocer la apreciación real del desempeño dentro de los grupos. No obstante, también planteó inquietudes relevantes sobre su factibilidad, señalando que la emocionalidad y la subjetividad propias de los estudiantes pueden convertirse en un factor de riesgo importante, capaz de distorsionar las evaluaciones y eventualmente afectar el clima del aula si no se establecen mecanismos adecuados de control y acompañamiento.
+
+De igual manera, se sostuvo una conversación con un profesor del área de Sistemas, quien manifestó que la herramienta podría convertirse en un verdadero llamado de atención para aquellos estudiantes que no están asumiendo con responsabilidad su rol dentro del equipo, funcionando como un mecanismo que los motive a “ponerse las pilas” y mejorar su desempeño de manera progresiva y consciente. Desde su perspectiva, la evaluación entre pares no solo aporta información académica, sino que también genera retroalimentación social directa que puede impulsar cambios positivos en el comportamiento y el compromiso. Sin embargo, al igual que la profesora de Cálculo, expresó reservas frente al componente emocional y la subjetividad de los estudiantes, señalando que los sentimientos personales, afinidades o conflictos interpersonales podrían influir en las calificaciones. En este sentido, destacó que dicha problemática trasciende el alcance puramente tecnológico de la solución, pues involucra dimensiones humanas y formativas que requieren acompañamiento pedagógico y criterios claros para mitigar posibles sesgos.
+
+Frente a estas inquietudes, resulta evidente que la única manera de abordar de forma responsable el componente emocional y la subjetividad es salir del plano teórico y realizar pruebas reales de la herramienta en contextos controlados. Implementar pilotos permitirá comprender cómo se comportan los usuarios, qué tan objetiva resulta la evaluación entre pares en la práctica y cuáles son los posibles sesgos o distorsiones que pueden surgir. A través de estas pruebas se podrá recolectar evidencia, identificar patrones de comportamiento, ajustar criterios de evaluación y diseñar mecanismos de mitigación como rúbricas más estructuradas, anonimato o ponderaciones, que reduzcan el impacto de la emocionalidad. En definitiva, la validación en campo no solo permitirá entender mejor a los estudiantes, sino también fortalecer la solución desde una perspectiva pedagógica y tecnológica basada en datos reales y no únicamente en supuestos.
 
