@@ -22,3 +22,49 @@ Desde el punto de vista técnico, la aplicación se estructura siguiendo **Clean
 Para la autenticación y persistencia de datos se utiliza **Roble**, que gestiona usuarios, cursos, evaluaciones y resultados. Además, la integración con **Brightspace** permite sincronizar automáticamente las categorías y grupos del curso, garantizando coherencia con la estructura académica oficial.
 
 La decisión de utilizar una sola aplicación con roles diferenciados reduce la complejidad de desarrollo, simplifica el mantenimiento y facilita la adopción por parte de los usuarios, ya que docentes y estudiantes acceden a la misma plataforma con experiencias adaptadas a sus necesidades.
+
+## 3. Descripción detallada del flujo funcional
+
+1. **Inicio de sesión y rol:** el usuario entra a la app, se autentica (Roble) y el sistema identifica si es docente o estudiante; con eso se habilitan pantallas y permisos según el rol.
+
+2. **Creación del curso (docente):** el docente crea un curso (nombre/código/descripción). El curso queda registrado en Roble y aparece en el panel del docente.
+
+3. **Invitación y unión al curso:** el docente invita estudiantes al curso. El estudiante acepta y el curso se agrega a su lista.
+
+4. **Importación de grupos desde Brightspace:** en el curso, el docente selecciona “Importar desde Brightspace”, elige la categoría de grupo correspondiente y la app sincroniza categorías, grupos y miembros. La estructura importada se guarda en Roble como base para evaluaciones.
+
+5. **Actualización opcional de grupos:** si hubo cambios en Brightspace, el docente puede “Actualizar sincronización” para traer la composición más reciente y mantener coherencia con el LMS.
+
+6. **Creación y activación de evaluación (docente):** el docente crea una evaluación y define: nombre, categoría de grupo, ventana de tiempo (inicio/cierre o duración) y visibilidad (pública o privada). Al activar, la evaluación pasa a estado “activa”.
+
+7. **Notificación a estudiantes:** al activarse la evaluación, la app envía una notificación a los estudiantes de los grupos.
+
+8. **Acceso a evaluación (estudiante):** el estudiante entra al curso, abre la evaluación activa y la app carga automáticamente su grupo y la lista de compañeros.
+
+9. **Regla de no autoevaluación:** la app excluye al estudiante de la lista de evaluados; sólo puede calificar a sus compañeros.
+
+10. **Evaluación por rúbrica:** para cada compañero, el estudiante selecciona niveles basados en los criterios (puntualidad, contribuciones, compromiso y actitud) según la escala definida. La app valida que todos los criterios estén completados.
+
+11. **Envío de la evaluación:** el estudiante confirma y envía. La app guarda en Roble el registro con fecha/hora y marca el estado como “enviado”.
+
+12. **Control de ventana de tiempo:** mientras la evaluación esté activa, otros estudiantes pueden enviar; al llegar la hora de cierre, la app bloquea el envío y marca la evaluación como “cerrada” (cierre automático).
+
+13. **Consolidación de resultados:** al cerrarse, el sistema calcula promedios por estudiante (por criterio y total), además de agregados por grupo y por actividad; estos resultados quedan disponibles en el módulo de reportes.
+
+14. **Visualización de reportes (docente):** el docente consulta reportes en varias vistas: promedio por actividad, por grupo, por estudiante y detalle por criterio.
+
+15. **Resultados para estudiantes (opcional por visibilidad):** si la evaluación es pública, los estudiantes pueden ver resultados consolidados (puntajes por criterio y total) de su grupo; si es privada, los resultados solo los ve el docente.
+
+## 4. Justificación de la propuesta
+
+La aplicación propuesta constituye una solución pertinente para evaluar el trabajo colaborativo, ya que responde a una dificultad frecuente en el ámbito académico: determinar de manera justa el aporte individual dentro de los equipos. Referentes como **CATME Smarter Teamwork** evidencian que la evaluación entre pares permite identificar niveles reales de participación, compromiso y responsabilidad, evitando que todos los estudiantes reciban la misma calificación sin considerar su contribución. Implementar este enfoque en una aplicación móvil facilita un proceso estructurado, accesible y basado en criterios objetivos.
+
+Asimismo, plataformas como **PeerScholar** demuestran que la evaluación entre compañeros no solo sirve para asignar calificaciones, sino que también fortalece el pensamiento crítico, la autoevaluación y la responsabilidad individual. Al evaluar a sus pares, los estudiantes reflexionan sobre el desempeño del equipo y desarrollan habilidades de análisis y retroalimentación constructiva, convirtiendo la evaluación en una herramienta formativa que mejora el aprendizaje colaborativo.
+
+Por su parte, el módulo **Workshop Peer Review de Moodle** resalta la importancia de integrar la evaluación dentro del flujo natural del curso y del ecosistema educativo. Siguiendo este principio, la aplicación propuesta se integra con Brightspace para sincronizar grupos y automatizar procesos como la asignación de evaluaciones, el control de tiempos y la consolidación de resultados. De esta manera, la solución no solo reduce la carga administrativa del docente, sino que también promueve una experiencia de aprendizaje colaborativo más transparente, equitativa y eficiente.
+
+## 5. Diagrama de flujo (Figma)
+
+https://www.figma.com/design/UaG4cOGVYFf9znask4ky0l/Peer-Review-App?node-id=0-1&t=SiUXcwRFr1pXpfpb-1
+
+**Docs adicional:** https://docs.google.com/document/d/1_WIdR1pM9a7EVggrL1flk5wtCQurQ1poYbLEBWXNYqs/edit?usp=sharing 
