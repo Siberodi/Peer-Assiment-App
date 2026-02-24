@@ -2,6 +2,7 @@
 
 ### CATME Smarter Teamwork
 CATME Smarter Teamwork es una plataforma de evaluación entre pares desarrollada por Purdue University, diseñada para analizar el desempeño individual dentro del trabajo en equipo. Su enfoque principal es medir la contribución real de cada integrante mediante evaluaciones anónimas entre compañeros y métricas detalladas que incluyen liderazgo, compromiso, interacción y responsabilidad. El sistema permite identificar miembros con baja participación y genera reportes automáticos que ayudan al docente a tomar decisiones más justas al asignar calificaciones. Aunque su interfaz no es moderna y presenta cierta curva de aprendizaje, su valor radica en la rigurosidad con la que evalúa el aporte individual. Este referente evidencia la importancia de incorporar criterios claros que permitan evaluar la contribución real dentro del grupo, lo cual se refleja en la propuesta mediante la evaluación de aspectos como compromiso, contribución y actitud.
+
 <img width="299" height="100" alt="CATME1" src="https://github.com/user-attachments/assets/e50e7b35-c57a-4de6-b188-f58e79200dd6" />
 <img width="598" height="327" alt="CATME2" src="https://github.com/user-attachments/assets/1d0b76db-d39c-4958-a783-116641ff8df0" />
 
