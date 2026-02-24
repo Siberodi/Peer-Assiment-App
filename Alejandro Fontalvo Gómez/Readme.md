@@ -15,7 +15,7 @@ Adicionalmente, como parte del proceso académico y con el fin de fortalecer el 
 - El enlace al prototipo desarrollado en Figma, acompañado de capturas de pantalla integradas dentro del README.md.
 - Cualquier otro elemento que permita fortalecer la argumentación y claridad de la solución planteada.
 
-1. Tres referentes (aplicaciones, plataformas o soluciones existentes relacionadas con la problemática).
+# Tres referentes (aplicaciones, plataformas o soluciones existentes relacionadas con la problemática).
 <img width="313" height="161" alt="images (1)" src="https://github.com/user-attachments/assets/ee9816f3-6234-403b-a177-4b40ef316a06" />
 
 Deel es una empresa tecnológica fundada en 2019 que ofrece soluciones integrales de recursos humanos enfocadas en la gestión de equipos globales y trabajo remoto. Su modelo de negocio se basa en proveer una plataforma SaaS (Software as a Service) que permite a las organizaciones contratar, pagar y administrar empleados y contratistas en más de 150 países, asegurando el cumplimiento de normativas laborales y fiscales locales (Deel, s. f.-a). La compañía ha experimentado un crecimiento acelerado en el mercado internacional, posicionándose como una de las soluciones más relevantes en el ámbito de la gestión global del talento, especialmente en un contexto donde el trabajo distribuido y remoto se ha vuelto una práctica común en múltiples industrias (Deel, s. f.-a).
@@ -78,7 +78,65 @@ CoRubrics puede considerarse un referente altamente pertinente para el desarroll
 
 Aunque CoRubrics depende del ecosistema de Google y funciona como complemento de hojas de cálculo, su lógica estructural puede trasladarse a una aplicación móvil independiente desarrollada en Flutter, permitiendo mayor flexibilidad en cuanto a roles diferenciados (docente y estudiante), configuración de visibilidad de resultados, control de ventanas de tiempo y acceso a métricas agregadas por grupo o actividad.
 
+<img width="373" height="135" alt="images (2)" src="https://github.com/user-attachments/assets/3e5882b6-7dd6-4b67-b271-7af919380506" />
 
+Teamflect es una plataforma de gestión del desempeño y compromiso de equipos, diseñada para integrarse directamente con Microsoft Teams y Outlook, que facilita a las organizaciones establecer objetivos, realizar revisiones de desempeño, recopilar retroalimentación continua y mejorar el rendimiento de los empleados (Teamflect, s. f.). La solución ofrece herramientas como evaluación de desempeño estructurada, establecimiento y seguimiento de metas (incluyendo OKR), reuniones uno-a-uno, encuestas de compromiso, retroalimentación 360° y reconocimiento entre pares, todo dentro del flujo de trabajo habitual, sin necesidad de cambiar de aplicación (Teamflect, s. f.; Capterra, 2026)
+<img width="1262" height="554" alt="Captura de pantalla 2026-02-24 a la(s) 12 27 15 p m" src="https://github.com/user-attachments/assets/f073fc81-0627-48e7-b273-49991edc6d9e" />
+
+Este referente es pertinente para el proyecto porque, aunque su aplicación principal es corporativa, incorpora conceptos clave de evaluación estructurada y retroalimentación entre pares que se alinean con lo que se busca implementar en una aplicación académica. Teamflect permite definir plantillas de revisión personalizables, coordinar ciclos de evaluación y obtener informes de resultados, lo cual es metodológicamente similar a los requerimientos de una aplicación de evaluación entre estudiantes, donde también debe configurarse una rúbrica, habilitarse una ventana de evaluación y consolidarse resultados cuantitativos y cualitativos. Por lo tanto, la estructura funcional de Teamflect, especialmente en lo referente a revisiones de desempeño, retroalimentación de colegas y análisis de resultados, puede inspirar el diseño de los módulos de evaluación en la aplicación propuesta, adaptando estos elementos del contexto empresarial al educativo con terminología y flujos propios del ámbito académico.
+
+Sería especialmente interesante profundizar e investigar de forma más exhaustiva cómo Teamflect realiza la integración y la conexión entre usuarios “pares” dentro del ecosistema de Microsoft (por ejemplo, cómo identifica miembros de un equipo, sincroniza estructuras organizacionales y asigna evaluaciones dentro de Microsoft Teams), ya que este componente de interoperabilidad se relaciona directamente con una de las necesidades críticas del proyecto: importar los grupos ya creados en Brightspace hacia la aplicación móvil.
+
+En otras palabras, aunque Teamflect opera en un contexto distinto (Microsoft 365), su enfoque de integración puede aportar aprendizajes metodológicos y técnicos sobre mecanismos de autenticación, sincronización de miembros, mapeo de roles y actualización de grupos en tiempo real o bajo demanda, aspectos que resultan clave para diseñar un flujo sólido de importación de grupos desde una plataforma externa hacia Flutter. Analizar este funcionamiento podría orientar decisiones sobre cómo estructurar el módulo de “importación y actualización de grupos” en la app, cómo mantener consistencia entre el sistema externo y la aplicación, y cómo garantizar que las evaluaciones se asignen correctamente a los miembros del grupo importado (Teamflect, s. f.).
+
+ Teamflect. (s. f.). Employee development software. https://teamflect.com/employee-development-software
+
+# Contextualización de la problemática
+  
+Universidades como la Universidad del Norte, que promueven metodologías activas de aprendizaje y el desarrollo de competencias transversales, han incorporado de manera significativa el trabajo colaborativo como parte esencial de sus procesos formativos. En múltiples asignaturas, los estudiantes desarrollan proyectos en grupo que buscan fortalecer habilidades como el liderazgo, la comunicación efectiva, la responsabilidad compartida, la gestión del tiempo y la resolución de problemas complejos.
+
+No obstante, uno de los principales retos académicos en estos espacios es la evaluación individual dentro del trabajo grupal. En muchos casos, la calificación final asignada al proyecto no logra reflejar de manera objetiva el nivel real de compromiso, aporte y desempeño de cada integrante del equipo. Esta situación puede generar percepciones de inequidad, inconformidad entre estudiantes y dificultades para el docente al momento de asignar notas justas y sustentadas.
+
+Aunque la Universidad del Norte utiliza plataformas institucionales como Brightspace para la gestión de cursos y grupos, dichas herramientas no siempre ofrecen un sistema especializado y flexible de evaluación entre pares que permita configurar criterios personalizados, definir ventanas de evaluación, establecer reglas de visibilidad de resultados (pública o privada) y generar métricas consolidadas por actividad, grupo o estudiante. Como consecuencia, muchos docentes recurren a herramientas externas como formularios, hojas de cálculo o procesos manuales, lo que incrementa la carga administrativa y dificulta la trazabilidad y el análisis estructurado de la información.
+
+Desde la perspectiva estudiantil, tampoco existe una herramienta institucional centralizada que permita realizar evaluaciones entre pares de manera estructurada, controlada y bajo reglas claras, como la restricción de autoevaluación y la limitación a los miembros reales del grupo. Esto afecta la estandarización del proceso y puede comprometer la confiabilidad de los resultados.
+En este contexto, se identifica la necesidad de desarrollar una solución tecnológica que responda específicamente a las dinámicas académicas de la Universidad del Norte, permitiendo:
+- Integrar o importar los grupos conformados en la plataforma institucional.
+- Brindar a los docentes la posibilidad de crear actividades de evaluación entre pares con parámetros configurables (nombre, criterios, ventana de tiempo, visibilidad de resultados).
+- Garantizar que los estudiantes evalúen únicamente a sus compañeros de grupo, excluyendo la autoevaluación.
+- Generar métricas automáticas como promedios por actividad, por grupo y por estudiante.
+- Diferenciar accesos según el rol (docente o estudiante), asegurando la confidencialidad y el control adecuado de la información.
+- Adicionalmente, la solución debe diseñarse bajo principios de arquitectura limpia, modularidad y escalabilidad, de manera que pueda adaptarse a futuras necesidades 
+
+# Composición y diseño de la solución, especificando la arquitectura propuesta (por ejemplo: una sola aplicación para profesores y estudiantes; una aplicación independiente para cada rol; aplicaciones separadas más una plataforma web de soporte; u otra configuración debidamente justificada).
+
+Teniendo en cuenta los requerimientos planteados y, además, la necesidad de garantizar una aplicación funcional con características de eficacia, precisión y gestión real del proceso de evaluaciones entre pares, se realizó un análisis de alternativas de composición de la solución para su posible implementación en escenarios académicos como los de la Universidad del Norte. 
+
+En este contexto, el objetivo no es únicamente cumplir con las funcionalidades mínimas, sino asegurar que la solución sea usable en condiciones reales, con control de accesos, trazabilidad, consistencia de resultados y capacidad de soportar pruebas piloto con usuarios (docentes y estudiantes) en cursos universitarios.
+
+Como resultado de esta evaluación, logro concluir que la alternativa más conveniente es el desarrollo de una única aplicación móvil en Flutter con roles diferenciados (Docente/Estudiante). Esta decisión se justifica porque permite centralizar el sistema en una sola base de código, reduciendo duplicidades y facilitando el mantenimiento, la escalabilidad y el aseguramiento de calidad. Adicionalmente, esta arquitectura favorece una gestión más coherente de los flujos compartidos, como autenticación, inscripción a cursos, sincronización de grupos, control de ventanas de evaluación y visualización de resultados, garantizando que cada usuario acceda únicamente a las funcionalidades permitidas según su rol.
+
+Esta decisión, como ya se comenta, parece la más viable gracias a referentes adicionales de soluciones tecnológicas consolidadas que aplican esta misma dinámica de una sola aplicación con diferenciación de roles dentro del mismo ecosistema digital.
+
+En el ámbito educativo, plataformas ampliamente reconocidas como Moodle, Canvas y Brightspace no desarrollan aplicaciones independientes para cada tipo de usuario, sino que implementan un modelo centralizado en el cual la experiencia se adapta dinámicamente según el rol asignado (estudiante, docente, administrador). Este enfoque permite que todos los actores académicos interactúen dentro de un mismo entorno tecnológico, compartiendo infraestructura, base de datos y reglas de negocio, pero con niveles de acceso y funcionalidades diferenciadas.
+
+Este modelo responde a un principio fundamental de diseño de sistemas: la separación entre autenticación, autorización y presentación. La identidad del usuario se gestiona de manera unificada, mientras que los permisos determinan qué acciones puede ejecutar y qué información puede visualizar. De esta manera, el sistema mantiene coherencia estructural sin necesidad de fragmentarse en múltiples aplicaciones.
+
+Adicionalmente, desde una perspectiva de ingeniería de software, esta decisión se alinea con principios como:
+- Single Source of Truth (SSOT): mantener una única fuente de verdad para la lógica de negocio y los datos evita inconsistencias en reglas críticas como ventanas de evaluación, visibilidad de resultados y restricciones de autoevaluación.
+- Principio de responsabilidad única (SRP): cada módulo cumple una función clara (evaluaciones, cursos, resultados), sin duplicarse entre aplicaciones.
+- Escalabilidad horizontal funcional: es más sencillo agregar nuevos roles o capacidades dentro de una misma arquitectura modular que mantener múltiples aplicaciones desacopladas.
+- Reducción de deuda técnica: menos duplicación implica menor riesgo de divergencia en actualizaciones futuras.
+
+Además, en el contexto específico de la Universidad del Norte, donde ya existen plataformas institucionales que gestionan usuarios y grupos académicos, la adopción de una sola aplicación con roles diferenciados facilita la integración futura con sistemas existentes, evitando la fragmentación tecnológica y promoviendo una experiencia digital coherente para la comunidad universitaria.
+Otro aspecto relevante es la experiencia de usuario. Cuando docentes y estudiantes utilizan la misma aplicación:
+
+- Se fortalece la percepción de pertenencia a un mismo ecosistema académico.
+- Se simplifica la capacitación y adopción institucional.
+- Se reduce la confusión derivada de múltiples aplicaciones.
+- Se facilita la realización de pruebas piloto reales con ambos perfiles dentro del mismo entorno controlado.
+
+Desde el punto de vista operativo, una sola aplicación también mejora la gestión de actualizaciones, despliegues y mantenimiento. Cualquier mejora en seguridad, optimización o funcionalidad impacta simultáneamente a todos los usuarios, garantizando uniformidad en el servicio.
 
 
 
