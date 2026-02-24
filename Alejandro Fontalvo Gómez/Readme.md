@@ -15,7 +15,7 @@ Adicionalmente, como parte del proceso académico y con el fin de fortalecer el 
 - El enlace al prototipo desarrollado en Figma, acompañado de capturas de pantalla integradas dentro del README.md.
 - Cualquier otro elemento que permita fortalecer la argumentación y claridad de la solución planteada.
 
-##1. Tres referentes (aplicaciones, plataformas o soluciones existentes relacionadas con la problemática).
+#1. Tres referentes (aplicaciones, plataformas o soluciones existentes relacionadas con la problemática).
 <img width="313" height="161" alt="images (1)" src="https://github.com/user-attachments/assets/ee9816f3-6234-403b-a177-4b40ef316a06" />
 
 Deel es una empresa tecnológica fundada en 2019 que ofrece soluciones integrales de recursos humanos enfocadas en la gestión de equipos globales y trabajo remoto. Su modelo de negocio se basa en proveer una plataforma SaaS (Software as a Service) que permite a las organizaciones contratar, pagar y administrar empleados y contratistas en más de 150 países, asegurando el cumplimiento de normativas laborales y fiscales locales (Deel, s. f.-a). La compañía ha experimentado un crecimiento acelerado en el mercado internacional, posicionándose como una de las soluciones más relevantes en el ámbito de la gestión global del talento, especialmente en un contexto donde el trabajo distribuido y remoto se ha vuelto una práctica común en múltiples industrias (Deel, s. f.-a).
