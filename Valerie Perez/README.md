@@ -8,6 +8,9 @@ Por esta razón, propongo el desarrollo de una aplicación móvil en Flutter que
 
 ## Peergrade
 
+<img width="300" height="168" alt="download" src="https://github.com/user-attachments/assets/bea3de57-926c-4d11-bb94-5f2a811e4b75" />
+
+
 Es una plataforma enfocada en evaluación entre pares. Permite crear rúbricas y generar resultados automáticos.
 
 Lo que aporta a mi propuesta:
@@ -18,6 +21,9 @@ Lo que aporta a mi propuesta:
 
 ## Brightspace
 
+<img width="300" height="168" alt="Tutorial-Brightspace-1" src="https://github.com/user-attachments/assets/35fc6bd5-65c8-43d8-a20a-fb40473e6130" />
+
+
 Es el LMS institucional donde se crean los cursos y los grupos (group categories).
 
 Lo que aporta a mi propuesta:
@@ -27,6 +33,9 @@ Lo que aporta a mi propuesta:
 	•	Base para importar grupos al sistema.
 
 ## Google Forms
+
+<img width="300" height="168" alt="crear-encuesta-google-forms" src="https://github.com/user-attachments/assets/03074bd5-dea0-4308-aadf-b08062adb605" />
+
 
 Herramienta comúnmente utilizada por docentes para realizar evaluaciones manuales.
 
@@ -107,6 +116,9 @@ Se aplicarán los principios de:
 	•	Control del usuario
 
 # 8. Flujo Funcional
+
+<img width="1094" height="757" alt="Diagrama" src="https://github.com/user-attachments/assets/1c306d76-7fa4-41a2-8555-39b57e711d93" />
+
 
 ## Flujo del Docente
 	1.	Inicia sesión.
