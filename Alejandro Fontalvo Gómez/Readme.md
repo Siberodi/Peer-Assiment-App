@@ -186,11 +186,7 @@ Estos pueden justificarse para: Recordatorios cuando una evaluación esté por c
 # Descripción detallada del flujo funcional, desde el trabajo en equipo hasta la evaluación y visualización de resultados.
 <img width="2472" height="1146" alt="Group 1" src="https://github.com/user-attachments/assets/2cd829a1-93f4-451b-aeb3-61df1271f132" />
 Link: https://www.figma.com/design/51czOcjJ2NY01pD6DYmlzd/Sin-t%C3%ADtulo?node-id=0-1&t=OUk1M8fb0FLOdxp5-1
-
---- 
-Con ayuda de la IA, logré llegar a una idea muy general de cómo deberia ser la UX/UI que se debe implementar básicamente como base para elaborar una app realmente intuitiva y eficiente:
 # WireFrames Estudiantes
-<img width="1024" height="1536" alt="096d2074-a1b2-4754-85e2-200bc0488531" src="https://github.com/user-attachments/assets/50c76170-587c-4d73-8b63-29573e9e6097" />
 <img width="303" height="602" alt="Frame 7" src="https://github.com/user-attachments/assets/6cf2cd57-d679-464f-a686-18d0ee041fe8" />
 <img width="295" height="594" alt="Frame 8" src="https://github.com/user-attachments/assets/f9346c4a-fe14-4e52-987f-57720606e1a7" />
 <img width="295" height="594" alt="Frame 13" src="https://github.com/user-attachments/assets/34145c75-b2ea-40c2-b7e5-45ca5c96c9f7" />
