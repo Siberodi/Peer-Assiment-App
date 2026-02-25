@@ -189,8 +189,26 @@ Link: https://www.figma.com/design/51czOcjJ2NY01pD6DYmlzd/Sin-t%C3%ADtulo?node-i
 
 --- 
 Con ayuda de la IA, logré llegar a una idea muy general de cómo deberia ser la UX/UI que se debe implementar básicamente como base para elaborar una app realmente intuitiva y eficiente:
-
+# WireFrames Estudiantes
 <img width="1024" height="1536" alt="096d2074-a1b2-4754-85e2-200bc0488531" src="https://github.com/user-attachments/assets/50c76170-587c-4d73-8b63-29573e9e6097" />
+<img width="303" height="602" alt="Frame 7" src="https://github.com/user-attachments/assets/6cf2cd57-d679-464f-a686-18d0ee041fe8" />
+<img width="295" height="594" alt="Frame 8" src="https://github.com/user-attachments/assets/f9346c4a-fe14-4e52-987f-57720606e1a7" />
+<img width="295" height="594" alt="Frame 13" src="https://github.com/user-attachments/assets/34145c75-b2ea-40c2-b7e5-45ca5c96c9f7" />
+<img width="295" height="594" alt="Frame 12" src="https://github.com/user-attachments/assets/fc8bc632-cae3-4ad0-a150-3b9b1e425963" />
+<img width="295" height="594" alt="Frame 11" src="https://github.com/user-attachments/assets/2def091b-d549-45df-b0c1-e3756a0026b0" />
+<img width="295" height="594" alt="Frame 10" src="https://github.com/user-attachments/assets/1dc2c5de-1718-41b7-8c63-a30bf5fe4446" />
+<img width="355" height="820" alt="Frame 20" src="https://github.com/user-attachments/assets/5ba0400a-2e71-4de8-b7f3-659802c66ad5" />
+# WireFrames Docentes
+<img width="1024" height="1536" alt="096d2074-a1b2-4754-85e2-200bc0488531" src="https://github.com/user-attachments/assets/50c76170-587c-4d73-8b63-29573e9e6097" />
+<img width="295" height="594" alt="Frame 14" src="https://github.com/user-attachments/assets/62e7fd2f-bbc4-4b20-944e-294cb833aded" />
+<img width="390" height="594" alt="Frame 15" src="https://github.com/user-attachments/assets/ae8de12d-ad2c-43fe-a5ed-2d0d7917e8d6" />
+<img width="295" height="594" alt="Frame 17" src="https://github.com/user-attachments/assets/44e1455d-aa1c-4736-a986-4a45e70fe799" />
+<img width="309" height="594" alt="Frame 16" src="https://github.com/user-attachments/assets/0743e89c-a767-4b15-92b1-758342cca150" />
+<img width="355" height="827" alt="Frame 18" src="https://github.com/user-attachments/assets/fb207023-7ab0-4961-a6ab-0a710f41fc3d" />
+
+# Vista General del Prototipado
+<img width="1916" height="1460" alt="image" src="https://github.com/user-attachments/assets/280da10e-2bd2-4c97-94b9-987626804aaf" />
+Link: https://www.figma.com/design/DKIr3iyGGmppIlH9NZmiS8/Sin-t%C3%ADtulo?node-id=0-1&t=0sJmctmZK4JF1E3c-1
 
 
 # Justificación de la propuesta con base en los referentes analizados y en entrevistas realizadas a profesores que implementen trabajos colaborativos.
