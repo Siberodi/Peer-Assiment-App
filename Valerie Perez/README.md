@@ -1,7 +1,3 @@
-
-Valerie Pérez
-Programación Móvil 2026-10
-
 # 1. Introducción
 
 En muchos trabajos colaborativos es difícil medir realmente el compromiso y la participación individual de cada integrante del grupo. Aunque los docentes asignan notas grupales, muchas veces no se tiene evidencia clara del desempeño individual.
@@ -15,15 +11,17 @@ Por esta razón, propongo el desarrollo de una aplicación móvil en Flutter que
 Es una plataforma enfocada en evaluación entre pares. Permite crear rúbricas y generar resultados automáticos.
 
 Lo que aporta a mi propuesta:
+
 	•	Sistema estructurado de evaluación.
 	•	Resultados individuales y grupales.
 	•	Organización clara por actividad.
 
-##Brightspace
+## Brightspace
 
 Es el LMS institucional donde se crean los cursos y los grupos (group categories).
 
 Lo que aporta a mi propuesta:
+
 	•	Gestión formal de estudiantes.
 	•	Organización académica estructurada.
 	•	Base para importar grupos al sistema.
@@ -33,6 +31,7 @@ Lo que aporta a mi propuesta:
 Herramienta comúnmente utilizada por docentes para realizar evaluaciones manuales.
 
 Lo que aporta:
+
 	•	Simplicidad.
 	•	Formularios rápidos.
 	•	Resultados automáticos.
@@ -42,6 +41,7 @@ Limitación: no ofrece métricas avanzadas ni análisis por grupo o estudiante a
 # 3. Problema Identificado
 
 Después de analizar las herramientas anteriores y conversar con docentes que trabajan con proyectos colaborativos, identifiqué los siguientes problemas:
+
 	•	No existe una herramienta móvil especializada en evaluación de desempeño colaborativo.
 	•	Los docentes pierden tiempo consolidando resultados manualmente.
 	•	Se generan conflictos cuando no hay evidencia objetiva del compromiso individual.
@@ -50,10 +50,12 @@ Después de analizar las herramientas anteriores y conversar con docentes que tr
 # 4. Propuesta de Solución
 
 Propongo desarrollar una única aplicación móvil con dos roles:
+
 	•	Docente
 	•	Estudiante
 
 Decidí que fuera una sola aplicación con manejo de roles porque:
+
 	•	Reduce la complejidad del sistema.
 	•	Permite reutilizar componentes.
 	•	Facilita el mantenimiento.
@@ -76,6 +78,7 @@ Se encarga de la comunicación con Roble (autenticación y almacenamiento de dat
 Incluye las pantallas, controladores y widgets utilizando Flutter y GetX.
 
 Esta estructura permite:
+
 	•	Separación de responsabilidades.
 	•	Escalabilidad.
 	•	Mantenibilidad.
@@ -93,10 +96,12 @@ Esta estructura permite:
 Siguiendo lo visto en clase sobre privacidad y control del usuario:
 
 La aplicación solicitará únicamente los permisos necesarios:
+
 	•	Permiso de ubicación (para validación contextual académica si se requiere).
 	•	Permisos en segundo plano para notificaciones de evaluaciones activas.
 
 Se aplicarán los principios de:
+
 	•	Transparencia
 	•	Minimización de datos
 	•	Control del usuario
@@ -131,6 +136,7 @@ Se aplicarán los principios de:
 # 9. Experiencia de Usuario
 
 La aplicación se diseñará siguiendo los principios vistos en clase:
+
 	•	Diseño limpio y minimalista.
 	•	Navegación intuitiva.
 	•	Botones ubicados en zonas accesibles (uso con pulgar).
@@ -143,6 +149,7 @@ La aplicación se diseñará siguiendo los principios vistos en clase:
 Esta propuesta responde a una necesidad real en entornos académicos donde el trabajo colaborativo es frecuente, pero la evaluación individual es limitada.
 
 La aplicación permite:
+
 	•	Generar métricas objetivas.
 	•	Reducir conflictos entre estudiantes.
 	•	Facilitar el trabajo del docente.
