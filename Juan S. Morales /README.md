@@ -74,11 +74,13 @@ Asimismo, plataformas como **PeerScholar** demuestran que la evaluación entre c
 
 Por su parte, el módulo **Workshop Peer Review de Moodle** resalta la importancia de integrar la evaluación dentro del flujo natural del curso y del ecosistema educativo. Siguiendo este principio, la aplicación propuesta se integra con Brightspace para sincronizar grupos y automatizar procesos como la asignación de evaluaciones, el control de tiempos y la consolidación de resultados. De esta manera, la solución no solo reduce la carga administrativa del docente, sino que también promueve una experiencia de aprendizaje colaborativo más transparente, equitativa y eficiente.
 
-## 5. Diagrama de flujo (Figma)
+## 5. Diagrama de flujo y Prototipo funcional (Figma)
 
 https://www.figma.com/design/UaG4cOGVYFf9znask4ky0l/Peer-Review-App?node-id=0-1&t=SiUXcwRFr1pXpfpb-1
 
 **Docs adicional:** https://docs.google.com/document/d/1_WIdR1pM9a7EVggrL1flk5wtCQurQ1poYbLEBWXNYqs/edit?usp=sharing 
+
+<img width="718" height="723" alt="Captura de pantalla 2026-02-25 a la(s) 2 20 00 p m" src="https://github.com/user-attachments/assets/9cdbe970-6fca-4604-8436-723920cee85f" />
 
 <img width="2448" height="3108" alt="Flow Chart" src="https://github.com/user-attachments/assets/9725d6f3-7ea3-4427-b7d4-0e384913060d" />
 
