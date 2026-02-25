@@ -186,6 +186,7 @@ Estos pueden justificarse para: Recordatorios cuando una evaluación esté por c
 # Descripción detallada del flujo funcional, desde el trabajo en equipo hasta la evaluación y visualización de resultados.
 <img width="2472" height="1146" alt="Group 1" src="https://github.com/user-attachments/assets/2cd829a1-93f4-451b-aeb3-61df1271f132" />
 Link: https://www.figma.com/design/51czOcjJ2NY01pD6DYmlzd/Sin-t%C3%ADtulo?node-id=0-1&t=OUk1M8fb0FLOdxp5-1
+
 # WireFrames Estudiantes
 <img width="303" height="602" alt="Frame 7" src="https://github.com/user-attachments/assets/6cf2cd57-d679-464f-a686-18d0ee041fe8" />
 <img width="295" height="594" alt="Frame 8" src="https://github.com/user-attachments/assets/f9346c4a-fe14-4e52-987f-57720606e1a7" />
@@ -194,8 +195,10 @@ Link: https://www.figma.com/design/51czOcjJ2NY01pD6DYmlzd/Sin-t%C3%ADtulo?node-i
 <img width="295" height="594" alt="Frame 11" src="https://github.com/user-attachments/assets/2def091b-d549-45df-b0c1-e3756a0026b0" />
 <img width="295" height="594" alt="Frame 10" src="https://github.com/user-attachments/assets/1dc2c5de-1718-41b7-8c63-a30bf5fe4446" />
 <img width="355" height="820" alt="Frame 20" src="https://github.com/user-attachments/assets/5ba0400a-2e71-4de8-b7f3-659802c66ad5" />
+
 # WireFrames Docentes
-<img width="1024" height="1536" alt="096d2074-a1b2-4754-85e2-200bc0488531" src="https://github.com/user-attachments/assets/50c76170-587c-4d73-8b63-29573e9e6097" />
+
+<img width="303" height="602" alt="Frame 7" src="https://github.com/user-attachments/assets/6cf2cd57-d679-464f-a686-18d0ee041fe8" />
 <img width="295" height="594" alt="Frame 14" src="https://github.com/user-attachments/assets/62e7fd2f-bbc4-4b20-944e-294cb833aded" />
 <img width="390" height="594" alt="Frame 15" src="https://github.com/user-attachments/assets/ae8de12d-ad2c-43fe-a5ed-2d0d7917e8d6" />
 <img width="295" height="594" alt="Frame 17" src="https://github.com/user-attachments/assets/44e1455d-aa1c-4736-a986-4a45e70fe799" />
