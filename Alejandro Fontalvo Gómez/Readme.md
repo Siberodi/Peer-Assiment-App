@@ -187,6 +187,10 @@ Estos pueden justificarse para: Recordatorios cuando una evaluación esté por c
 <img width="2472" height="1146" alt="Group 1" src="https://github.com/user-attachments/assets/2cd829a1-93f4-451b-aeb3-61df1271f132" />
 Link: https://www.figma.com/design/51czOcjJ2NY01pD6DYmlzd/Sin-t%C3%ADtulo?node-id=0-1&t=OUk1M8fb0FLOdxp5-1
 
+Con ayuda de la IA, logré llegar a una idea muy general de cómo deberia ser la UX/UI que se debe implementar básicamente como base para elaborar una app realmente intuitiva y eficiente:
+<img width="1024" height="1536" alt="096d2074-a1b2-4754-85e2-200bc0488531" src="https://github.com/user-attachments/assets/50c76170-587c-4d73-8b63-29573e9e6097" />
+
+
 # Justificación de la propuesta con base en los referentes analizados y en entrevistas realizadas a profesores que implementen trabajos colaborativos.
 En el marco de la validación de la solución, sostuve una reunión con dos profesores, entre ellos una docente de Cálculo reconocida por innovar constantemente en sus procesos pedagógicos, especialmente mediante el desarrollo de proyectos en grupos y equipos de trabajo que permiten a sus estudiantes representar y aplicar las matemáticas en distintos campos de formación. Durante el encuentro le presenté la idea de la herramienta de evaluación entre pares, y manifestó que le parecía altamente pertinente, particularmente en su contexto como profesora de materias de primer semestre, donde frecuentemente se enfrenta a estudiantes desmotivados y poco dispuestos a trabajar en equipo. Considera que una solución como esta podría contribuir significativamente a fortalecer la participación, promover la corresponsabilidad y generar evaluaciones más justas entre compañeros, permitiendo conocer la apreciación real del desempeño dentro de los grupos. No obstante, también planteó inquietudes relevantes sobre su factibilidad, señalando que la emocionalidad y la subjetividad propias de los estudiantes pueden convertirse en un factor de riesgo importante, capaz de distorsionar las evaluaciones y eventualmente afectar el clima del aula si no se establecen mecanismos adecuados de control y acompañamiento.
 
