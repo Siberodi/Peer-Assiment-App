@@ -217,6 +217,7 @@ A continuación se evidencia el gráfico del flujo establecido en figma:
 
 
 ## link de figma en donde se encuentra diseño de arquitectura y flujo de trabajo: https://www.figma.com/design/4j8UsgSlzQwDYfqMSoJR4C/Peer-Assessment-App-SibeliRodriguez?node-id=0-1&t=qiE0SfnopRlZp2vH-1
+<img width="924" height="474" alt="Captura de pantalla 2026-03-04 a la(s) 8 18 24 a m" src="https://github.com/user-attachments/assets/951632a4-3364-4ad0-8e9d-bc65bcd598f5" />
 
 
 ---
