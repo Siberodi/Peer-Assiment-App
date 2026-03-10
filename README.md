@@ -1,16 +1,92 @@
-# Peer-Assiment-App
-Students will develop a mobile application using Flutter that allows students to evaluate the performance and commitment of their peers in collaborative course activities.
+# Peer-Assessment-App
+
+Peer-Assessment-App es una aplicación móvil desarrollada en **Flutter** que permite a los estudiantes evaluar el desempeño, compromiso y contribución de sus compañeros dentro de actividades académicas colaborativas.
+
+La aplicación busca apoyar procesos de **evaluación entre pares**, proporcionando a los docentes una herramienta estructurada para gestionar evaluaciones, recopilar resultados y analizar métricas de participación dentro de trabajos grupales.
+
+---
+
+# Metas y Alcance de la Propuesta
+
+## Metas del Proyecto
+
+El objetivo principal del proyecto es diseñar y desarrollar una **aplicación móvil funcional y escalable** que permita implementar procesos de evaluación entre pares de manera estructurada dentro de entornos educativos.
+
+Las metas principales del sistema son:
+
+- Desarrollar una **aplicación móvil multiplataforma utilizando Flutter** que permita a docentes y estudiantes interactuar dentro de un mismo sistema.
+- Facilitar la **evaluación del desempeño individual dentro de trabajos colaborativos**, permitiendo que los estudiantes valoren la participación de sus compañeros.
+- Proporcionar a los docentes **métricas automáticas y resultados agregados** que permitan analizar el comportamiento y la dinámica de los grupos de trabajo.
+- Implementar un sistema que permita **gestionar cursos, evaluaciones y resultados** dentro de un flujo de trabajo claro y estructurado.
+- Diseñar una arquitectura de software **escalable, mantenible y modular** utilizando principios de **Clean Architecture**.
+- Garantizar una **experiencia de usuario intuitiva** mediante el diseño iterativo de interfaces y la integración progresiva de propuestas de diseño desarrolladas por el equipo.
+
+A largo plazo, este proyecto busca sentar las bases para una plataforma que pueda integrarse con sistemas de gestión de aprendizaje (LMS), facilitando la evaluación colaborativa dentro de entornos académicos digitales.
+
+---
+
+## Alcance de la Propuesta
+
+El alcance del proyecto contempla el diseño e implementación de un **prototipo funcional de aplicación móvil**, enfocado en los procesos principales de evaluación entre pares dentro de actividades académicas colaborativas.
+
+Dentro del alcance del sistema se incluyen las siguientes funcionalidades:
+
+### Para Docentes
+
+- Creación y gestión de cursos dentro de la aplicación.
+- Envío de invitaciones a estudiantes para unirse a los cursos.
+- Importación de grupos de trabajo desde plataformas externas (como Brightspace).
+- Creación y configuración de evaluaciones entre pares.
+- Definición de criterios de evaluación.
+- Activación y publicación de evaluaciones.
+- Visualización de resultados agregados y métricas de desempeño.
+
+### Para Estudiantes
+
+- Registro o acceso al sistema mediante autenticación.
+- Unión a cursos mediante invitación.
+- Visualización de evaluaciones activas.
+- Evaluación del desempeño de sus compañeros dentro de actividades grupales.
+- Consulta de resultados según la configuración de visibilidad definida por el docente.
+
+### Procesamiento del Sistema
+
+El sistema será responsable de:
+
+- Gestionar la autenticación de usuarios.
+- Controlar los permisos según el rol del usuario.
+- Validar las ventanas de tiempo de las evaluaciones.
+- Procesar automáticamente los resultados una vez finalizada una evaluación.
+- Generar métricas como:
+  - Promedio por criterio.
+  - Promedio por estudiante.
+  - Promedio por grupo.
+  - Promedio general de la actividad.
+
+---
+
+## Limitaciones del Alcance
+
+El proyecto se enfoca principalmente en el **desarrollo del sistema base y su arquitectura**, por lo que algunos aspectos quedan fuera del alcance actual, como:
+
+- Implementación completa de infraestructura de producción.
+- Integración completa con plataformas LMS externas.
+- Sistemas avanzados de analítica educativa.
+- Implementación de algoritmos avanzados de detección de sesgos en evaluaciones.
+
+Sin embargo, la arquitectura propuesta permite que estas funcionalidades puedan ser **incorporadas en futuras versiones del sistema**.
+
+---
 
 # Decisión Final de Arquitectura y Diseño del Sistema
 
-Tras el análisis comparativo de las propuestas iniciales de diseño, los diagramas de flujo planteados y la evaluación técnica realizada en equipo, se tomó la decisión definitiva de implementar la solución como una única aplicación móvil, gestionando múltiples roles de usuario dentro del mismo sistema, bajo el enfoque de Clean Architecture previamente establecido.
+Tras el análisis comparativo de las propuestas iniciales de diseño, los diagramas de flujo planteados y la evaluación técnica realizada en equipo, se tomó la decisión definitiva de implementar la solución como **una única aplicación móvil**, gestionando múltiples roles de usuario dentro del mismo sistema, bajo el enfoque de **Clean Architecture** previamente establecido.
 
-<img width="141" height="306" alt="Captura de pantalla 2026-03-09 a la(s) 7 50 33 p m" src="https://github.com/user-attachments/assets/0588c27c-a2e2-4d4b-a39b-e6f66f46767b" />
-
+<img width="141" height="306" alt="Captura de pantalla 2026-03-09 a la(s) 7 50 33 p m" src="https://github.com/user-attachments/assets/0588c27c-a2e2-4d4b-a39b-e6f66f46767b" />
 
 ## 1. Decisión sobre la estructura de la aplicación
 
-Inicialmente se contempló la posibilidad de desarrollar aplicaciones separadas para docentes y estudiantes. Sin embargo, después de evaluar los impactos técnicos, de mantenimiento y escalabilidad, se concluyó que la mejor alternativa es mantener una sola base de código, diferenciando funcionalidades mediante un sistema de autenticación y control de acceso basado en roles.
+Inicialmente se contempló la posibilidad de desarrollar aplicaciones separadas para docentes y estudiantes. Sin embargo, después de evaluar los impactos técnicos, de mantenimiento y escalabilidad, se concluyó que la mejor alternativa es **mantener una sola base de código**, diferenciando funcionalidades mediante un sistema de autenticación y control de acceso basado en roles.
 
 Esta decisión se fundamenta en los siguientes criterios:
 
@@ -20,11 +96,13 @@ Esta decisión se fundamenta en los siguientes criterios:
 - **Optimización técnica:** Centraliza la gestión de estado, navegación e inyección de dependencias (GetX) en un solo entorno estructural.
 - **Reducción de costos de desarrollo:** Disminuye complejidad, tiempo de implementación y esfuerzo de mantenimiento.
 
-Por lo tanto, el sistema operará con autenticación centralizada, donde el usuario inicia sesión y, según su rol (docente o estudiante), el sistema habilita o restringe funcionalidades específicas.
+Por lo tanto, el sistema operará con **autenticación centralizada**, donde el usuario inicia sesión y, según su rol (docente o estudiante), el sistema habilita o restringe funcionalidades específicas.
+
+---
 
 ## 2. Confirmación del enfoque arquitectónico
 
-Se ratifica la implementación bajo el modelo de Clean Architecture, organizado en las siguientes capas:
+Se ratifica la implementación bajo el modelo de **Clean Architecture**, organizado en las siguientes capas:
 
 - **Presentation Layer:** Interfaces en Flutter y controladores con GetX.
 - **Domain Layer:** Casos de uso, entidades y reglas de negocio.
@@ -40,6 +118,8 @@ Este enfoque garantiza:
 - Escalabilidad estructural del sistema.
 
 La arquitectura ya establecida se mantiene sin modificaciones estructurales, asegurando coherencia con el diseño técnico previamente aprobado.
+
+---
 
 ## 3. Decisión sobre el flujo funcional (Merge de propuestas)
 
