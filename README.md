@@ -5,6 +5,9 @@ Students will develop a mobile application using Flutter that allows students to
 
 Tras el análisis comparativo de las propuestas iniciales de diseño, los diagramas de flujo planteados y la evaluación técnica realizada en equipo, se tomó la decisión definitiva de implementar la solución como una única aplicación móvil, gestionando múltiples roles de usuario dentro del mismo sistema, bajo el enfoque de Clean Architecture previamente establecido.
 
+<img width="141" height="306" alt="Captura de pantalla 2026-03-09 a la(s) 7 50 33 p m" src="https://github.com/user-attachments/assets/0588c27c-a2e2-4d4b-a39b-e6f66f46767b" />
+
+
 ## 1. Decisión sobre la estructura de la aplicación
 
 Inicialmente se contempló la posibilidad de desarrollar aplicaciones separadas para docentes y estudiantes. Sin embargo, después de evaluar los impactos técnicos, de mantenimiento y escalabilidad, se concluyó que la mejor alternativa es mantener una sola base de código, diferenciando funcionalidades mediante un sistema de autenticación y control de acceso basado en roles.
@@ -201,7 +204,9 @@ Este diseño aporta principalmente los **elementos de identidad visual del siste
 Las primeras pantallas implementadas en el proyecto utilizan la **estructura del diseño de Sibeli combinada con la identidad visual del diseño de Juan Sebastián**, generando una interfaz equilibrada que combina claridad estructural con coherencia visual.
 
 <img width="581" height="543" alt="Captura de pantalla 2026-03-09 a la(s) 7 42 42 p m" src="https://github.com/user-attachments/assets/024dbe50-5d90-46af-85b5-55f794b950bd" />
+<img width="225" height="679" alt="Captura de pantalla 2026-03-09 a la(s) 7 48 50 p m" src="https://github.com/user-attachments/assets/e19abe62-ea9a-4c57-9861-0ab1990bc9bb" />
 
+<img width="234" height="496" alt="Captura de pantalla 2026-03-09 a la(s) 7 49 42 p m" src="https://github.com/user-attachments/assets/c81a83f8-bde0-47ae-87d4-ffd75722442d" />
 
 Esta integración continuará aplicándose en las siguientes etapas del desarrollo para construir una experiencia de usuario consistente en toda la aplicación.
 
