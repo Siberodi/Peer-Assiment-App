@@ -170,6 +170,8 @@ La decisión final establece que el sistema será:
 - Con flujo funcional consolidado y validado.
 - Orientada a escalabilidad, mantenibilidad y coherencia técnica.
 
+---
+
 ## Proceso de Diseño del Flujo Funcional
 
 Durante la fase de diseño del sistema, diferentes integrantes del equipo desarrollaron múltiples **propuestas de flujo de usuario** con el objetivo de explorar distintos modelos de interacción y enfoques estructurales para la aplicación, asi como se puede evidenciar en cada uno de sus propios README.md
