@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/authentication_controller.dart';
 import '../core/app_role.dart';
-import '../Home/home.dart';
-import '../Home/professor_home.dart';
+//import '../Home/home.dart';
+//import '../Home/professor_home.dart';
 import 'login.dart';
+import 'verify_email.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -35,30 +36,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     try {
-      await authenticationController.signUp(
-        controllerEmail.text,
-        controllerPassword.text,
-        controllerName.text,
-        selectedRole!,
-      );
-
-      final user = authenticationController.currentUser.value;
+        print('UI register -> antes de signUp');
+        await authenticationController.signUp(
+          controllerEmail.text,
+          controllerPassword.text,
+          controllerName.text,
+          selectedRole!,
+        );
+        print('UI register -> después de signUp');
 
       Get.snackbar(
         'Registro',
-        'Usuario creado correctamente',
+        'Revisa tu correo para verificar la cuenta',
         snackPosition: SnackPosition.BOTTOM,
       );
 
-      if (user?.role == AppRole.student) {
-        Get.offAll(() => const HomeScreen());
-      } else {
-        Get.offAll(() => const ProfessorHomeScreen());
-      }
+        // AQUÍ EN VEZ DE IR AL HOME
+      Get.to(() => VerifyEmailScreen(
+          email: controllerEmail.text,
+          password: controllerPassword.text,
+          name: controllerName.text,
+          role: selectedRole!,
+        ));
+      
     } catch (err) {
       Get.snackbar(
         'Registro',
-        err.toString(),
+        err.toString().replaceFirst('Exception: ', ''),
         snackPosition: SnackPosition.BOTTOM,
       );
     }
@@ -207,9 +211,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           if (value == null || value.isEmpty) {
                             return 'Ingresa tu contraseña';
                           }
-                          if (value.length < 6) {
-                            return 'Mínimo 6 caracteres';
-                          }
+                          final password = value.trim();
+                          if (
+                                password.length < 8 ||
+                                !RegExp(r'[A-Z]').hasMatch(password) ||
+                                !RegExp(r'[a-z]').hasMatch(password) ||
+                                !RegExp(r'[0-9]').hasMatch(password) ||
+                                !RegExp(r'[!@#\$_-]').hasMatch(password)
+                              ) {
+                              return 'La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo (! @ # \$ _ -)';
+                            }
                           return null;
                         },
                       ),
@@ -228,15 +239,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               Checkbox(
                                 value: selectedRole == AppRole.student,
-                                activeColor: greenSoft,
-                                checkColor: greenDark,
                                 onChanged: (value) {
                                   setState(() {
-                                    selectedRole =
-                                        value == true ? AppRole.student : null;
+                                    selectedRole = value == true ? AppRole.student : null;
                                   });
                                 },
-                              ),
+                              )
                             ],
                           ),
                           const SizedBox(width: 16),
@@ -251,12 +259,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               Checkbox(
                                 value: selectedRole == AppRole.teacher,
-                                activeColor: greenSoft,
-                                checkColor: greenDark,
                                 onChanged: (value) {
                                   setState(() {
-                                    selectedRole =
-                                        value == true ? AppRole.teacher : null;
+                                    selectedRole = value == true ? AppRole.teacher : null;
                                   });
                                 },
                               ),

@@ -3,8 +3,23 @@ import 'package:get/get.dart';
 import '../auth/login.dart';
 import '../controllers/authentication_controller.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final AuthenticationController authenticationController = Get.find();
+
+  late Future<List<Map<String, dynamic>>> groupsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    groupsFuture = authenticationController.getStudentGroupsWithPeers();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +27,6 @@ class HomeScreen extends StatelessWidget {
     const greenLight = Color(0xFF93D977);
     const background = Color(0xFFF3F3F3);
 
-    final AuthenticationController authenticationController = Get.find();
     final user = authenticationController.currentUser.value;
     final userName = user?.name ?? 'Juan Sebastián';
 
@@ -66,25 +80,68 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(18, 26, 18, 28),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    _SectionTag(text: 'Evaluaciones activas'),
-                    SizedBox(height: 18),
-                    _StudentActiveEvaluationsRow(),
-                    SizedBox(height: 30),
-                    _SectionTag(text: 'Calificaciones Publicadas'),
-                    SizedBox(height: 18),
-                    _StudentPublishedReportsRow(),
-                    SizedBox(height: 30),
-                    _SectionTag(text: 'Mis Grupos'),
-                    SizedBox(height: 18),
-                    _GroupListTile(
-                      title: 'Programación Móvil 5432',
-                      subtitle: '2 Peers',
-                    ),
-                    SizedBox(height: 16),
-                    _GroupListTile(
-                      title: 'Inteligencia Artificial 4420',
-                      subtitle: '3 Peers',
+                  children: [
+                    const _SectionTag(text: 'Evaluaciones activas'),
+                    const SizedBox(height: 18),
+                    const _StudentActiveEvaluationsRow(),
+                    const SizedBox(height: 30),
+                    const _SectionTag(text: 'Calificaciones Publicadas'),
+                    const SizedBox(height: 18),
+                    const _StudentPublishedReportsRow(),
+                    const SizedBox(height: 30),
+                    const _SectionTag(text: 'Mis Grupos'),
+                    const SizedBox(height: 18),
+
+                    FutureBuilder<List<Map<String, dynamic>>>(
+                      future: groupsFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+
+                        if (snapshot.hasError) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              'Error cargando grupos: ${snapshot.error}',
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          );
+                        }
+
+                        final groups = snapshot.data ?? [];
+
+                                                if (groups.isEmpty) {
+                                                  return const Padding(
+                                                    padding: EdgeInsets.symmetric(vertical: 12),
+                                                    child: Text(
+                                                      'No perteneces a ningún grupo todavía',
+                                                      style: TextStyle(fontSize: 16),
+                                                    ),
+                                                  );
+                                                }
+
+                                                return Column(
+                          children: groups.map((group) {
+                            final groupName = group['GroupName']?.toString() ?? 'Sin nombre';
+                            final groupCode = group['GroupCode']?.toString() ?? 'Sin código';
+                            final peerCount = group['PeerCount'] as int? ?? 0;
+
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: _GroupListTile(
+                                title: groupName,
+                                subtitle: 'Código: $groupCode • $peerCount compañeros',
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      },
                     ),
                   ],
                 ),

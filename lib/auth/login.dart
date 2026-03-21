@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (err) {
       Get.snackbar(
         'Login',
-        err.toString(),
+        err.toString().replaceFirst('Exception: ', ''),
         snackPosition: SnackPosition.BOTTOM,
       );
     }

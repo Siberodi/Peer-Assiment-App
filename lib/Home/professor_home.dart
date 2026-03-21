@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../auth/login.dart';
 import '../controllers/authentication_controller.dart';
+import 'upload_csv.dart';
 
 class ProfessorHomeScreen extends StatelessWidget {
   const ProfessorHomeScreen({super.key});
@@ -65,23 +66,52 @@ class ProfessorHomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(18, 26, 18, 28),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    _SectionTag(text: 'Evaluaciones activas'),
-                    SizedBox(height: 18),
-                    _ProfessorActiveEvaluationsRow(),
-                    SizedBox(height: 30),
-                    _SectionTag(text: 'Calificaciónes Publicadas'),
-                    SizedBox(height: 18),
-                    _ProfessorPublishedReportsRow(),
-                    SizedBox(height: 30),
-                    _SectionTag(text: 'Grupos'),
-                    SizedBox(height: 18),
-                    _GroupListTile(
+                  children: [
+                    const _SectionTag(text: 'Acciones del docente'),
+                    const SizedBox(height: 18),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Get.to(() => const UploadCsvScreen());
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 220, 243, 211),
+                          foregroundColor: greenDark,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        icon: const Icon(Icons.upload_file_rounded),
+                        label: const Text(
+                          'Subir CSV de grupos',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+
+                    const _SectionTag(text: 'Evaluaciones activas'),
+                    const SizedBox(height: 18),
+                    const _ProfessorActiveEvaluationsRow(),
+                    const SizedBox(height: 30),
+                    const _SectionTag(text: 'Calificaciónes Publicadas'),
+                    const SizedBox(height: 18),
+                    const _ProfessorPublishedReportsRow(),
+                    const SizedBox(height: 30),
+                    const _SectionTag(text: 'Grupos'),
+                    const SizedBox(height: 18),
+                    const _GroupListTile(
                       title: 'Programación Móvil 5432',
                       subtitle: '8 Grupos',
                     ),
-                    SizedBox(height: 16),
-                    _GroupListTile(
+                    const SizedBox(height: 16),
+                    const _GroupListTile(
                       title: 'Programación Móvil 5430',
                       subtitle: '9 Grupos',
                     ),
