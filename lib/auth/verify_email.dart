@@ -78,6 +78,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
             const Text('Ingresa el código que llegó a tu correo'),
             const SizedBox(height: 20),
             TextField(
+              key: const Key('codeField'),  // Agregamos la key al TextField
               controller: codeController,
               decoration: const InputDecoration(
                 labelText: 'Código',
@@ -85,6 +86,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
+              key: const Key('verifyButton'),  // Agregamos la key al ElevatedButton
               onPressed: isLoading ? null : verify,
               child: isLoading
                   ? const CircularProgressIndicator()

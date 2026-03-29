@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/authentication_controller.dart';
 import '../core/app_role.dart';
-//import '../Home/home.dart';
-//import '../Home/professor_home.dart';
 import 'login.dart';
 import 'verify_email.dart';
 
@@ -36,14 +34,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     try {
-        print('UI register -> antes de signUp');
-        await authenticationController.signUp(
-          controllerEmail.text,
-          controllerPassword.text,
-          controllerName.text,
-          selectedRole!,
-        );
-        print('UI register -> después de signUp');
+      print('UI register -> antes de signUp');
+      await authenticationController.signUp(
+        controllerEmail.text,
+        controllerPassword.text,
+        controllerName.text,
+        selectedRole!,
+      );
+      print('UI register -> después de signUp');
 
       Get.snackbar(
         'Registro',
@@ -51,14 +49,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
         snackPosition: SnackPosition.BOTTOM,
       );
 
-        // AQUÍ EN VEZ DE IR AL HOME
       Get.to(() => VerifyEmailScreen(
-          email: controllerEmail.text,
-          password: controllerPassword.text,
-          name: controllerName.text,
-          role: selectedRole!,
-        ));
-      
+        email: controllerEmail.text,
+        password: controllerPassword.text,
+        name: controllerName.text,
+        role: selectedRole!,
+      ));
     } catch (err) {
       Get.snackbar(
         'Registro',
@@ -140,6 +136,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       const SizedBox(height: 6),
                       TextFormField(
+                        key: const Key('emailField'),  // Agregamos la key
                         controller: controllerEmail,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
@@ -166,6 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       const SizedBox(height: 6),
                       TextFormField(
+                        key: const Key('nameField'),  // Agregamos la key
                         controller: controllerName,
                         decoration: const InputDecoration(
                           isDense: true,
@@ -188,6 +186,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       const SizedBox(height: 6),
                       TextFormField(
+                        key: const Key('passwordField'),  // Agregamos la key
                         controller: controllerPassword,
                         obscureText: obscurePassword,
                         decoration: InputDecoration(
@@ -274,6 +273,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
+                          key: const Key('registerButton'),  // Agregamos la key
                           onPressed: () async {
                             FocusScope.of(context).unfocus();
 
@@ -311,6 +311,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           TextButton(
+                            key: const Key('loginLink'),  // Agregamos la key
                             onPressed: () {
                               Get.off(() => const LoginScreen());
                             },
