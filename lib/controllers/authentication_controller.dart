@@ -50,6 +50,7 @@ class AuthenticationController extends GetxController {
         }
       }
   
+  //Verificar el Email 
   Future<void> verifyEmailAndCompleteProfile(
   String email,
   String password,
@@ -123,7 +124,7 @@ class AuthenticationController extends GetxController {
   }
 }
 
-
+  //Auth para el Iniciar sesion
   Future<void> signIn(
     String email,
     String password,
@@ -179,7 +180,8 @@ class AuthenticationController extends GetxController {
       throw Exception('Error en login: $e');
     }
   }
-
+  
+  //Auth para cerrar sesion
   Future<void> signOut() async {
     try {
       if (_accessToken != null) {
@@ -200,6 +202,7 @@ class AuthenticationController extends GetxController {
     }
   }
 
+  // Auth para leer el csv y crear los grupos
   Future<void> uploadCsvAndCreateGroups() async {
   try {
     if (_accessToken == null) {
@@ -249,6 +252,8 @@ class AuthenticationController extends GetxController {
       final groupCategoryName = row[0].toString().trim();
       final groupName = row[1].toString().trim();
       final groupCode = row[2].toString().trim();
+      final parts = groupCode.split('_');
+      final courseCode = parts.length >= 3 ? parts[2] : '';
       final username = row[3].toString().trim();
       final orgDefinedId = row[4].toString().trim();
       final firstName = row[5].toString().trim();
@@ -269,6 +274,7 @@ class AuthenticationController extends GetxController {
             'tableName': 'Groups',
             'records': [
               {
+                'CourseCode': courseCode,
                 'GroupName': groupName,
                 'GroupCode': groupCode,
                 'TeacherEmail': teacherEmail,
@@ -292,6 +298,7 @@ class AuthenticationController extends GetxController {
           'tableName': 'GroupMembers',
           'records': [
             {
+              'CourseCode': courseCode,
               'GroupCode': groupCode,
               'GroupName': groupName,
               'StudentEmail': studentEmail,
