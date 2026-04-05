@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../auth/login.dart';
 import '../controllers/authentication_controller.dart';
 import 'upload_csv.dart';
+import '../features/courses/ui/pages/teacher_courses_page.dart';
 
 class ProfessorHomeScreen extends StatelessWidget {
   const ProfessorHomeScreen({super.key});
@@ -11,6 +12,7 @@ class ProfessorHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     const greenDark = Color(0xFF577F49);
     const greenLight = Color(0xFF93D977);
+    const greenSoft = Color(0xFFDCEFD3);
     const background = Color(0xFFF3F3F3);
 
     final AuthenticationController authenticationController = Get.find();
@@ -69,6 +71,7 @@ class ProfessorHomeScreen extends StatelessWidget {
                   children: [
                     const _SectionTag(text: 'Acciones del docente'),
                     const SizedBox(height: 18),
+
                     SizedBox(
                       width: double.infinity,
                       height: 52,
@@ -77,7 +80,7 @@ class ProfessorHomeScreen extends StatelessWidget {
                           Get.to(() => const UploadCsvScreen());
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 220, 243, 211),
+                          backgroundColor: greenSoft,
                           foregroundColor: greenDark,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
@@ -94,27 +97,43 @@ class ProfessorHomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 16),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Get.to(() => const TeacherCoursesPage());
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: greenLight,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        icon: const Icon(Icons.menu_book_rounded),
+                        label: const Text(
+                          'Mis Cursos',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 30),
 
                     const _SectionTag(text: 'Evaluaciones activas'),
                     const SizedBox(height: 18),
                     const _ProfessorActiveEvaluationsRow(),
                     const SizedBox(height: 30),
-                    const _SectionTag(text: 'Calificaciónes Publicadas'),
+
+                    const _SectionTag(text: 'Calificaciones Publicadas'),
                     const SizedBox(height: 18),
                     const _ProfessorPublishedReportsRow(),
-                    const SizedBox(height: 30),
-                    const _SectionTag(text: 'Grupos'),
-                    const SizedBox(height: 18),
-                    const _GroupListTile(
-                      title: 'Programación Móvil 5432',
-                      subtitle: '8 Grupos',
-                    ),
-                    const SizedBox(height: 16),
-                    const _GroupListTile(
-                      title: 'Programación Móvil 5430',
-                      subtitle: '9 Grupos',
-                    ),
                   ],
                 ),
               ),
@@ -358,64 +377,6 @@ class _ReportCard extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _GroupListTile extends StatelessWidget {
-  final String title;
-  final String subtitle;
-
-  const _GroupListTile({
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const greenDark = Color(0xFF577F49);
-    const borderGreen = Color(0xFFBFE0B4);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: borderGreen, width: 2),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: greenDark,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    color: Color(0xFF536D83),
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: greenDark,
-            size: 30,
           ),
         ],
       ),

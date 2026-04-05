@@ -22,6 +22,9 @@ class AuthenticationController extends GetxController {
 
   String? _accessToken;
   String? _refreshToken;
+  
+  String? get accessToken => _accessToken;
+  String? get refreshToken => _refreshToken;
 
   Future<void> signUp(
   String email,
@@ -244,7 +247,10 @@ class AuthenticationController extends GetxController {
       throw Exception('No se encontró el docente autenticado');
     }
 
+    final Set<String> createdCourses = {};
     final Set<String> createdGroups = {};
+    final Set<String> createdCourseStudents = {};
+    final Set<String> createdGroupMembers = {};
 
     for (final row in dataRows) {
       if (row.length < 8) continue;
@@ -261,12 +267,39 @@ class AuthenticationController extends GetxController {
       final studentEmail = row[7].toString().trim();
       final enrollmentDate = row.length > 8 ? row[8].toString().trim() : '';
 
-      if (groupName.isEmpty || groupCode.isEmpty || studentEmail.isEmpty) {
+      if (courseCode.isEmpty || groupName.isEmpty || groupCode.isEmpty || studentEmail.isEmpty) {
         continue;
       }
 
       final studentName = '$firstName $lastName'.trim();
+      final courseName = 'Curso $courseCode';
 
+      // 1. Crear curso si no existe en esta carga
+      if (!createdCourses.contains(courseCode)) {
+        await _dio.post(
+          '$databaseBaseUrl/insert',
+          data: {
+            'tableName': 'Courses',
+            'records': [
+              {
+                'CourseCode': courseCode,
+                'CourseName': courseName,
+                'TeacherEmail': teacherEmail,
+                'CreatedAt': DateTime.now().toIso8601String(),
+              }
+            ],
+          },
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $_accessToken',
+            },
+          ),
+        );
+
+        createdCourses.add(courseCode);
+      }
+
+      // 2. Crear grupo si no existe en esta carga
       if (!createdGroups.contains(groupCode)) {
         await _dio.post(
           '$databaseBaseUrl/insert',
@@ -292,68 +325,68 @@ class AuthenticationController extends GetxController {
         createdGroups.add(groupCode);
       }
 
-      await _dio.post(
-        '$databaseBaseUrl/insert',
-        data: {
-          'tableName': 'GroupMembers',
-          'records': [
-            {
-              'CourseCode': courseCode,
-              'GroupCode': groupCode,
-              'GroupName': groupName,
-              'StudentEmail': studentEmail,
-              'StudentName': studentName,
-              'TeacherEmail': teacherEmail,
-              'CreatedAt': DateTime.now().toIso8601String(),
-            }
-          ],
-        },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $_accessToken',
+      // 3. Insertar estudiante en CourseStudents si no existe en esta carga
+      final courseStudentKey = '$courseCode|$studentEmail';
+
+      if (!createdCourseStudents.contains(courseStudentKey)) {
+        await _dio.post(
+          '$databaseBaseUrl/insert',
+          data: {
+            'tableName': 'CourseStudents',
+            'records': [
+              {
+                'CourseCode': courseCode,
+                'StudentEmail': studentEmail,
+                'StudentName': studentName,
+                'TeacherEmail': teacherEmail,
+                'CreatedAt': DateTime.now().toIso8601String(),
+              }
+            ],
           },
-        ),
-      );
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $_accessToken',
+            },
+          ),
+        );
+
+        createdCourseStudents.add(courseStudentKey);
+      }
+
+      // 4. Insertar estudiante en GroupMembers si no existe en esta carga
+      final groupMemberKey = '$groupCode|$studentEmail';
+
+      if (!createdGroupMembers.contains(groupMemberKey)) {
+        await _dio.post(
+          '$databaseBaseUrl/insert',
+          data: {
+            'tableName': 'GroupMembers',
+            'records': [
+              {
+                'CourseCode': courseCode,
+                'GroupCode': groupCode,
+                'GroupName': groupName,
+                'StudentEmail': studentEmail,
+                'StudentName': studentName,
+                'TeacherEmail': teacherEmail,
+                'CreatedAt': DateTime.now().toIso8601String(),
+              }
+            ],
+          },
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $_accessToken',
+            },
+          ),
+        );
+
+        createdGroupMembers.add(groupMemberKey);
+      }
     }
   } on DioException catch (e) {
     throw Exception(e.response?.data['message'] ?? 'Error subiendo CSV');
   } catch (e) {
     throw Exception('Error procesando CSV: $e');
-  }
-}
-
-
-Future<List<Map<String, dynamic>>> getStudentGroups() async {
-  try {
-    if (_accessToken == null) {
-      throw Exception('Usuario no autenticado');
-    }
-
-    final studentEmail = currentUser.value?.email;
-
-    if (studentEmail == null) {
-      throw Exception('No se encontró el correo del estudiante');
-    }
-
-    final response = await _dio.get(
-      '$databaseBaseUrl/read',
-      queryParameters: {
-        'tableName': 'GroupMembers',
-        'StudentEmail': studentEmail,
-      },
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $_accessToken',
-        },
-      ),
-    );
-
-    final List<dynamic> data = response.data;
-    return data.map((e) => Map<String, dynamic>.from(e)).toList();
-  } on DioException catch (e) {
-    throw Exception(e.response?.data['message'] ?? 'Error obteniendo grupos');
-  } catch (e) {
-    throw Exception('Error obteniendo grupos: $e');
   }
 }
 

@@ -50,7 +50,7 @@ packages:
     source: hosted
     version: "0.3.5+2"
   csv:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: csv
       sha256: c6aa2679b2a18cb57652920f674488d89712efaf4d3fdf2e537215b35fc19d6c
@@ -98,7 +98,7 @@ packages:
     source: hosted
     version: "2.2.0"
   file_picker:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: file_picker
       sha256: ab13ae8ef5580a411c458d6207b6774a6c237d77ac37011b13994879f68a8810

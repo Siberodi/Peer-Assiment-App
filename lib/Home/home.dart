@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../auth/login.dart';
 import '../controllers/authentication_controller.dart';
+import '../features/courses/ui/pages/student_courses_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -89,6 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 18),
                     const _StudentPublishedReportsRow(),
                     const SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     const _SectionTag(text: 'Mis Grupos'),
                     const SizedBox(height: 18),
 
@@ -131,12 +133,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             final groupName = group['GroupName']?.toString() ?? 'Sin nombre';
                             final groupCode = group['GroupCode']?.toString() ?? 'Sin código';
                             final peerCount = group['PeerCount'] as int? ?? 0;
+                            final peers = (group['Peers'] as List<dynamic>? ?? [])
+                                .map((e) => Map<String, dynamic>.from(e))
+                                .toList();
 
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16),
-                              child: _GroupListTile(
+                              child: _ExpandableGroupCard(
                                 title: groupName,
                                 subtitle: 'Código: $groupCode • $peerCount compañeros',
+                                peers: peers,
                               ),
                             );
                           }).toList(),
@@ -405,13 +411,15 @@ class _ReportCard extends StatelessWidget {
   }
 }
 
-class _GroupListTile extends StatelessWidget {
+class _ExpandableGroupCard extends StatelessWidget {
   final String title;
   final String subtitle;
+  final List<Map<String, dynamic>> peers;
 
-  const _GroupListTile({
+  const _ExpandableGroupCard({
     required this.title,
     required this.subtitle,
+    required this.peers,
   });
 
   @override
@@ -421,43 +429,110 @@ class _GroupListTile extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       decoration: BoxDecoration(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: borderGreen, width: 2),
       ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: greenDark,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    color: Color(0xFF536D83),
-                    fontSize: 16,
-                  ),
-                ),
-              ],
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+        ),
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
+          iconColor: greenDark,
+          collapsedIconColor: greenDark,
+          title: Text(
+            title,
+            style: const TextStyle(
+              color: greenDark,
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          const Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: greenDark,
-            size: 30,
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Text(
+              subtitle,
+              style: const TextStyle(
+                color: Color(0xFF536D83),
+                fontSize: 16,
+              ),
+            ),
           ),
-        ],
+          children: peers.isEmpty
+              ? [
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 8),
+                      child: Text(
+                        'No tienes compañeros en este grupo',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
+              : peers.map((peer) {
+                  final peerName =
+                      peer['StudentName']?.toString() ?? 'Sin nombre';
+                  final peerEmail =
+                      peer['StudentEmail']?.toString() ?? 'Sin correo';
+
+                  return Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 18,
+                          backgroundColor: Color(0xFFE8F3E3),
+                          child: Icon(
+                            Icons.person,
+                            color: greenDark,
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                peerName,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                peerEmail,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+        ),
       ),
     );
   }
