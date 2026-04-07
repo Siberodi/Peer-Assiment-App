@@ -390,7 +390,9 @@ class AuthenticationController extends GetxController {
   }
 }
 
-Future<List<Map<String, dynamic>>> getStudentGroupsWithPeers() async {
+
+ // Encontrar los companeros del grupo
+  Future<List<Map<String, dynamic>>> getStudentGroupsWithPeers() async {
   try {
     if (_accessToken == null) {
       throw Exception('Usuario no autenticado');
@@ -402,8 +404,7 @@ Future<List<Map<String, dynamic>>> getStudentGroupsWithPeers() async {
       throw Exception('No se encontró el correo del estudiante');
     }
 
-    // 1. Buscar los grupos a los que pertenece el estudiante
-    final myGroupsResponse = await _dio.get(
+    final response = await _dio.get(
       '$databaseBaseUrl/read',
       queryParameters: {
         'tableName': 'GroupMembers',
@@ -416,25 +417,21 @@ Future<List<Map<String, dynamic>>> getStudentGroupsWithPeers() async {
       ),
     );
 
-    final List<dynamic> myGroupsData = myGroupsResponse.data;
+    final List<dynamic> myMemberships = response.data;
 
-    if (myGroupsData.isEmpty) {
+    if (myMemberships.isEmpty) {
       return [];
     }
 
     final List<Map<String, dynamic>> result = [];
 
-    // 2. Por cada grupo, buscar todos los miembros y contar compañeros
-    for (final item in myGroupsData) {
-      final group = Map<String, dynamic>.from(item);
+    for (final membership in myMemberships) {
+      final groupCode = membership['GroupCode']?.toString() ?? '';
+      final groupName = membership['GroupName']?.toString() ?? '';
+      final courseCode = membership['CourseCode']?.toString() ?? '';
+      final teacherEmail = membership['TeacherEmail']?.toString() ?? '';
 
-      final groupCode = group['GroupCode']?.toString() ?? '';
-      final groupName = group['GroupName']?.toString() ?? 'Sin nombre';
-      final teacherEmail = group['TeacherEmail']?.toString() ?? 'Sin docente';
-
-      if (groupCode.isEmpty) continue;
-
-      final membersResponse = await _dio.get(
+      final peersResponse = await _dio.get(
         '$databaseBaseUrl/read',
         queryParameters: {
           'tableName': 'GroupMembers',
@@ -447,18 +444,17 @@ Future<List<Map<String, dynamic>>> getStudentGroupsWithPeers() async {
         ),
       );
 
-      final List<dynamic> membersData = membersResponse.data;
+      final List<dynamic> allMembers = peersResponse.data;
 
-      final members =
-          membersData.map((e) => Map<String, dynamic>.from(e)).toList();
-
-      // Excluir al estudiante actual de la lista de compañeros
-      final peers = members.where((member) {
-        final email = member['StudentEmail']?.toString().trim().toLowerCase() ?? '';
-        return email != studentEmail.trim().toLowerCase();
-      }).toList();
+      final peers = allMembers
+          .map((e) => Map<String, dynamic>.from(e))
+          .where((member) =>
+              (member['StudentEmail']?.toString() ?? '').trim().toLowerCase() !=
+              studentEmail.trim().toLowerCase())
+          .toList();
 
       result.add({
+        'CourseCode': courseCode,
         'GroupCode': groupCode,
         'GroupName': groupName,
         'TeacherEmail': teacherEmail,
@@ -470,12 +466,117 @@ Future<List<Map<String, dynamic>>> getStudentGroupsWithPeers() async {
     return result;
   } on DioException catch (e) {
     throw Exception(
-      e.response?.data['message'] ?? 'Error obteniendo grupos del estudiante',
+      e.response?.data.toString() ?? 'Error obteniendo grupos con compañeros',
     );
   } catch (e) {
-    throw Exception('Error obteniendo grupos del estudiante: $e');
+    throw Exception('Error obteniendo grupos con compañeros: $e');
   }
 }
 
+  // Mostrar Evaluacion activa al estudiante
+  Future<List<Map<String, dynamic>>> getStudentActiveAssessments() async {
+  try {
+    if (_accessToken == null) {
+      throw Exception('Usuario no autenticado');
+    }
+
+    final studentEmail = currentUser.value?.email;
+
+    if (studentEmail == null) {
+      throw Exception('No se encontró el correo del estudiante');
+    }
+
+    //Obtener grupos del estudiante
+    final groups = await getStudentGroupsWithPeers();
+
+    if (groups.isEmpty) {
+      return [];
+    }
+
+    final List<Map<String, dynamic>> assessments = [];
+
+    // Buscar evaluaciones por cada curso
+    for (final group in groups) {
+      final courseCode = group['CourseCode']?.toString() ?? '';
+
+      final response = await _dio.get(
+        '$databaseBaseUrl/read',
+        queryParameters: {
+          'tableName': 'Assessments',
+          'CourseCode': courseCode,
+          'Status': true,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $_accessToken',
+          },
+        ),
+      );
+
+      final List<dynamic> data = response.data;
+
+      for (final e in data) {
+        final assessment = Map<String, dynamic>.from(e);
+
+        //Filtrar por fecha activa
+        final now = DateTime.now();
+        final start = DateTime.tryParse(assessment['StartAt'] ?? '');
+        final end = DateTime.tryParse(assessment['EndAt'] ?? '');
+
+        if (start != null && end != null) {
+          if (now.isAfter(start) && now.isBefore(end)) {
+            assessments.add(assessment);
+          }
+        }
+      }
+    }
+
+    return assessments;
+  } on DioException catch (e) {
+    throw Exception(
+      e.response?.data.toString() ??
+          'Error obteniendo evaluaciones activas',
+    );
+  } catch (e) {
+    throw Exception('Error obteniendo evaluaciones activas: $e');
+  }
+}
+Future<List<Map<String, dynamic>>> getStudentPublishedResults() async {
+  try {
+    if (_accessToken == null) {
+      throw Exception('Usuario no autenticado');
+    }
+
+    final studentEmail = currentUser.value?.email;
+
+    if (studentEmail == null) {
+      throw Exception('No se encontró el correo del estudiante');
+    }
+
+    final response = await _dio.get(
+      '$databaseBaseUrl/read',
+      queryParameters: {
+        'tableName': 'AssessmentResults',
+        'StudentEmail': studentEmail,
+        'Published': true,
+      },
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $_accessToken',
+        },
+      ),
+    );
+
+    final List<dynamic> data = response.data;
+    return data.map((e) => Map<String, dynamic>.from(e)).toList();
+  } on DioException catch (e) {
+    throw Exception(
+      e.response?.data.toString() ??
+          'Error obteniendo calificaciones publicadas',
+    );
+  } catch (e) {
+    throw Exception('Error obteniendo calificaciones publicadas: $e');
+  }
+}
 
 }

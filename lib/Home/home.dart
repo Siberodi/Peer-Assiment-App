@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../auth/login.dart';
 import '../controllers/authentication_controller.dart';
-import '../features/courses/ui/pages/student_courses_page.dart';
+import '../features/assessments/ui/pages/student_assessment_page.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,12 +16,17 @@ class _HomeScreenState extends State<HomeScreen> {
   final AuthenticationController authenticationController = Get.find();
 
   late Future<List<Map<String, dynamic>>> groupsFuture;
+  late Future<List<Map<String, dynamic>>> assessmentsFuture;
+  late Future<List<Map<String, dynamic>>> publishedResultsFuture;
 
+  
   @override
   void initState() {
-    super.initState();
-    groupsFuture = authenticationController.getStudentGroupsWithPeers();
-  }
+  super.initState();
+  groupsFuture = authenticationController.getStudentGroupsWithPeers();
+  assessmentsFuture = authenticationController.getStudentActiveAssessments();
+  publishedResultsFuture = authenticationController.getStudentPublishedResults();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 width: double.infinity,
                 height: 170,
-                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 22),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 22, vertical: 22),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
@@ -76,7 +83,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.fromLTRB(18, 26, 18, 28),
                 child: Column(
@@ -84,20 +90,190 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     const _SectionTag(text: 'Evaluaciones activas'),
                     const SizedBox(height: 18),
-                    const _StudentActiveEvaluationsRow(),
-                    const SizedBox(height: 30),
+                    FutureBuilder<List<Map<String, dynamic>>>(
+                      future: assessmentsFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+
+                        if (snapshot.hasError) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              'Error cargando evaluaciones: ${snapshot.error}',
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          );
+                        }
+
+                        final assessments = snapshot.data ?? [];
+
+                        if (assessments.isEmpty) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              'No tienes evaluaciones activas en este momento',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          );
+                        }
+
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: assessments.map((assessment) {
+                              final title =
+                                  assessment['AssessmentName']?.toString() ??
+                                      'Sin nombre';
+                              final courseName =
+                                  assessment['CourseName']?.toString() ??
+                                      'Sin curso';
+                              final endAtRaw =
+                                  assessment['EndAt']?.toString() ?? '';
+                              final endAt = endAtRaw.contains('T')
+                                  ? endAtRaw.split('T').first
+                                  : endAtRaw;
+                              final assessmentId =
+                                  assessment['_id']?.toString() ?? '';
+                              final courseCode =
+                                  assessment['CourseCode']?.toString() ?? '';
+
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 16),
+                                child: GestureDetector(
+                                  
+                                    onTap: () async {
+  final groups =
+      await authenticationController.getStudentGroupsWithPeers();
+
+  Map<String, dynamic>? selectedGroup;
+
+  final normalizedAssessmentCode =
+      courseCode.toString().trim().replaceAll('.0', '');
+
+  for (final g in groups) {
+    final gCourseCode = (g['CourseCode']?.toString() ?? '')
+        .trim()
+        .replaceAll('.0', '');
+
+    if (gCourseCode == normalizedAssessmentCode) {
+      selectedGroup = g;
+      break;
+    }
+  }
+
+  if (selectedGroup == null || selectedGroup.isEmpty) {
+    Get.snackbar(
+      'Error',
+      'No se encontró tu grupo para este curso',
+    );
+    return;
+  }
+
+  final peers = (selectedGroup['Peers'] as List<dynamic>? ?? [])
+      .map((e) => Map<String, dynamic>.from(e))
+      .toList();
+
+  final groupCode =
+      selectedGroup['GroupCode']?.toString() ?? '';
+
+  Get.to(
+    () => StudentAssessmentPage(
+      assessmentId: assessmentId,
+      assessmentName: title,
+      groupCode: groupCode,
+      courseCode: normalizedAssessmentCode,
+      peers: peers,
+    ),
+  );
+},
+                                  child: _EvaluationCard(
+                                    title: title,
+                                    subtitle: '$courseName • Hasta $endAt',
+                                    imageUrl:
+                                        'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=80',
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      },
+                    ),
                     const _SectionTag(text: 'Calificaciones Publicadas'),
-                    const SizedBox(height: 18),
-                    const _StudentPublishedReportsRow(),
-                    const SizedBox(height: 30),
+const SizedBox(height: 18),
+
+FutureBuilder<List<Map<String, dynamic>>>(
+  future: publishedResultsFuture,
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (snapshot.hasError) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Text(
+          'Error cargando calificaciones: ${snapshot.error}',
+          style: const TextStyle(color: Colors.red),
+        ),
+      );
+    }
+
+    final results = snapshot.data ?? [];
+
+    if (results.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 12),
+        child: Text(
+          'No tienes calificaciones publicadas todavía',
+          style: TextStyle(fontSize: 16),
+        ),
+      );
+    }
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: results.map((result) {
+          final courseCode = result['CourseCode']?.toString() ?? 'Sin curso';
+          final generalAvg =
+              (result['g_avg'] as num?)?.toDouble() ?? 0.0;
+
+          return Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: _PublishedResultCard(
+              title: 'Curso $courseCode',
+              average: generalAvg,
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  },
+),
+
+const SizedBox(height: 30),
                     const SizedBox(height: 30),
                     const _SectionTag(text: 'Mis Grupos'),
                     const SizedBox(height: 18),
-
                     FutureBuilder<List<Map<String, dynamic>>>(
                       future: groupsFuture,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Center(
                             child: Padding(
                               padding: EdgeInsets.all(16),
@@ -118,20 +294,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         final groups = snapshot.data ?? [];
 
-                                                if (groups.isEmpty) {
-                                                  return const Padding(
-                                                    padding: EdgeInsets.symmetric(vertical: 12),
-                                                    child: Text(
-                                                      'No perteneces a ningún grupo todavía',
-                                                      style: TextStyle(fontSize: 16),
-                                                    ),
-                                                  );
-                                                }
+                        if (groups.isEmpty) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              'No perteneces a ningún grupo todavía',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          );
+                        }
 
-                                                return Column(
+                        return Column(
                           children: groups.map((group) {
-                            final groupName = group['GroupName']?.toString() ?? 'Sin nombre';
-                            final groupCode = group['GroupCode']?.toString() ?? 'Sin código';
+                            final groupName =
+                                group['GroupName']?.toString() ?? 'Sin nombre';
+                            final groupCode =
+                                group['GroupCode']?.toString() ?? 'Sin código';
                             final peerCount = group['PeerCount'] as int? ?? 0;
                             final peers = (group['Peers'] as List<dynamic>? ?? [])
                                 .map((e) => Map<String, dynamic>.from(e))
@@ -141,7 +319,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: const EdgeInsets.only(bottom: 16),
                               child: _ExpandableGroupCard(
                                 title: groupName,
-                                subtitle: 'Código: $groupCode • $peerCount compañeros',
+                                subtitle:
+                                    'Código: $groupCode • $peerCount compañeros',
                                 peers: peers,
                               ),
                             );
@@ -187,66 +366,6 @@ class _SectionTag extends StatelessWidget {
   }
 }
 
-class _StudentActiveEvaluationsRow extends StatelessWidget {
-  const _StudentActiveEvaluationsRow();
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: const Row(
-        children: [
-          _EvaluationCard(
-            title: 'Programación Móvil',
-            subtitle: '1 Trabajo • 2 Peers • Activo',
-            imageUrl:
-                'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=80',
-          ),
-          SizedBox(width: 16),
-          _EvaluationCard(
-            title: 'Inteligencia Artificial',
-            subtitle: '1 Trabajo • 3 Peers • Activo',
-            imageUrl:
-                'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StudentPublishedReportsRow extends StatelessWidget {
-  const _StudentPublishedReportsRow();
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: const Row(
-        children: [
-          _ReportCard(
-            title: 'Programación Móvil',
-            imageUrl:
-                'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=80',
-          ),
-          SizedBox(width: 16),
-          _ReportCard(
-            title: 'Inteligencia Artificial',
-            imageUrl:
-                'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80',
-          ),
-          SizedBox(width: 16),
-          _ReportCard(
-            title: 'Filosofía',
-            imageUrl:
-                'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1200&q=80',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _EvaluationCard extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -279,7 +398,8 @@ class _EvaluationCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(16)),
             child: Stack(
               children: [
                 Image.network(
@@ -366,7 +486,8 @@ class _ReportCard extends StatelessWidget {
       child: Column(
         children: [
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(16)),
             child: Stack(
               children: [
                 Image.network(
@@ -439,7 +560,8 @@ class _ExpandableGroupCard extends StatelessWidget {
           dividerColor: Colors.transparent,
         ),
         child: ExpansionTile(
-          tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          tilePadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
           iconColor: greenDark,
           collapsedIconColor: greenDark,
@@ -532,6 +654,84 @@ class _ExpandableGroupCard extends StatelessWidget {
                     ),
                   );
                 }).toList(),
+        ),
+      ),
+    );
+  }
+}
+
+class _PublishedResultCard extends StatelessWidget {
+  final String title;
+  final double average;
+
+  const _PublishedResultCard({
+    required this.title,
+    required this.average,
+  });
+
+  Color getColor(double value) {
+    if (value >= 4.5) return Colors.green;
+    if (value >= 3.5) return Colors.orange;
+    return Colors.red;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const greenDark = Color(0xFF577F49);
+
+    return Container(
+      width: 200,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.16),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.assessment,
+              size: 34,
+              color: greenDark,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: greenDark,
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 14),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 8,
+              ),
+              decoration: BoxDecoration(
+                color: getColor(average),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                average.toStringAsFixed(2),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
