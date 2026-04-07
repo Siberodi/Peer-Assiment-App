@@ -31,11 +31,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final user = authenticationController.currentUser.value;
 
-      Get.snackbar(
-        'Login',
-        'Inicio de sesión exitoso',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      void _showSnackBar(String message) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
+      }
 
       if (user?.role == AppRole.student) {
         Get.offAll(() => const HomeScreen());
@@ -122,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 6),
                       TextFormField(
+                        key: const Key('emailField'),  // Agregamos la key
                         controller: controllerEmail,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
@@ -148,6 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 6),
                       TextFormField(
+                        key: const Key('passwordField'),  // Agregamos la key
                         controller: controllerPassword,
                         obscureText: obscurePassword,
                         decoration: InputDecoration(
@@ -182,6 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
+                          key: const Key('loginButton'),  // Agregamos la key
                           onPressed: () async {
                             FocusScope.of(context).unfocus();
 
@@ -219,6 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           TextButton(
+                            key: const Key('registerLink'),  // Agregamos la key
                             onPressed: () {
                               Get.to(() => const RegisterScreen());
                             },

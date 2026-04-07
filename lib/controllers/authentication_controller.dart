@@ -10,7 +10,8 @@ import 'dart:io';
 class AuthenticationController extends GetxController {
   final Rxn<AppUser> currentUser = Rxn<AppUser>();
 
-  final Dio _dio = Dio();
+  final Dio dio;
+  AuthenticationController({Dio? dio}) : dio = dio ?? Dio();
 
   final String dbName = 'programacinmovil_project_3b5eaf6ff0';
 
@@ -20,7 +21,7 @@ class AuthenticationController extends GetxController {
   String get databaseBaseUrl =>
       'https://roble-api.openlab.uninorte.edu.co/database/$dbName';
 
-  String? _accessToken;
+  String? accessToken;
   String? _refreshToken;
 
   Future<void> signUp(
@@ -31,7 +32,7 @@ class AuthenticationController extends GetxController {
 ) async {
         try {
           print('AUTH signup -> inicio');
-          final response = await _dio.post( 
+          final response = await dio.post( 
             '$authBaseUrl/signup',
             data: {
               'email': email.trim(),
@@ -59,7 +60,7 @@ class AuthenticationController extends GetxController {
   String code,
 ) async {
   try {
-    await _dio.post(
+    await dio.post(
       '$authBaseUrl/verify-email',
       data: {
         'email': email.trim(),
@@ -67,7 +68,7 @@ class AuthenticationController extends GetxController {
       },
     );
 
-    final loginResponse = await _dio.post(
+    final loginResponse = await dio.post(
       '$authBaseUrl/login',
       data: {
         'email': email.trim(),
@@ -75,16 +76,16 @@ class AuthenticationController extends GetxController {
       },
     );
 
-    _accessToken = loginResponse.data['accessToken'];
+    accessToken = loginResponse.data['accessToken'];
     _refreshToken = loginResponse.data['refreshToken'];
 
-    if (_accessToken == null) {
+    if (accessToken == null) {
       throw Exception('No se obtuvo accessToken');
     }
 
     final roleValue = role.value;
 
-    final insertResponse = await _dio.post(
+    final insertResponse = await dio.post(
       '$databaseBaseUrl/insert',
       data: {
         'tableName': 'Users',
@@ -98,7 +99,7 @@ class AuthenticationController extends GetxController {
       },
       options: Options(
         headers: {
-          'Authorization': 'Bearer $_accessToken',
+          'Authorization': 'Bearer $accessToken',
         },
       ),
     );
@@ -130,7 +131,7 @@ class AuthenticationController extends GetxController {
     String password,
   ) async {
     try {
-      final loginResponse = await _dio.post(
+      final loginResponse = await dio.post(
         '$authBaseUrl/login',
         data: {
           'email': email.trim(),
@@ -138,14 +139,14 @@ class AuthenticationController extends GetxController {
         },
       );
 
-      _accessToken = loginResponse.data['accessToken'];
+      accessToken = loginResponse.data['accessToken'];
       _refreshToken = loginResponse.data['refreshToken'];
 
-      if (_accessToken == null) {
+      if (accessToken == null) {
         throw Exception('No se obtuvo accessToken');
       }
 
-      final readResponse = await _dio.get(
+      final readResponse = await dio.get(
         '$databaseBaseUrl/read',
         queryParameters: {
           'tableName': 'Users',
@@ -153,7 +154,7 @@ class AuthenticationController extends GetxController {
         },
         options: Options(
           headers: {
-            'Authorization': 'Bearer $_accessToken',
+            'Authorization': 'Bearer $accessToken',
           },
         ),
       );
@@ -184,19 +185,19 @@ class AuthenticationController extends GetxController {
   //Auth para cerrar sesion
   Future<void> signOut() async {
     try {
-      if (_accessToken != null) {
-        await _dio.post(
+      if (accessToken != null) {
+        await dio.post(
           '$authBaseUrl/logout',
           options: Options(
             headers: {
-              'Authorization': 'Bearer $_accessToken',
+              'Authorization': 'Bearer $accessToken',
             },
           ),
         );
       }
     } catch (_) {
     } finally {
-      _accessToken = null;
+      accessToken = null;
       _refreshToken = null;
       currentUser.value = null;
     }
@@ -205,7 +206,7 @@ class AuthenticationController extends GetxController {
   // Auth para leer el csv y crear los grupos
   Future<void> uploadCsvAndCreateGroups() async {
   try {
-    if (_accessToken == null) {
+    if (accessToken == null) {
       throw Exception('Usuario no autenticado');
     }
 
@@ -268,7 +269,7 @@ class AuthenticationController extends GetxController {
       final studentName = '$firstName $lastName'.trim();
 
       if (!createdGroups.contains(groupCode)) {
-        await _dio.post(
+        await dio.post(
           '$databaseBaseUrl/insert',
           data: {
             'tableName': 'Groups',
@@ -284,7 +285,7 @@ class AuthenticationController extends GetxController {
           },
           options: Options(
             headers: {
-              'Authorization': 'Bearer $_accessToken',
+              'Authorization': 'Bearer $accessToken',
             },
           ),
         );
@@ -292,7 +293,7 @@ class AuthenticationController extends GetxController {
         createdGroups.add(groupCode);
       }
 
-      await _dio.post(
+      await dio.post(
         '$databaseBaseUrl/insert',
         data: {
           'tableName': 'GroupMembers',
@@ -310,7 +311,7 @@ class AuthenticationController extends GetxController {
         },
         options: Options(
           headers: {
-            'Authorization': 'Bearer $_accessToken',
+            'Authorization': 'Bearer $accessToken',
           },
         ),
       );
@@ -325,7 +326,7 @@ class AuthenticationController extends GetxController {
 
 Future<List<Map<String, dynamic>>> getStudentGroups() async {
   try {
-    if (_accessToken == null) {
+    if (accessToken == null) {
       throw Exception('Usuario no autenticado');
     }
 
@@ -335,7 +336,7 @@ Future<List<Map<String, dynamic>>> getStudentGroups() async {
       throw Exception('No se encontró el correo del estudiante');
     }
 
-    final response = await _dio.get(
+    final response = await dio.get(
       '$databaseBaseUrl/read',
       queryParameters: {
         'tableName': 'GroupMembers',
@@ -343,7 +344,7 @@ Future<List<Map<String, dynamic>>> getStudentGroups() async {
       },
       options: Options(
         headers: {
-          'Authorization': 'Bearer $_accessToken',
+          'Authorization': 'Bearer $accessToken',
         },
       ),
     );
@@ -359,7 +360,7 @@ Future<List<Map<String, dynamic>>> getStudentGroups() async {
 
 Future<List<Map<String, dynamic>>> getStudentGroupsWithPeers() async {
   try {
-    if (_accessToken == null) {
+    if (accessToken == null) {
       throw Exception('Usuario no autenticado');
     }
 
@@ -370,7 +371,7 @@ Future<List<Map<String, dynamic>>> getStudentGroupsWithPeers() async {
     }
 
     // 1. Buscar los grupos a los que pertenece el estudiante
-    final myGroupsResponse = await _dio.get(
+    final myGroupsResponse = await dio.get(
       '$databaseBaseUrl/read',
       queryParameters: {
         'tableName': 'GroupMembers',
@@ -378,7 +379,7 @@ Future<List<Map<String, dynamic>>> getStudentGroupsWithPeers() async {
       },
       options: Options(
         headers: {
-          'Authorization': 'Bearer $_accessToken',
+          'Authorization': 'Bearer $accessToken',
         },
       ),
     );
@@ -401,7 +402,7 @@ Future<List<Map<String, dynamic>>> getStudentGroupsWithPeers() async {
 
       if (groupCode.isEmpty) continue;
 
-      final membersResponse = await _dio.get(
+      final membersResponse = await dio.get(
         '$databaseBaseUrl/read',
         queryParameters: {
           'tableName': 'GroupMembers',
@@ -409,7 +410,7 @@ Future<List<Map<String, dynamic>>> getStudentGroupsWithPeers() async {
         },
         options: Options(
           headers: {
-            'Authorization': 'Bearer $_accessToken',
+            'Authorization': 'Bearer $accessToken',
           },
         ),
       );
