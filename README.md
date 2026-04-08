@@ -292,4 +292,74 @@ Las primeras pantallas implementadas en el proyecto utilizan la **estructura del
 
 Esta integración continuará aplicándose en las siguientes etapas del desarrollo para construir una experiencia de usuario consistente en toda la aplicación.
 
+---
 
+##  Pruebas Automatizadas
+
+Este proyecto incluye pruebas en dos niveles:
+
+### Nivel 1 - Widget Tests
+Validan UI y comportamiento:
+- Home
+- Login
+- Register
+- Verify Email
+
+### Nivel 3 - Integración
+Valida flujo completo de autenticación usando:
+- UI real
+- Controller real
+- Red mockeada (FakeDio)
+
+Se implementaron pruebas automatizadas en el proyecto siguiendo dos niveles:
+
+Nivel 1 (Widget Tests):
+- HomeScreen
+- LoginScreen
+- RegisterScreen
+- VerifyEmailScreen
+
+Estas pruebas validan la interfaz gráfica, la interacción del usuario y la correcta renderización de elementos.
+
+Nivel 3 (Integración):
+- Se desarrolló un test para LoginScreen que utiliza:
+  - Widget real
+  - AuthenticationController real
+  - Cliente HTTP simulado (MOCK FakeDio)
+
+Este test valida el flujo completo de autenticación (login + consulta de usuario) sin depender de servicios externos.
+
+Ejecución de pruebas:
+flutter test -r expanded
+
+
+##  Cómo ejecutar
+
+```bash
+flutter pub get
+flutter test -r expanded
+
+---
+
+# 5. MUY IMPORTANTE
+
+Antes de subir, asegúrate de NO incluir:
+
+- `build/`
+- `.dart_tool/`
+- `.idea/`
+
+Si no tienes `.gitignore`, dime y te lo doy.
+
+---
+
+# RESULTADO FINAL
+
+El profe podrá:
+
+1. Clonar el repo  
+2. Ejecutar:
+
+```bash
+flutter pub get
+flutter test -r expanded
