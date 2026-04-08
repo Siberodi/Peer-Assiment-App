@@ -298,7 +298,7 @@ Esta integración continuará aplicándose en las siguientes etapas del desarrol
 
 Este proyecto incluye pruebas en dos niveles:
 
-### Nivel 1 - Widget Tests
+### Nivel 1 - Widget Tests con Mockito
 Validan UI y comportamiento:
 - Home
 - Login
@@ -355,7 +355,6 @@ Si no tienes `.gitignore`, dime y te lo doy.
 
 # RESULTADO FINAL
 
-El profe podrá:
 
 1. Clonar el repo  
 2. Ejecutar:
