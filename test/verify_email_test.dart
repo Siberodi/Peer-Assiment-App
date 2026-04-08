@@ -6,19 +6,16 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+import 'package:mockito/mockito.dart';
 
 import 'package:app/auth/verify_email.dart';
 import 'package:app/controllers/authentication_controller.dart';
 import 'package:app/core/app_role.dart';
 import 'package:app/models/app_user.dart';
 
-class FakeAuthenticationController extends AuthenticationController {
-  bool shouldFail = false;
-  String? lastEmail;
-  String? lastPassword;
-  String? lastName;
-  String? lastCode;
-  AppRole? lastRole;
+class MockAuthenticationController extends AuthenticationController with Mock {
+  @override
+  final Rxn<AppUser> currentUser = Rxn<AppUser>();
 
   @override
   Future<void> verifyEmailAndCompleteProfile(
@@ -27,21 +24,14 @@ class FakeAuthenticationController extends AuthenticationController {
     String name,
     AppRole role,
     String code,
-  ) async {
-    lastEmail = email;
-    lastPassword = password;
-    lastName = name;
-    lastRole = role;
-    lastCode = code;
-
-    if (shouldFail) {
-      throw Exception('Código incorrecto');
-    }
-
-    currentUser.value = AppUser(
-      email: email,
-      name: name,
-      role: role,
+  ) {
+    return super.noSuchMethod(
+      Invocation.method(
+        #verifyEmailAndCompleteProfile,
+        [email, password, name, role, code],
+      ),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value(),
     );
   }
 }
@@ -112,7 +102,7 @@ class _MockHttpClientResponse extends Stream<List<int>>
 }
 
 void main() {
-  late FakeAuthenticationController controller;
+  late MockAuthenticationController controller;
 
   Widget buildApp() => const GetMaterialApp(
         home: VerifyEmailScreen(
@@ -134,7 +124,34 @@ void main() {
   setUp(() {
     Get.reset();
     Get.testMode = true;
-    controller = FakeAuthenticationController();
+    controller = MockAuthenticationController();
+
+    when(
+      controller.verifyEmailAndCompleteProfile(
+        'test@test.com',
+        'password123',
+        'Test User',
+        AppRole.student,
+        'incorrectCode',
+      ),
+    ).thenThrow(Exception('Código incorrecto'));
+
+    when(
+      controller.verifyEmailAndCompleteProfile(
+        'test@test.com',
+        'password123',
+        'Test User',
+        AppRole.student,
+        'correctCode',
+      ),
+    ).thenAnswer((_) async {
+      controller.currentUser.value = AppUser(
+        email: 'test@test.com',
+        name: 'Test User',
+        role: AppRole.student,
+      );
+    });
+
     Get.put<AuthenticationController>(controller);
   });
 
@@ -157,8 +174,6 @@ void main() {
   testWidgets(
     'VerifyEmailScreen maneja error si el código es incorrecto',
     (WidgetTester tester) async {
-      controller.shouldFail = true;
-
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
@@ -174,11 +189,16 @@ void main() {
       await tester.tap(button, warnIfMissed: false);
       await tester.pumpAndSettle();
 
-      expect(controller.lastEmail, 'test@test.com');
-      expect(controller.lastPassword, 'password123');
-      expect(controller.lastName, 'Test User');
-      expect(controller.lastRole, AppRole.student);
-      expect(controller.lastCode, 'incorrectCode');
+      verify(
+        controller.verifyEmailAndCompleteProfile(
+          'test@test.com',
+          'password123',
+          'Test User',
+          AppRole.student,
+          'incorrectCode',
+        ),
+      ).called(1);
+
       expect(controller.currentUser.value, isNull);
 
       await tester.pump(const Duration(seconds: 4));
@@ -187,42 +207,43 @@ void main() {
   );
 
   testWidgets(
-  'VerifyEmailScreen realiza la verificación con éxito',
-  (WidgetTester tester) async {
-    final originalOnError = FlutterError.onError;
+    'VerifyEmailScreen realiza la verificación con éxito',
+    (WidgetTester tester) async {
+      final originalOnError = FlutterError.onError;
+      FlutterError.onError = (_) {};
 
-    FlutterError.onError = (FlutterErrorDetails details) {
-    };
+      try {
+        await tester.pumpWidget(buildApp());
+        await tester.pumpAndSettle();
 
-    try {
-      await tester.pumpWidget(buildApp());
-      await tester.pumpAndSettle();
+        await tester.enterText(
+          find.byKey(const Key('codeField')),
+          'correctCode',
+        );
 
-      await tester.enterText(
-        find.byKey(const Key('codeField')),
-        'correctCode',
-      );
+        final button = find.byKey(const Key('verifyButton'));
+        await tester.ensureVisible(button);
+        await tester.pump();
 
-      final button = find.byKey(const Key('verifyButton'));
-      await tester.ensureVisible(button);
-      await tester.pump();
+        await tester.tap(button, warnIfMissed: false);
+        await tester.pump(const Duration(milliseconds: 100));
 
-      await tester.tap(button, warnIfMissed: false);
+        verify(
+          controller.verifyEmailAndCompleteProfile(
+            'test@test.com',
+            'password123',
+            'Test User',
+            AppRole.student,
+            'correctCode',
+          ),
+        ).called(1);
 
+        expect(controller.currentUser.value?.email, 'test@test.com');
 
-      await tester.pump(const Duration(milliseconds: 100));
-
-      expect(controller.lastEmail, 'test@test.com');
-      expect(controller.lastPassword, 'password123');
-      expect(controller.lastName, 'Test User');
-      expect(controller.lastRole, AppRole.student);
-      expect(controller.lastCode, 'correctCode');
-      expect(controller.currentUser.value?.email, 'test@test.com');
-
-      await tester.pump(const Duration(seconds: 4));
-    } finally {
-      FlutterError.onError = originalOnError;
-    }
-  },
-);
+        await tester.pump(const Duration(seconds: 4));
+      } finally {
+        FlutterError.onError = originalOnError;
+      }
+    },
+  );
 }

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+import 'package:mockito/mockito.dart';
 
 import 'package:app/auth/register.dart';
 import 'package:app/controllers/authentication_controller.dart';
 import 'package:app/core/app_role.dart';
 import 'package:app/models/app_user.dart';
 
-class FakeAuthenticationController extends AuthenticationController {
-  String? lastEmail;
-  String? lastPassword;
-  String? lastName;
-  AppRole? lastRole;
+class MockAuthenticationController extends AuthenticationController with Mock {
+  @override
+  final Rxn<AppUser> currentUser = Rxn<AppUser>();
 
   @override
   Future<void> signUp(
@@ -19,22 +18,17 @@ class FakeAuthenticationController extends AuthenticationController {
     String password,
     String name,
     AppRole role,
-  ) async {
-    lastEmail = email;
-    lastPassword = password;
-    lastName = name;
-    lastRole = role;
-
-    currentUser.value = AppUser(
-      email: email,
-      name: name,
-      role: role,
+  ) {
+    return super.noSuchMethod(
+      Invocation.method(#signUp, [email, password, name, role]),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value(),
     );
   }
 }
 
 void main() {
-  late FakeAuthenticationController controller;
+  late MockAuthenticationController controller;
 
   Widget buildApp() => const GetMaterialApp(
         home: RegisterScreen(),
@@ -43,7 +37,18 @@ void main() {
   setUp(() {
     Get.reset();
     Get.testMode = true;
-    controller = FakeAuthenticationController();
+
+    controller = MockAuthenticationController();
+
+    when(
+      controller.signUp(
+        'ana@example.com',
+        'Secure1!',
+        'Ana García',
+        AppRole.student,
+      ),
+    ).thenAnswer((_) async {});
+
     Get.put<AuthenticationController>(controller);
   });
 
@@ -80,6 +85,7 @@ void main() {
         find.byKey(const Key('passwordField')),
         'Secure1!',
       );
+
       await tester.pump();
 
       final firstCheckbox = find.byType(Checkbox).first;
@@ -94,14 +100,19 @@ void main() {
       await tester.tap(button, warnIfMissed: false);
       await tester.pumpAndSettle();
 
-      expect(controller.lastEmail, 'ana@example.com');
-      expect(controller.lastPassword, 'Secure1!');
-      expect(controller.lastName, 'Ana García');
-      expect(controller.lastRole, AppRole.student);
-      expect(controller.currentUser.value?.email, 'ana@example.com');
+      verify(
+        controller.signUp(
+          'ana@example.com',
+          'Secure1!',
+          'Ana García',
+          AppRole.student,
+        ),
+      ).called(1);
 
-      // Dejar que expire el timer del snackbar
       await tester.pump(const Duration(seconds: 4));
+      await tester.pumpAndSettle();
+
+      Get.closeAllSnackbars();
       await tester.pumpAndSettle();
     },
   );
