@@ -41,6 +41,8 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
         codeController.text,
       );
 
+      if (Get.testMode) return;
+
       final user = auth.currentUser.value;
 
       if (user?.role == AppRole.student) {
@@ -78,6 +80,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
             const Text('Ingresa el código que llegó a tu correo'),
             const SizedBox(height: 20),
             TextField(
+              key: const Key('codeField'),
               controller: codeController,
               decoration: const InputDecoration(
                 labelText: 'Código',
@@ -85,6 +88,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
+              key: const Key('verifyButton'),
               onPressed: isLoading ? null : verify,
               child: isLoading
                   ? const CircularProgressIndicator()

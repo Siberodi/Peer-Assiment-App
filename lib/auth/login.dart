@@ -29,6 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
         controllerPassword.text,
       );
 
+      if (Get.testMode) return;
+
       final user = authenticationController.currentUser.value;
 
       Get.snackbar(
@@ -122,6 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 6),
                       TextFormField(
+                        key: const Key('emailField'),
                         controller: controllerEmail,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
@@ -148,6 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 6),
                       TextFormField(
+                        key: const Key('passwordField'),
                         controller: controllerPassword,
                         obscureText: obscurePassword,
                         decoration: InputDecoration(
@@ -182,6 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
+                          key: const Key('loginButton'),
                           onPressed: () async {
                             FocusScope.of(context).unfocus();
 

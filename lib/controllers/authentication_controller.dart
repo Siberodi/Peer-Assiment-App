@@ -10,7 +10,9 @@ import 'dart:io';
 class AuthenticationController extends GetxController {
   final Rxn<AppUser> currentUser = Rxn<AppUser>();
 
-  final Dio _dio = Dio();
+  late final Dio _dio;
+
+  AuthenticationController({Dio? dio}) : _dio = dio ?? Dio();
 
   final String dbName = 'programacinmovil_project_3b5eaf6ff0';
 

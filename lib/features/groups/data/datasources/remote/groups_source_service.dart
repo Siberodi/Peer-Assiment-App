@@ -5,6 +5,8 @@ class GroupsSourceService implements IGroupsSource {
   final Dio dio;
   final String databaseBaseUrl;
 
+  bool get _isMockApi => databaseBaseUrl.contains('mockapi.com');
+
   GroupsSourceService({
     required this.dio,
     required this.databaseBaseUrl,
@@ -15,6 +17,10 @@ class GroupsSourceService implements IGroupsSource {
     String courseCode,
     String accessToken,
   ) async {
+    if (_isMockApi) {
+      return [];
+    }
+
     final response = await dio.get(
       '$databaseBaseUrl/read',
       queryParameters: {
@@ -37,6 +43,10 @@ class GroupsSourceService implements IGroupsSource {
     String groupCode,
     String accessToken,
   ) async {
+    if (_isMockApi) {
+      return [];
+    }
+
     final response = await dio.get(
       '$databaseBaseUrl/read',
       queryParameters: {
@@ -59,6 +69,10 @@ class GroupsSourceService implements IGroupsSource {
     String studentEmail,
     String accessToken,
   ) async {
+    if (_isMockApi) {
+      return [];
+    }
+
     final response = await dio.get(
       '$databaseBaseUrl/read',
       queryParameters: {

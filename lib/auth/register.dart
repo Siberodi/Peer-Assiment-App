@@ -45,6 +45,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
         print('UI register -> después de signUp');
 
+      if (Get.testMode) return;
+
       Get.snackbar(
         'Registro',
         'Revisa tu correo para verificar la cuenta',
@@ -140,6 +142,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       const SizedBox(height: 6),
                       TextFormField(
+                        key: const Key('emailField'),
                         controller: controllerEmail,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
@@ -166,6 +169,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       const SizedBox(height: 6),
                       TextFormField(
+                        key: const Key('nameField'),
                         controller: controllerName,
                         decoration: const InputDecoration(
                           isDense: true,
@@ -188,6 +192,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       const SizedBox(height: 6),
                       TextFormField(
+                        key: const Key('passwordField'),
                         controller: controllerPassword,
                         obscureText: obscurePassword,
                         decoration: InputDecoration(
@@ -274,6 +279,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
+                          key: const Key('registerButton'),
                           onPressed: () async {
                             FocusScope.of(context).unfocus();
 

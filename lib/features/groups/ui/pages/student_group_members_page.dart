@@ -37,7 +37,6 @@ class _StudentGroupMembersPageState extends State<StudentGroupMembersPage> {
 
     groupsController = Get.put(
       GroupsController(repository: repository),
-      tag: 'student_group_members_${widget.groupCode}',
     );
 
     final accessToken = authController.accessToken;

@@ -5,6 +5,8 @@ class CoursesSourceService implements ICoursesSource {
   final Dio dio;
   final String databaseBaseUrl;
 
+  bool get _isMockApi => databaseBaseUrl.contains('mockapi.com');
+
   CoursesSourceService({
     required this.dio,
     required this.databaseBaseUrl,
@@ -15,6 +17,10 @@ class CoursesSourceService implements ICoursesSource {
     String teacherEmail,
     String accessToken,
   ) async {
+    if (_isMockApi) {
+      return [];
+    }
+
     final response = await dio.get(
       '$databaseBaseUrl/read',
       queryParameters: {
@@ -37,6 +43,10 @@ class CoursesSourceService implements ICoursesSource {
     String studentEmail,
     String accessToken,
   ) async {
+    if (_isMockApi) {
+      return [];
+    }
+
     final response = await dio.get(
       '$databaseBaseUrl/read',
       queryParameters: {

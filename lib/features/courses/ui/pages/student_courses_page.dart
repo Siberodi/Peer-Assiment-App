@@ -31,7 +31,6 @@ class _StudentCoursesPageState extends State<StudentCoursesPage> {
 
     coursesController = Get.put(
       CoursesController(repository: repository),
-      tag: 'student_courses',
     );
 
     final studentEmail = authController.currentUser.value?.email;

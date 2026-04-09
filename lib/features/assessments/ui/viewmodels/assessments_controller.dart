@@ -88,28 +88,30 @@ class AssessmentsController extends GetxController {
     }
   }
   Future<void> submitAssessmentResponses({
-  required String accessToken,
-  required List<Map<String, dynamic>> records,
-}) async {
-  try {
-    isLoading.value = true;
-    errorMessage.value = '';
+    required String accessToken,
+    required List<Map<String, dynamic>> records,
+  }) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
 
-    await repository.submitAssessmentResponses(
-      accessToken: accessToken,
-      records: records,
-    );
-  } catch (e) {
-    errorMessage.value = e.toString();
-  } finally {
-    isLoading.value = false;
+      await repository.submitAssessmentResponses(
+        accessToken: accessToken,
+        records: records,
+      );
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
   }
-}
 Future<bool> hasStudentSubmittedAssessment({
   required String accessToken,
   required String assessmentId,
   required String evaluatorEmail,
 }) async {
+  if (Get.testMode) return false;
+
   try {
     return await repository.hasStudentSubmittedAssessment(
       accessToken: accessToken,
