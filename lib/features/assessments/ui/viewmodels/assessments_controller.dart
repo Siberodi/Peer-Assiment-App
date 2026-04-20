@@ -87,6 +87,7 @@ class AssessmentsController extends GetxController {
       isLoading.value = false;
     }
   }
+
   Future<void> submitAssessmentResponses({
     required String accessToken,
     required List<Map<String, dynamic>> records,
@@ -105,72 +106,253 @@ class AssessmentsController extends GetxController {
       isLoading.value = false;
     }
   }
-Future<bool> hasStudentSubmittedAssessment({
+
+  Future<bool> hasStudentSubmittedAssessment({
+    required String accessToken,
+    required String assessmentId,
+    required String evaluatorEmail,
+  }) async {
+    if (Get.testMode) return false;
+
+    try {
+      errorMessage.value = '';
+
+      return await repository.hasStudentSubmittedAssessment(
+        accessToken: accessToken,
+        assessmentId: assessmentId,
+        evaluatorEmail: evaluatorEmail,
+      );
+    } catch (e) {
+      errorMessage.value = e.toString();
+      return false;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getAssessmentResponses({
+    required String accessToken,
+    required String assessmentId,
+  }) async {
+    try {
+      errorMessage.value = '';
+
+      return await repository.getAssessmentResponses(
+        accessToken: accessToken,
+        assessmentId: assessmentId,
+      );
+    } catch (e) {
+      errorMessage.value = e.toString();
+      rethrow;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getGroupMembers({
+    required String accessToken,
+    required String groupCode,
+  }) async {
+    try {
+      errorMessage.value = '';
+
+      return await repository.getGroupMembers(
+        accessToken: accessToken,
+        groupCode: groupCode,
+      );
+    } catch (e) {
+      errorMessage.value = e.toString();
+      return [];
+    }
+  }
+
+  Future<void> publishAssessmentResults({
+    required String accessToken,
+    required List<Map<String, dynamic>> records,
+  }) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      await repository.publishAssessmentResults(
+        accessToken: accessToken,
+        records: records,
+      );
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> replaceAssessmentResults({
+    required String accessToken,
+    required String assessmentId,
+    required List<Map<String, dynamic>> records,
+  }) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      await repository.replaceAssessmentResults(
+        accessToken: accessToken,
+        assessmentId: assessmentId,
+        records: records,
+      );
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Map<String, Map<String, dynamic>> buildAverages(
+    List<Map<String, dynamic>> responses,
+  ) {
+    final Map<String, List<Map<String, dynamic>>> grouped = {};
+
+    for (final response in responses) {
+      final email = response['EvaluatedEmail']?.toString() ?? '';
+      if (email.isEmpty) continue;
+
+      grouped.putIfAbsent(email, () => []);
+      grouped[email]!.add(response);
+    }
+
+    final Map<String, Map<String, dynamic>> result = {};
+
+    grouped.forEach((email, items) {
+      final name = items.first['EvaluatedName']?.toString() ?? 'Sin nombre';
+
+      double pAvg = 0;
+      double cAvg = 0;
+      double cmAvg = 0;
+      double aAvg = 0;
+
+      for (final item in items) {
+        pAvg += ((item['p_score'] as num?) ?? 0).toDouble();
+        cAvg += ((item['c_score'] as num?) ?? 0).toDouble();
+        cmAvg += ((item['cm_score'] as num?) ?? 0).toDouble();
+        aAvg += ((item['a_score'] as num?) ?? 0).toDouble();
+      }
+
+      final count = items.isEmpty ? 1 : items.length;
+      pAvg /= count;
+      cAvg /= count;
+      cmAvg /= count;
+      aAvg /= count;
+
+      final generalAvg = (pAvg + cAvg + cmAvg + aAvg) / 4;
+
+      result[email] = {
+        'name': name,
+        'pAvg': pAvg,
+        'cAvg': cAvg,
+        'cmAvg': cmAvg,
+        'aAvg': aAvg,
+        'generalAvg': generalAvg,
+      };
+    });
+
+    return result;
+  }
+
+  Future<List<Map<String, dynamic>>> buildPublishableResults({
   required String accessToken,
   required String assessmentId,
-  required String evaluatorEmail,
 }) async {
-  if (Get.testMode) return false;
+  errorMessage.value = '';
 
-  try {
-    return await repository.hasStudentSubmittedAssessment(
-      accessToken: accessToken,
-      assessmentId: assessmentId,
-      evaluatorEmail: evaluatorEmail,
-    );
-  } catch (e) {
-    errorMessage.value = e.toString();
-    return false;
+  final responses = await getAssessmentResponses(
+    accessToken: accessToken,
+    assessmentId: assessmentId,
+  );
+
+  if (responses.isEmpty) {
+    throw Exception('No hay respuestas para publicar');
   }
-}
-Future<List<Map<String, dynamic>>> getAssessmentResponses({
-  required String accessToken,
-  required String assessmentId,
-}) async {
-  try {
-    return await repository.getAssessmentResponses(
-      accessToken: accessToken,
-      assessmentId: assessmentId,
-    );
-  } catch (e) {
-    errorMessage.value = e.toString();
-    return [];
+
+  final assessment = assessments.firstWhereOrNull(
+    (a) => a.id == assessmentId,
+  );
+
+  final assessmentName = assessment?.assessmentName ?? 'Evaluación';
+
+  final Map<String, List<Map<String, dynamic>>> responsesByGroup = {};
+
+  for (final response in responses) {
+    final groupCode = response['GroupCode']?.toString() ?? '';
+    if (groupCode.isEmpty) continue;
+
+    responsesByGroup.putIfAbsent(groupCode, () => []);
+    responsesByGroup[groupCode]!.add(response);
   }
-}
 
-Future<List<Map<String, dynamic>>> getGroupMembers({
-  required String accessToken,
-  required String groupCode,
-}) async {
-  try {
-    errorMessage.value = '';
+  final List<Map<String, dynamic>> finalResults = [];
 
-    return await repository.getGroupMembers(
+  for (final entry in responsesByGroup.entries) {
+    final groupCode = entry.key;
+    final groupResponses = entry.value;
+
+    final members = await getGroupMembers(
       accessToken: accessToken,
       groupCode: groupCode,
     );
-  } catch (e) {
-    errorMessage.value = e.toString();
-    return [];
-  }
-}
 
-Future<void> publishAssessmentResults({
-  required String accessToken,
-  required List<Map<String, dynamic>> records,
-}) async {
-  try {
-    isLoading.value = true;
-    errorMessage.value = '';
+    final Map<String, List<Map<String, dynamic>>> byEvaluatedStudent = {};
 
-    await repository.publishAssessmentResults(
-      accessToken: accessToken,
-      records: records,
-    );
-  } catch (e) {
-    errorMessage.value = e.toString();
-  } finally {
-    isLoading.value = false;
+    for (final response in groupResponses) {
+      final email = response['EvaluatedEmail']?.toString() ?? '';
+      if (email.isEmpty) continue;
+
+      byEvaluatedStudent.putIfAbsent(email, () => []);
+      byEvaluatedStudent[email]!.add(response);
+    }
+
+    for (final member in members) {
+      final studentEmail = member['StudentEmail']?.toString() ?? '';
+      if (studentEmail.isEmpty) continue;
+
+      final memberCourseCode = member['CourseCode']?.toString() ?? '';
+      if (memberCourseCode.isEmpty) continue;
+
+      final items = byEvaluatedStudent[studentEmail] ?? [];
+
+      double pAvg = 0;
+      double cAvg = 0;
+      double cmAvg = 0;
+      double aAvg = 0;
+
+      if (items.isNotEmpty) {
+        for (final item in items) {
+          pAvg += ((item['p_score'] as num?) ?? 0).toDouble();
+          cAvg += ((item['c_score'] as num?) ?? 0).toDouble();
+          cmAvg += ((item['cm_score'] as num?) ?? 0).toDouble();
+          aAvg += ((item['a_score'] as num?) ?? 0).toDouble();
+        }
+
+        final count = items.length;
+        pAvg /= count;
+        cAvg /= count;
+        cmAvg /= count;
+        aAvg /= count;
+      }
+
+      final gAvg = (pAvg + cAvg + cmAvg + aAvg) / 4;
+
+      finalResults.add({
+        'AssessmentId': assessmentId,
+        'AssessmentName': assessmentName,
+        'StudentEmail': studentEmail,
+        'GroupCode': groupCode,
+        'CourseCode': int.tryParse(memberCourseCode) ?? memberCourseCode,
+        'p_avg': pAvg,
+        'c_avg': cAvg,
+        'cm_avg': cmAvg,
+        'a_avg': aAvg,
+        'g_avg': gAvg,
+        'Published': true,
+        'CreatedAt': DateTime.now().toIso8601String(),
+      });
+    }
   }
+
+  return finalResults;
 }
 }

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
+
 import '../../../../controllers/authentication_controller.dart';
+import '../../../../core/shared_preferences_service.dart';
+import '../../data/datasources/local/groups_cache_source.dart';
 import '../../data/datasources/remote/groups_source_service.dart';
 import '../../data/repositories/groups_repository.dart';
 import '../viewmodels/groups_controller.dart';
 import 'teacher_group_members_page.dart';
+
 import '../../../assessments/ui/pages/create_assessment_page.dart';
 import '../../../assessments/data/datasources/remote/assessments_source_service.dart';
 import '../../../assessments/data/repositories/assessments_repository.dart';
@@ -32,6 +36,15 @@ class _TeacherCourseGroupsPageState extends State<TeacherCourseGroupsPage> {
   late final AssessmentsController assessmentsController;
   final AuthenticationController authController = Get.find();
 
+  int selectedTab = 0;
+
+  static const Color greenDark = Color(0xFF577F49);
+  static const Color greenLight = Color(0xFFB9DDAF);
+  static const Color greenHeaderLight = Color(0xFF8ED973);
+  static const Color greenHeaderDark = Color(0xFF4F7E43);
+  static const Color background = Color(0xFFF3F3F3);
+  static const Color blueGreyText = Color(0xFF5E738B);
+
   @override
   void initState() {
     super.initState();
@@ -39,9 +52,17 @@ class _TeacherCourseGroupsPageState extends State<TeacherCourseGroupsPage> {
     final source = GroupsSourceService(
       dio: Dio(),
       databaseBaseUrl: authController.databaseBaseUrl,
+      authController: authController,
     );
 
-    final repository = GroupsRepository(source: source);
+    final cacheSource = GroupsCacheSource(
+      SharedPreferencesService(),
+    );
+
+    final repository = GroupsRepository(
+      source: source,
+      cacheSource: cacheSource,
+    );
 
     groupsController = Get.put(
       GroupsController(repository: repository),
@@ -49,10 +70,10 @@ class _TeacherCourseGroupsPageState extends State<TeacherCourseGroupsPage> {
     );
 
     final assessmentsSource = AssessmentsSourceService(
-      dio: Dio(),
-      databaseBaseUrl: authController.databaseBaseUrl,
-    );
-
+  dioClient: Dio(),
+  databaseBaseUrl: authController.databaseBaseUrl,
+  authController: authController,
+);
     final assessmentsRepository = AssessmentsRepository(
       source: assessmentsSource,
     );
@@ -80,19 +101,285 @@ class _TeacherCourseGroupsPageState extends State<TeacherCourseGroupsPage> {
     }
   }
 
+  Widget buildHeader() {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [greenHeaderLight, greenHeaderDark],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Get.back(),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                color: Colors.white,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
+              const SizedBox(height: 10),
+              Center(
+                child: Text(
+                  widget.courseName,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildCreateButton() {
+    return GestureDetector(
+      onTap: () {
+        Get.to(
+          () => CreateAssessmentPage(
+            courseCode: widget.courseCode,
+            courseName: widget.courseName,
+          ),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: greenDark),
+        ),
+        child: const Center(
+          child: Text(
+            'Crear evaluación para este curso',
+            style: TextStyle(
+              color: greenDark,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildTabs() {
+    return Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedTab = 0;
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              decoration: BoxDecoration(
+                color: selectedTab == 0 ? greenDark : greenLight,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Center(
+                child: Text(
+                  'Evaluaciones',
+                  style: TextStyle(
+                    color: selectedTab == 0 ? Colors.white : greenDark,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedTab = 1;
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              decoration: BoxDecoration(
+                color: selectedTab == 1 ? greenDark : greenLight,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Center(
+                child: Text(
+                  'Grupos',
+                  style: TextStyle(
+                    color: selectedTab == 1 ? Colors.white : greenDark,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildAssessmentCard(dynamic a) {
+    return GestureDetector(
+      onTap: () {
+        Get.to(
+          () => TeacherAssessmentResultsPage(
+            assessmentId: a.id,
+            assessmentName: a.assessmentName,
+          ),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        decoration: BoxDecoration(
+          color: greenLight,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              a.assessmentName,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: greenDark,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              a.status ? 'Activa' : 'Cerrada',
+              style: TextStyle(
+                fontSize: 15,
+                color: a.status ? blueGreyText : Colors.red.shade400,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildGroupCard(dynamic group) {
+    return GestureDetector(
+      onTap: () {
+        Get.to(
+          () => TeacherGroupMembersPage(
+            groupCode: group.groupCode,
+            groupName: group.groupName,
+          ),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        decoration: BoxDecoration(
+          color: greenLight,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    group.groupName,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: greenDark,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Código: ${group.groupCode}',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      color: blueGreyText,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward,
+              color: greenDark,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildContent() {
+    return Obx(() {
+      final courseAssessments = assessmentsController.assessments
+          .where((a) => a.courseCode == widget.courseCode)
+          .toList();
+
+      if (selectedTab == 0) {
+        if (courseAssessments.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: Center(
+              child: Text(
+                'No hay evaluaciones aún',
+                style: TextStyle(fontSize: 15),
+              ),
+            ),
+          );
+        }
+
+        return Column(
+          children: courseAssessments.map(buildAssessmentCard).toList(),
+        );
+      }
+
+      if (groupsController.groups.isEmpty) {
+        return const Padding(
+          padding: EdgeInsets.only(top: 20),
+          child: Center(
+            child: Text(
+              'No hay grupos en este curso',
+              style: TextStyle(fontSize: 15),
+            ),
+          ),
+        );
+      }
+
+      return Column(
+        children: groupsController.groups.map(buildGroupCard).toList(),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    const greenDark = Color(0xFF577F49);
-    const greenLight = Color(0xFF93D977);
-    const background = Color(0xFFF3F3F3);
-
     return Scaffold(
       backgroundColor: background,
-      appBar: AppBar(
-        title: Text(widget.courseName),
-        backgroundColor: greenDark,
-        foregroundColor: Colors.white,
-      ),
       body: Obx(() {
         if (groupsController.isLoading.value) {
           return const Center(
@@ -113,126 +400,24 @@ class _TeacherCourseGroupsPageState extends State<TeacherCourseGroupsPage> {
           );
         }
 
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: () {
-  Get.to(() => CreateAssessmentPage(
-        courseCode: widget.courseCode,
-        courseName: widget.courseName,
-      ));
-},
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  margin: const EdgeInsets.only(bottom: 20),
-                  decoration: BoxDecoration(
-                    color: greenLight,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.add, color: Colors.white),
-                      SizedBox(width: 10),
-                      Text(
-                        'Crear evaluación para este curso',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
+        return Column(
+          children: [
+            buildHeader(),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    buildCreateButton(),
+                    const SizedBox(height: 18),
+                    buildTabs(),
+                    const SizedBox(height: 22),
+                    buildContent(),
+                  ],
                 ),
               ),
-
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Evaluaciones del curso',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: greenDark,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-
-              Obx(() {
-                final courseAssessments = assessmentsController.assessments
-                    .where((a) => a.courseCode == widget.courseCode)
-                    .toList();
-
-                if (courseAssessments.isEmpty) {
-                  return const Padding(
-                    padding: EdgeInsets.only(bottom: 20),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('No hay evaluaciones aún'),
-                    ),
-                  );
-                }
-
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Column(
-                    children: courseAssessments.map((a) {
-                      return Card(
-  child: ListTile(
-    title: Text(a.assessmentName),
-    subtitle: Text(
-      a.status ? 'Activa' : 'Cerrada',
-      style: TextStyle(
-        color: a.status ? Colors.green : Colors.red,
-      ),
-    ),
-    trailing: const Icon(Icons.bar_chart), // más claro que assignment
-    onTap: () {
-      Get.to(() => TeacherAssessmentResultsPage(
-            assessmentId: a.id,
-            assessmentName: a.assessmentName,
-          ));
-    },
-  ),
-);
-                    }).toList(),
-                  ),
-                );
-              }),
-
-              Expanded(
-                child: groupsController.groups.isEmpty
-                    ? const Center(
-                        child: Text('No hay grupos en este curso'),
-                      )
-                    : ListView.builder(
-                        itemCount: groupsController.groups.length,
-                        itemBuilder: (context, index) {
-                          final group = groupsController.groups[index];
-
-                          return Card(
-                            child: ListTile(
-                              title: Text(group.groupName),
-                              subtitle: Text('Código: ${group.groupCode}'),
-                              trailing: const Icon(Icons.chevron_right),
-                              onTap: () {
-                                Get.to(() => TeacherGroupMembersPage(
-                                      groupCode: group.groupCode,
-                                      groupName: group.groupName,
-                                    ));
-                              },
-                            ),
-                          );
-                        },
-                      ),
-              ),
-            ],
-          ),
+            ),
+          ],
         );
       }),
     );

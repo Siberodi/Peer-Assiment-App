@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
+
 import '../../../../controllers/authentication_controller.dart';
+import '../../../../core/shared_preferences_service.dart';
+import '../../data/datasources/local/groups_cache_source.dart';
 import '../../data/datasources/remote/groups_source_service.dart';
 import '../../data/repositories/groups_repository.dart';
 import '../viewmodels/groups_controller.dart';
@@ -18,7 +21,8 @@ class StudentCourseGroupsPage extends StatefulWidget {
   });
 
   @override
-  State<StudentCourseGroupsPage> createState() => _StudentCourseGroupsPageState();
+  State<StudentCourseGroupsPage> createState() =>
+      _StudentCourseGroupsPageState();
 }
 
 class _StudentCourseGroupsPageState extends State<StudentCourseGroupsPage> {
@@ -32,9 +36,17 @@ class _StudentCourseGroupsPageState extends State<StudentCourseGroupsPage> {
     final source = GroupsSourceService(
       dio: Dio(),
       databaseBaseUrl: authController.databaseBaseUrl,
+      authController: authController,
     );
 
-    final repository = GroupsRepository(source: source);
+    final cacheSource = GroupsCacheSource(
+      SharedPreferencesService(),
+    );
+
+    final repository = GroupsRepository(
+      source: source,
+      cacheSource: cacheSource,
+    );
 
     groupsController = Get.put(
       GroupsController(repository: repository),
@@ -114,10 +126,12 @@ class _StudentCourseGroupsPageState extends State<StudentCourseGroupsPage> {
                     ),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      Get.to(() => StudentGroupMembersPage(
-                            groupCode: group.groupCode,
-                            groupName: group.groupName,
-                          ));
+                      Get.to(
+                        () => StudentGroupMembersPage(
+                          groupCode: group.groupCode,
+                          groupName: group.groupName,
+                        ),
+                      );
                     },
                   ),
                 );

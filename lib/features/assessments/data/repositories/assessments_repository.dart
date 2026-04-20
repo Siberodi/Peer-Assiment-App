@@ -59,58 +59,78 @@ class AssessmentsRepository implements IAssessmentsRepository {
 
     return data.map((e) => Assessment.fromMap(e)).toList();
   }
+
   @override
-Future<void> submitAssessmentResponses({
-  required String accessToken,
-  required List<Map<String, dynamic>> records,
-}) async {
-  await source.submitAssessmentResponses(
-    accessToken: accessToken,
-    records: records,
-  );
-}
-@override
-Future<bool> hasStudentSubmittedAssessment({
-  required String accessToken,
-  required String assessmentId,
-  required String evaluatorEmail,
-}) async {
-  return await source.hasStudentSubmittedAssessment(
-    accessToken: accessToken,
-    assessmentId: assessmentId,
-    evaluatorEmail: evaluatorEmail,
-  );
-}
-@override
-Future<List<Map<String, dynamic>>> getAssessmentResponses({
-  required String accessToken,
-  required String assessmentId,
-}) async {
-  return await source.getAssessmentResponses(
-    accessToken: accessToken,
-    assessmentId: assessmentId,
-  );
-}
+  Future<void> submitAssessmentResponses({
+    required String accessToken,
+    required List<Map<String, dynamic>> records,
+  }) async {
+    await source.submitAssessmentResponses(
+      accessToken: accessToken,
+      records: records,
+    );
+  }
 
-@override
-Future<List<Map<String, dynamic>>> getGroupMembers({
-  required String accessToken,
-  required String groupCode,
-}) async {
-  return await source.getGroupMembers(
-    accessToken: accessToken,
-    groupCode: groupCode,
-  );
-}
+  @override
+  Future<bool> hasStudentSubmittedAssessment({
+    required String accessToken,
+    required String assessmentId,
+    required String evaluatorEmail,
+  }) async {
+    return source.hasStudentSubmittedAssessment(
+      accessToken: accessToken,
+      assessmentId: assessmentId,
+      evaluatorEmail: evaluatorEmail,
+    );
+  }
 
-@override
-Future<void> publishAssessmentResults({
-  required String accessToken,
-  required List<Map<String, dynamic>> records,
-}) async {
-  await source.publishAssessmentResults(
-    accessToken: accessToken,
-    records: records,
-  );
-}
+  @override
+  Future<List<Map<String, dynamic>>> getAssessmentResponses({
+    required String accessToken,
+    required String assessmentId,
+  }) async {
+    return source.getAssessmentResponses(
+      accessToken: accessToken,
+      assessmentId: assessmentId,
+    );
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getGroupMembers({
+    required String accessToken,
+    required String groupCode,
+  }) async {
+    return source.getGroupMembers(
+      accessToken: accessToken,
+      groupCode: groupCode,
+    );
+  }
+
+  @override
+  Future<void> publishAssessmentResults({
+    required String accessToken,
+    required List<Map<String, dynamic>> records,
+  }) async {
+    await source.publishAssessmentResults(
+      accessToken: accessToken,
+      records: records,
+    );
+  }
+
+  @override
+  Future<void> replaceAssessmentResults({
+    required String accessToken,
+    required String assessmentId,
+    required List<Map<String, dynamic>> records,
+  }) async {
+    await source.deleteAssessmentResults(
+      accessToken: accessToken,
+      assessmentId: assessmentId,
+    );
+
+    await source.publishAssessmentResults(
+      accessToken: accessToken,
+      records: records,
+    );
+  }
 }

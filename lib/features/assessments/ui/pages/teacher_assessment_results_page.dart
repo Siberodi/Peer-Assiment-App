@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:dio/dio.dart';
+
 import '../../../../controllers/authentication_controller.dart';
-import '../../data/datasources/remote/assessments_source_service.dart';
-import '../../data/repositories/assessments_repository.dart';
 import '../viewmodels/assessments_controller.dart';
 
 class TeacherAssessmentResultsPage extends StatefulWidget {
   final String assessmentId;
   final String assessmentName;
+  final String controllerTag;
 
   const TeacherAssessmentResultsPage({
     super.key,
     required this.assessmentId,
     required this.assessmentName,
+    this.controllerTag = 'professor_home_assessments',
   });
 
   @override
@@ -28,279 +28,333 @@ class _TeacherAssessmentResultsPageState
 
   late Future<List<Map<String, dynamic>>> responsesFuture;
 
+  static const Color greenDark = Color(0xFF517A46);
+  static const Color greenLight = Color(0xFFCAEDC0);
+  static const Color background = Color(0xFFF3F3F3);
+  static const Color subtitleColor = Color(0xFF5E738B);
+  static const Color white = Colors.white;
+
   @override
   void initState() {
     super.initState();
+    controller = Get.find<AssessmentsController>(tag: widget.controllerTag);
+    responsesFuture = _loadResponses();
+  }
 
-    final source = AssessmentsSourceService(
-      dio: Dio(),
-      databaseBaseUrl: authController.databaseBaseUrl,
-    );
+  Future<List<Map<String, dynamic>>> _loadResponses() async {
+    final accessToken = authController.accessToken;
 
-    final repository = AssessmentsRepository(source: source);
+    if (accessToken == null || accessToken.isEmpty) {
+      throw Exception('Usuario no autenticado');
+    }
 
-    controller = Get.put(
-      AssessmentsController(repository: repository),
-      tag: 'results_${widget.assessmentId}',
-    );
-
-    final accessToken = authController.accessToken!;
-
-    responsesFuture = controller.getAssessmentResponses(
+    return controller.getAssessmentResponses(
       accessToken: accessToken,
       assessmentId: widget.assessmentId,
     );
   }
 
-  Map<String, Map<String, dynamic>> buildAverages(
-    List<Map<String, dynamic>> responses,
-  ) {
-    final Map<String, List<Map<String, dynamic>>> grouped = {};
-
-    for (final response in responses) {
-      final email = response['EvaluatedEmail']?.toString() ?? '';
-      if (email.isEmpty) continue;
-
-      grouped.putIfAbsent(email, () => []);
-      grouped[email]!.add(response);
-    }
-
-    final Map<String, Map<String, dynamic>> result = {};
-
-    grouped.forEach((email, items) {
-      final name = items.first['EvaluatedName']?.toString() ?? 'Sin nombre';
-
-      double pAvg = 0;
-      double cAvg = 0;
-      double cmAvg = 0;
-      double aAvg = 0;
-
-      for (final item in items) {
-        pAvg += (item['p_score'] as num).toDouble();
-        cAvg += (item['c_score'] as num).toDouble();
-        cmAvg += (item['cm_score'] as num).toDouble();
-        aAvg += (item['a_score'] as num).toDouble();
-      }
-
-      final count = items.length;
-      pAvg /= count;
-      cAvg /= count;
-      cmAvg /= count;
-      aAvg /= count;
-
-      final generalAvg = (pAvg + cAvg + cmAvg + aAvg) / 4;
-
-      result[email] = {
-        'name': name,
-        'pAvg': pAvg,
-        'cAvg': cAvg,
-        'cmAvg': cmAvg,
-        'aAvg': aAvg,
-        'generalAvg': generalAvg,
-      };
+  void _refreshResponses() {
+    setState(() {
+      responsesFuture = _loadResponses();
     });
-
-    return result;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    const greenDark = Color(0xFF577F49);
-
-    return Scaffold(
-      appBar: AppBar(
-          title: Text(widget.assessmentName),
-          backgroundColor: greenDark,
-          foregroundColor: Colors.white,
-          actions: [
-            IconButton(
-              onPressed: publishResults,
-              icon: const Icon(Icons.publish),
-            ),
-          ],
-        ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: responsesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          }
-
-          final responses = snapshot.data ?? [];
-
-          if (responses.isEmpty) {
-            return const Center(
-              child: Text('No hay respuestas todavía'),
-            );
-          }
-
-          final averages = buildAverages(responses);
-          final students = averages.values.toList();
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: students.length,
-            itemBuilder: (context, index) {
-              final student = students[index];
-
-              return Card(
-                margin: const EdgeInsets.only(bottom: 16),
-                child: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        student['name'],
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text('Punctuality: ${student['pAvg'].toStringAsFixed(2)}'),
-                      Text('Contributions: ${student['cAvg'].toStringAsFixed(2)}'),
-                      Text('Commitment: ${student['cmAvg'].toStringAsFixed(2)}'),
-                      Text('Attitude: ${student['aAvg'].toStringAsFixed(2)}'),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Promedio general: ${student['generalAvg'].toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
+  String formatScore(dynamic value) {
+    if (value == null) return '0.00';
+    if (value is num) return value.toStringAsFixed(2);
+    return '0.00';
   }
+
   Future<void> publishResults() async {
-  final accessToken = authController.accessToken;
+    final accessToken = authController.accessToken;
 
-  if (accessToken == null) {
-    Get.snackbar('Error', 'Usuario no autenticado');
-    return;
-  }
-
-  final responses = await controller.getAssessmentResponses(
-    accessToken: accessToken,
-    assessmentId: widget.assessmentId,
-  );
-
-  if (responses.isEmpty) {
-    Get.snackbar('Error', 'No hay respuestas para publicar');
-    return;
-  }
-
-  final Map<String, List<Map<String, dynamic>>> responsesByGroup = {};
-
-  for (final response in responses) {
-    final groupCode = response['GroupCode']?.toString() ?? '';
-    if (groupCode.isEmpty) continue;
-
-    responsesByGroup.putIfAbsent(groupCode, () => []);
-    responsesByGroup[groupCode]!.add(response);
-  }
-
-  final List<Map<String, dynamic>> finalResults = [];
-
-  for (final entry in responsesByGroup.entries) {
-    final groupCode = entry.key;
-    final groupResponses = entry.value;
-
-    final members = await controller.getGroupMembers(
-      accessToken: accessToken,
-      groupCode: groupCode,
-    );
-
-    final totalMembers = members.length;
-    final expectedResponses = totalMembers * (totalMembers - 1);
-
-    if (groupResponses.length < expectedResponses) {
+    if (accessToken == null || accessToken.isEmpty) {
       Get.snackbar(
-        'No se puede publicar',
-        'El grupo $groupCode aún no ha completado todas las respuestas.',
+        'Error',
+        'Usuario no autenticado',
+        backgroundColor: white,
+        colorText: greenDark,
       );
       return;
     }
 
-    final Map<String, List<Map<String, dynamic>>> byEvaluatedStudent = {};
+    try {
+      final finalResults = await controller.buildPublishableResults(
+        accessToken: accessToken,
+        assessmentId: widget.assessmentId,
+      );
 
-    for (final response in groupResponses) {
-      final email = response['EvaluatedEmail']?.toString() ?? '';
-      if (email.isEmpty) continue;
+      await controller.publishAssessmentResults(
+        accessToken: accessToken,
+        records: finalResults,
+      );
 
-      byEvaluatedStudent.putIfAbsent(email, () => []);
-      byEvaluatedStudent[email]!.add(response);
-    }
-
-    for (final studentEntry in byEvaluatedStudent.entries) {
-      final studentEmail = studentEntry.key;
-      final items = studentEntry.value;
-
-      final studentName =
-          items.first['EvaluatedName']?.toString() ?? 'Sin nombre';
-      final courseCode =
-          items.first['CourseCode']?.toString() ?? '';
-
-      double pAvg = 0;
-      double cAvg = 0;
-      double cmAvg = 0;
-      double aAvg = 0;
-
-      for (final item in items) {
-        pAvg += (item['p_score'] as num).toDouble();
-        cAvg += (item['c_score'] as num).toDouble();
-        cmAvg += (item['cm_score'] as num).toDouble();
-        aAvg += (item['a_score'] as num).toDouble();
+      if (controller.errorMessage.value.isNotEmpty) {
+        Get.snackbar(
+          'Error',
+          controller.errorMessage.value,
+          backgroundColor: white,
+          colorText: greenDark,
+        );
+        return;
       }
 
-      final count = items.length;
-      pAvg /= count;
-      cAvg /= count;
-      cmAvg /= count;
-      aAvg /= count;
+      Get.snackbar(
+        'Éxito',
+        'Resultados publicados correctamente',
+        backgroundColor: white,
+        colorText: greenDark,
+      );
 
-      final gAvg = (pAvg + cAvg + cmAvg + aAvg) / 4;
-
-      finalResults.add({
-        'AssessmentId': widget.assessmentId,
-        'StudentEmail': studentEmail,
-        'StudentName': studentName,
-        'GroupCode': groupCode,
-        'CourseCode': int.tryParse(courseCode) ?? courseCode,
-        'p_avg': pAvg,
-        'c_avg': cAvg,
-        'cm_avg': cmAvg,
-        'a_avg': aAvg,
-        'g_avg': gAvg,
-        'Published': true,
-        'CreatedAt': DateTime.now().toIso8601String(),
-      });
+      _refreshResponses();
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        backgroundColor: white,
+        colorText: greenDark,
+      );
     }
   }
 
-  await controller.publishAssessmentResults(
-    accessToken: accessToken,
-    records: finalResults,
-  );
-
-  if (controller.errorMessage.value.isNotEmpty) {
-    Get.snackbar('Error', controller.errorMessage.value);
-    return;
+  Widget buildHeader() {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF8ED973), greenDark],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: SizedBox(
+          height: 210,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 12,
+                left: 16,
+                child: IconButton(
+                  onPressed: () => Get.back(),
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                  color: white,
+                  iconSize: 32,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+              ),
+              Positioned(
+                top: 14,
+                right: 16,
+                child: IconButton(
+                  onPressed: publishResults,
+                  icon: const Icon(Icons.publish_rounded),
+                  color: white,
+                  iconSize: 30,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 70),
+                  child: Text(
+                    widget.assessmentName,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: white,
+                      fontSize: 34,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  Get.snackbar('Éxito', 'Resultados publicados correctamente');
-}
+  Widget buildMetricRow({
+    required String label,
+    required String value,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: subtitleColor,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              color: greenDark,
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildStudentCard(Map<String, dynamic> student) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 18),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: greenLight,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            student['name'] ?? 'Sin nombre',
+            style: const TextStyle(
+              color: greenDark,
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 16),
+          buildMetricRow(
+            label: 'Puntualidad',
+            value: formatScore(student['pAvg']),
+          ),
+          buildMetricRow(
+            label: 'Calidad de trabajo',
+            value: formatScore(student['cAvg']),
+          ),
+          buildMetricRow(
+            label: 'Compromiso',
+            value: formatScore(student['cmAvg']),
+          ),
+          buildMetricRow(
+            label: 'Convivencia',
+            value: formatScore(student['aAvg']),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: white.withOpacity(0.75),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Promedio general',
+                    style: TextStyle(
+                      color: greenDark,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                Text(
+                  formatScore(student['generalAvg']),
+                  style: const TextStyle(
+                    color: greenDark,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildEmptyState() {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(24),
+        child: Text(
+          'No hay respuestas todavía',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: greenDark,
+            fontSize: 17,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: background,
+      body: Column(
+        children: [
+          buildHeader(),
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: responsesFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: greenDark,
+                    ),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Text(
+                        'Error: ${snapshot.error}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  );
+                }
+
+                final responses = snapshot.data ?? [];
+
+                if (responses.isEmpty) {
+                  return buildEmptyState();
+                }
+
+                final averages = controller.buildAverages(responses);
+                final students = averages.values.toList();
+
+                return ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(22, 24, 22, 24),
+                  itemCount: students.length,
+                  itemBuilder: (context, index) {
+                    final student = students[index];
+                    return buildStudentCard(student);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

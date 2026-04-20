@@ -1,16 +1,65 @@
 import 'package:dio/dio.dart';
+
+import '../../../../../controllers/authentication_controller.dart';
 import 'i_groups_source.dart';
 
 class GroupsSourceService implements IGroupsSource {
   final Dio dio;
   final String databaseBaseUrl;
+  final AuthenticationController authController;
 
   bool get _isMockApi => databaseBaseUrl.contains('mockapi.com');
 
   GroupsSourceService({
     required this.dio,
     required this.databaseBaseUrl,
+    required this.authController,
   });
+
+  Future<Response<dynamic>> _authorizedGet(
+    String path, {
+    required String accessToken,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      return await dio.get(
+        path,
+        queryParameters: queryParameters,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        final refreshed = await authController.refreshAccessToken();
+
+        if (!refreshed) {
+          await authController.signOut();
+          throw Exception('Sesión expirada. Inicia sesión nuevamente.');
+        }
+
+        final newToken = authController.accessToken;
+
+        if (newToken == null || newToken.isEmpty) {
+          throw Exception('No se pudo obtener un nuevo token');
+        }
+
+        return await dio.get(
+          path,
+          queryParameters: queryParameters,
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $newToken',
+            },
+          ),
+        );
+      }
+
+      rethrow;
+    }
+  }
 
   @override
   Future<List<Map<String, dynamic>>> getGroupsByCourse(
@@ -21,17 +70,13 @@ class GroupsSourceService implements IGroupsSource {
       return [];
     }
 
-    final response = await dio.get(
+    final response = await _authorizedGet(
       '$databaseBaseUrl/read',
+      accessToken: accessToken,
       queryParameters: {
         'tableName': 'Groups',
         'CourseCode': courseCode,
       },
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-      ),
     );
 
     final List<dynamic> data = response.data;
@@ -47,22 +92,19 @@ class GroupsSourceService implements IGroupsSource {
       return [];
     }
 
-    final response = await dio.get(
+    final response = await _authorizedGet(
       '$databaseBaseUrl/read',
+      accessToken: accessToken,
       queryParameters: {
         'tableName': 'GroupMembers',
         'GroupCode': groupCode,
       },
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-      ),
     );
 
     final List<dynamic> data = response.data;
     return data.map((e) => Map<String, dynamic>.from(e)).toList();
   }
+
   @override
   Future<List<Map<String, dynamic>>> getStudentGroupsByCourse(
     String courseCode,
@@ -73,18 +115,14 @@ class GroupsSourceService implements IGroupsSource {
       return [];
     }
 
-    final response = await dio.get(
+    final response = await _authorizedGet(
       '$databaseBaseUrl/read',
+      accessToken: accessToken,
       queryParameters: {
         'tableName': 'GroupMembers',
         'CourseCode': courseCode,
         'StudentEmail': studentEmail,
       },
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-      ),
     );
 
     final List<dynamic> data = response.data;

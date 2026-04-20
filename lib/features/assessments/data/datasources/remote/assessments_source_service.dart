@@ -1,16 +1,157 @@
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as d;
+import '../../../../../controllers/authentication_controller.dart';
 import 'i_assessments_source.dart';
 
 class AssessmentsSourceService implements IAssessmentsSource {
-  final Dio dio;
+  final d.Dio dioClient;
   final String databaseBaseUrl;
+  final AuthenticationController authController;
 
   bool get _isMockApi => databaseBaseUrl.contains('mockapi.com');
 
   AssessmentsSourceService({
-    required this.dio,
+    required this.dioClient,
     required this.databaseBaseUrl,
+    required this.authController,
   });
+
+  Future<d.Response<dynamic>> _authorizedGet(
+    String path, {
+    required String accessToken,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      return await dioClient.get(
+        path,
+        queryParameters: queryParameters,
+        options: d.Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+    } on d.DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        final refreshed = await authController.refreshAccessToken();
+
+        if (!refreshed) {
+          await authController.signOut();
+          throw Exception('Sesión expirada. Inicia sesión nuevamente.');
+        }
+
+        final newToken = authController.accessToken;
+        if (newToken == null || newToken.isEmpty) {
+          throw Exception('No se pudo obtener un nuevo token');
+        }
+
+        return await dioClient.get(
+          path,
+          queryParameters: queryParameters,
+          options: d.Options(
+            headers: {
+              'Authorization': 'Bearer $newToken',
+            },
+          ),
+        );
+      }
+
+      rethrow;
+    }
+  }
+
+  Future<d.Response<dynamic>> _authorizedPost(
+    String path, {
+    required String accessToken,
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      return await dioClient.post(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: d.Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+    } on d.DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        final refreshed = await authController.refreshAccessToken();
+
+        if (!refreshed) {
+          await authController.signOut();
+          throw Exception('Sesión expirada. Inicia sesión nuevamente.');
+        }
+
+        final newToken = authController.accessToken;
+        if (newToken == null || newToken.isEmpty) {
+          throw Exception('No se pudo obtener un nuevo token');
+        }
+
+        return await dioClient.post(
+          path,
+          data: data,
+          queryParameters: queryParameters,
+          options: d.Options(
+            headers: {
+              'Authorization': 'Bearer $newToken',
+            },
+          ),
+        );
+      }
+
+      rethrow;
+    }
+  }
+
+  Future<d.Response<dynamic>> _authorizedDelete(
+    String path, {
+    required String accessToken,
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      return await dioClient.delete(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: d.Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+    } on d.DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        final refreshed = await authController.refreshAccessToken();
+
+        if (!refreshed) {
+          await authController.signOut();
+          throw Exception('Sesión expirada. Inicia sesión nuevamente.');
+        }
+
+        final newToken = authController.accessToken;
+        if (newToken == null || newToken.isEmpty) {
+          throw Exception('No se pudo obtener un nuevo token');
+        }
+
+        return await dioClient.delete(
+          path,
+          data: data,
+          queryParameters: queryParameters,
+          options: d.Options(
+            headers: {
+              'Authorization': 'Bearer $newToken',
+            },
+          ),
+        );
+      }
+
+      rethrow;
+    }
+  }
 
   @override
   Future<void> createAssessment({
@@ -24,9 +165,7 @@ class AssessmentsSourceService implements IAssessmentsSource {
     required String endAt,
     required bool status,
   }) async {
-    if (_isMockApi) {
-      return;
-    }
+    if (_isMockApi) return;
 
     final parsedCourseCode = int.tryParse(courseCode);
 
@@ -43,17 +182,13 @@ class AssessmentsSourceService implements IAssessmentsSource {
     };
 
     try {
-      final response = await dio.post(
+      final response = await _authorizedPost(
         '$databaseBaseUrl/insert',
+        accessToken: accessToken,
         data: {
           'tableName': 'Assessments',
           'records': [record],
         },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
       );
 
       final inserted = response.data['inserted'] as List<dynamic>? ?? [];
@@ -67,20 +202,18 @@ class AssessmentsSourceService implements IAssessmentsSource {
         throw Exception('ROBLE no devolvió registros insertados');
       }
 
-      await dio.get(
+      await _authorizedGet(
         '$databaseBaseUrl/read',
+        accessToken: accessToken,
         queryParameters: {
           'tableName': 'Assessments',
           'TeacherEmail': teacherEmail,
         },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-          },
-        ),
       );
-    } on DioException catch (e) {
-      throw Exception(e.response?.data.toString() ?? 'Error creando evaluación');
+    } on d.DioException catch (e) {
+      throw Exception(
+        e.response?.data.toString() ?? 'Error creando evaluación',
+      );
     }
   }
 
@@ -89,21 +222,15 @@ class AssessmentsSourceService implements IAssessmentsSource {
     required String accessToken,
     required String teacherEmail,
   }) async {
-    if (_isMockApi) {
-      return [];
-    }
+    if (_isMockApi) return [];
 
-    final response = await dio.get(
+    final response = await _authorizedGet(
       '$databaseBaseUrl/read',
+      accessToken: accessToken,
       queryParameters: {
         'tableName': 'Assessments',
         'TeacherEmail': teacherEmail,
       },
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-      ),
     );
 
     final List<dynamic> data = response.data;
@@ -116,21 +243,15 @@ class AssessmentsSourceService implements IAssessmentsSource {
     required String courseCode,
     required String groupCode,
   }) async {
-    if (_isMockApi) {
-      return [];
-    }
+    if (_isMockApi) return [];
 
-    final response = await dio.get(
+    final response = await _authorizedGet(
       '$databaseBaseUrl/read',
+      accessToken: accessToken,
       queryParameters: {
         'tableName': 'Assessments',
         'CourseCode': int.tryParse(courseCode) ?? courseCode,
       },
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-      ),
     );
 
     final List<dynamic> data = response.data;
@@ -142,21 +263,15 @@ class AssessmentsSourceService implements IAssessmentsSource {
     required String accessToken,
     required List<Map<String, dynamic>> records,
   }) async {
-    if (_isMockApi) {
-      return;
-    }
+    if (_isMockApi) return;
 
-    final response = await dio.post(
+    final response = await _authorizedPost(
       '$databaseBaseUrl/insert',
+      accessToken: accessToken,
       data: {
         'tableName': 'AssessmentResponses',
         'records': records,
       },
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-      ),
     );
 
     if (response.statusCode != 200) {
@@ -170,22 +285,16 @@ class AssessmentsSourceService implements IAssessmentsSource {
     required String assessmentId,
     required String evaluatorEmail,
   }) async {
-    if (_isMockApi) {
-      return false;
-    }
+    if (_isMockApi) return false;
 
-    final response = await dio.get(
+    final response = await _authorizedGet(
       '$databaseBaseUrl/read',
+      accessToken: accessToken,
       queryParameters: {
         'tableName': 'AssessmentResponses',
         'AssessmentId': assessmentId,
         'EvaluatorEmail': evaluatorEmail,
       },
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-      ),
     );
 
     final List<dynamic> data = response.data;
@@ -197,21 +306,15 @@ class AssessmentsSourceService implements IAssessmentsSource {
     required String accessToken,
     required String assessmentId,
   }) async {
-    if (_isMockApi) {
-      return [];
-    }
+    if (_isMockApi) return [];
 
-    final response = await dio.get(
+    final response = await _authorizedGet(
       '$databaseBaseUrl/read',
+      accessToken: accessToken,
       queryParameters: {
         'tableName': 'AssessmentResponses',
         'AssessmentId': assessmentId,
       },
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-      ),
     );
 
     final List<dynamic> data = response.data;
@@ -223,21 +326,15 @@ class AssessmentsSourceService implements IAssessmentsSource {
     required String accessToken,
     required String groupCode,
   }) async {
-    if (_isMockApi) {
-      return [];
-    }
+    if (_isMockApi) return [];
 
-    final response = await dio.get(
+    final response = await _authorizedGet(
       '$databaseBaseUrl/read',
+      accessToken: accessToken,
       queryParameters: {
         'tableName': 'GroupMembers',
         'GroupCode': groupCode,
       },
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-      ),
     );
 
     final List<dynamic> data = response.data;
@@ -249,25 +346,79 @@ class AssessmentsSourceService implements IAssessmentsSource {
     required String accessToken,
     required List<Map<String, dynamic>> records,
   }) async {
-    if (_isMockApi) {
-      return;
-    }
+    if (_isMockApi) return;
 
-    final response = await dio.post(
-      '$databaseBaseUrl/insert',
+    try {
+      final response = await _authorizedPost(
+        '$databaseBaseUrl/insert',
+        accessToken: accessToken,
+        data: {
+          'tableName': 'AssessmentResults',
+          'records': records,
+        },
+      );
+
+      final data = response.data;
+      final inserted =
+          data is Map ? (data['inserted'] as List<dynamic>? ?? []) : [];
+      final skipped =
+          data is Map ? (data['skipped'] as List<dynamic>? ?? []) : [];
+
+      if (inserted.isEmpty && skipped.isNotEmpty) {
+        throw Exception('ROBLE omitió la inserción: $skipped');
+      }
+
+      if (inserted.isEmpty) {
+        throw Exception('ROBLE no devolvió resultados insertados');
+      }
+    } on d.DioException catch (e) {
+      throw Exception(
+        e.response?.data.toString() ??
+            e.message ??
+            'Error publicando resultados',
+      );
+    }
+  }
+
+  @override
+  Future<void> deleteAssessmentResults({
+    required String accessToken,
+    required String assessmentId,
+  }) async {
+    if (_isMockApi) return;
+
+    final existingResponse = await _authorizedGet(
+      '$databaseBaseUrl/read',
+      accessToken: accessToken,
+      queryParameters: {
+        'tableName': 'AssessmentResults',
+        'AssessmentId': assessmentId,
+      },
+    );
+
+    final List<dynamic> existing = existingResponse.data;
+
+    if (existing.isEmpty) return;
+
+    final ids = existing
+        .map((e) => Map<String, dynamic>.from(e))
+        .map((e) => e['_id']?.toString() ?? '')
+        .where((id) => id.isNotEmpty)
+        .toList();
+
+    if (ids.isEmpty) return;
+
+    final response = await _authorizedDelete(
+      '$databaseBaseUrl/delete',
+      accessToken: accessToken,
       data: {
         'tableName': 'AssessmentResults',
-        'records': records,
+        'ids': ids,
       },
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-      ),
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Error publicando resultados');
+      throw Exception('Error eliminando resultados previos');
     }
   }
 }

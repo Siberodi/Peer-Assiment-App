@@ -4,17 +4,19 @@ import '../models/group_member.dart';
 abstract class IGroupsRepository {
   Future<List<Group>> getGroupsByCourse(
     String courseCode,
-    String accessToken,
-  );
+    String accessToken, {
+    bool forceRefresh = false,
+  });
 
   Future<List<GroupMember>> getStudentsByGroup(
     String groupCode,
     String accessToken,
   );
-  
+
   Future<List<GroupMember>> getStudentGroupsByCourse(
-  String courseCode,
-  String studentEmail,
-  String accessToken,
-  );
+    String courseCode,
+    String studentEmail,
+    String accessToken, {
+    bool forceRefresh = false,
+  });
 }

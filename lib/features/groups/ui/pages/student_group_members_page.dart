@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
+
 import '../../../../controllers/authentication_controller.dart';
+import '../../../../core/shared_preferences_service.dart';
+import '../../data/datasources/local/groups_cache_source.dart';
 import '../../data/datasources/remote/groups_source_service.dart';
 import '../../data/repositories/groups_repository.dart';
 import '../viewmodels/groups_controller.dart';
@@ -17,7 +20,8 @@ class StudentGroupMembersPage extends StatefulWidget {
   });
 
   @override
-  State<StudentGroupMembersPage> createState() => _StudentGroupMembersPageState();
+  State<StudentGroupMembersPage> createState() =>
+      _StudentGroupMembersPageState();
 }
 
 class _StudentGroupMembersPageState extends State<StudentGroupMembersPage> {
@@ -31,9 +35,17 @@ class _StudentGroupMembersPageState extends State<StudentGroupMembersPage> {
     final source = GroupsSourceService(
       dio: Dio(),
       databaseBaseUrl: authController.databaseBaseUrl,
+      authController: authController,
     );
 
-    final repository = GroupsRepository(source: source);
+    final cacheSource = GroupsCacheSource(
+      SharedPreferencesService(),
+    );
+
+    final repository = GroupsRepository(
+      source: source,
+      cacheSource: cacheSource,
+    );
 
     groupsController = Get.put(
       GroupsController(repository: repository),
@@ -55,7 +67,7 @@ class _StudentGroupMembersPageState extends State<StudentGroupMembersPage> {
     const background = Color(0xFFF3F3F3);
 
     final currentStudentEmail =
-    authController.currentUser.value?.email.trim().toLowerCase() ?? '';
+        authController.currentUser.value?.email.trim().toLowerCase() ?? '';
 
     return Scaffold(
       backgroundColor: background,
@@ -85,7 +97,8 @@ class _StudentGroupMembersPageState extends State<StudentGroupMembersPage> {
         }
 
         final peers = groupsController.students.where((student) {
-          return student.studentEmail.trim().toLowerCase() != currentStudentEmail;
+          return student.studentEmail.trim().toLowerCase() !=
+              currentStudentEmail;
         }).toList();
 
         if (peers.isEmpty) {

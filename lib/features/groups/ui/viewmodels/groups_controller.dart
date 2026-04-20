@@ -10,12 +10,15 @@ class GroupsController extends GetxController {
 
   final RxList<Group> groups = <Group>[].obs;
   final RxList<GroupMember> students = <GroupMember>[].obs;
+  final RxList<GroupMember> studentGroups = <GroupMember>[].obs;
+
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
 
   Future<void> loadGroupsByCourse({
     required String courseCode,
     required String accessToken,
+    bool forceRefresh = false,
   }) async {
     try {
       isLoading.value = true;
@@ -24,6 +27,7 @@ class GroupsController extends GetxController {
       final result = await repository.getGroupsByCourse(
         courseCode,
         accessToken,
+        forceRefresh: forceRefresh,
       );
 
       groups.assignAll(result);
@@ -54,12 +58,12 @@ class GroupsController extends GetxController {
       isLoading.value = false;
     }
   }
-  final RxList<GroupMember> studentGroups = <GroupMember>[].obs;
 
   Future<void> loadStudentGroupsByCourse({
     required String courseCode,
     required String studentEmail,
     required String accessToken,
+    bool forceRefresh = false,
   }) async {
     try {
       isLoading.value = true;
@@ -69,6 +73,7 @@ class GroupsController extends GetxController {
         courseCode,
         studentEmail,
         accessToken,
+        forceRefresh: forceRefresh,
       );
 
       studentGroups.assignAll(result);
@@ -78,6 +83,7 @@ class GroupsController extends GetxController {
       isLoading.value = false;
     }
   }
+
   Future<int> getPeerCountForGroup({
     required String groupCode,
     required String studentEmail,

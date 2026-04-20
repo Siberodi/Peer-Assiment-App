@@ -14,4 +14,26 @@ class Group {
     required this.teacherEmail,
     required this.createdAt,
   });
+
+  factory Group.fromJson(Map<String, dynamic> json) {
+    return Group(
+      id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
+      courseCode: json['CourseCode']?.toString() ?? '',
+      groupCode: json['GroupCode']?.toString() ?? '',
+      groupName: json['GroupName']?.toString() ?? '',
+      teacherEmail: json['TeacherEmail']?.toString() ?? '',
+      createdAt: json['CreatedAt']?.toString() ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'CourseCode': courseCode,
+      'GroupCode': groupCode,
+      'GroupName': groupName,
+      'TeacherEmail': teacherEmail,
+      'CreatedAt': createdAt,
+    };
+  }
 }

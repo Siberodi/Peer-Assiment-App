@@ -14,6 +14,7 @@ class CoursesController extends GetxController {
   Future<void> loadTeacherCourses({
     required String teacherEmail,
     required String accessToken,
+    bool forceRefresh = false,
   }) async {
     try {
       isLoading.value = true;
@@ -22,6 +23,7 @@ class CoursesController extends GetxController {
       final result = await repository.getTeacherCourses(
         teacherEmail,
         accessToken,
+        forceRefresh: forceRefresh,
       );
 
       courses.assignAll(result);
@@ -35,6 +37,7 @@ class CoursesController extends GetxController {
   Future<void> loadStudentCourses({
     required String studentEmail,
     required String accessToken,
+    bool forceRefresh = false,
   }) async {
     try {
       isLoading.value = true;
@@ -43,6 +46,7 @@ class CoursesController extends GetxController {
       final result = await repository.getStudentCourses(
         studentEmail,
         accessToken,
+        forceRefresh: forceRefresh,
       );
 
       courses.assignAll(result);

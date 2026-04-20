@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
+
 import '../../../../controllers/authentication_controller.dart';
+import '../../../../core/shared_preferences_service.dart';
+import '../../data/datasources/local/courses_cache_source.dart';
 import '../../data/datasources/remote/courses_source_service.dart';
 import '../../data/repositories/courses_repository.dart';
 import '../viewmodels/courses_controller.dart';
@@ -27,10 +30,17 @@ class _StudentCoursesPageState extends State<StudentCoursesPage> {
       databaseBaseUrl: authController.databaseBaseUrl,
     );
 
-    final repository = CoursesRepository(source: source);
+    final localPreferences = SharedPreferencesService();
+    final cacheSource = CoursesCacheSource(localPreferences);
+
+    final repository = CoursesRepository(
+      source: source,
+      cacheSource: cacheSource,
+    );
 
     coursesController = Get.put(
       CoursesController(repository: repository),
+      tag: 'student_courses',
     );
 
     final studentEmail = authController.currentUser.value?.email;
@@ -94,10 +104,12 @@ class _StudentCoursesPageState extends State<StudentCoursesPage> {
                 subtitle: Text('Código: ${course.courseCode}'),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
-                  Get.to(() => StudentCourseGroupsPage(
-                        courseCode: course.courseCode,
-                        courseName: course.courseName,
-                      ));
+                  Get.to(
+                    () => StudentCourseGroupsPage(
+                      courseCode: course.courseCode,
+                      courseName: course.courseName,
+                    ),
+                  );
                 },
               ),
             );

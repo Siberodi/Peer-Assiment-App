@@ -21,27 +21,35 @@ abstract class IAssessmentsSource {
     required String courseCode,
     required String groupCode,
   });
-    Future<void> submitAssessmentResponses({
+
+  Future<void> submitAssessmentResponses({
     required String accessToken,
     required List<Map<String, dynamic>> records,
   });
+
   Future<bool> hasStudentSubmittedAssessment({
-  required String accessToken,
-  required String assessmentId,
-  required String evaluatorEmail,
-});
-Future<List<Map<String, dynamic>>> getAssessmentResponses({
-  required String accessToken,
-  required String assessmentId,
-});
+    required String accessToken,
+    required String assessmentId,
+    required String evaluatorEmail,
+  });
 
-Future<List<Map<String, dynamic>>> getGroupMembers({
-  required String accessToken,
-  required String groupCode,
-});
+  Future<List<Map<String, dynamic>>> getAssessmentResponses({
+    required String accessToken,
+    required String assessmentId,
+  });
 
-Future<void> publishAssessmentResults({
-  required String accessToken,
-  required List<Map<String, dynamic>> records,
-});
+  Future<List<Map<String, dynamic>>> getGroupMembers({
+    required String accessToken,
+    required String groupCode,
+  });
+
+  Future<void> publishAssessmentResults({
+    required String accessToken,
+    required List<Map<String, dynamic>> records,
+  });
+
+  Future<void> deleteAssessmentResults({
+    required String accessToken,
+    required String assessmentId,
+  });
 }

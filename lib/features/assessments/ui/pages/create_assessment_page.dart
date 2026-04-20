@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
+
 import '../../../../controllers/authentication_controller.dart';
 import '../../data/datasources/remote/assessments_source_service.dart';
 import '../../data/repositories/assessments_repository.dart';
@@ -31,13 +33,19 @@ class _CreateAssessmentPageState extends State<CreateAssessmentPage> {
 
   bool visibility = true;
 
+  static const Color greenDark = Color(0xFF517A46);
+  static const Color greenLight = Color(0xFFCAEDC0);
+  static const Color white = Colors.white;
+  static const Color background = Color(0xFFF8FBF7);
+
   @override
   void initState() {
     super.initState();
 
     final source = AssessmentsSourceService(
-      dio: Dio(),
+      dioClient: Dio(),
       databaseBaseUrl: authController.databaseBaseUrl,
+      authController: authController,
     );
 
     final repository = AssessmentsRepository(source: source);
@@ -48,12 +56,35 @@ class _CreateAssessmentPageState extends State<CreateAssessmentPage> {
     );
   }
 
+  String formatDateTime(DateTime? value) {
+    if (value == null) return '';
+    final day = value.day.toString().padLeft(2, '0');
+    final month = value.month.toString().padLeft(2, '0');
+    final year = value.year.toString();
+    final hour = value.hour.toString().padLeft(2, '0');
+    final minute = value.minute.toString().padLeft(2, '0');
+    return '$day/$month/$year - $hour:$minute';
+  }
+
   Future<void> pickDateTime({required bool isStart}) async {
     final pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2024),
       lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: greenDark,
+              onPrimary: white,
+              surface: white,
+              onSurface: greenDark,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (pickedDate == null) return;
@@ -61,6 +92,19 @@ class _CreateAssessmentPageState extends State<CreateAssessmentPage> {
     final pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: greenDark,
+              onPrimary: white,
+              surface: white,
+              onSurface: greenDark,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (pickedTime == null) return;
@@ -91,12 +135,22 @@ class _CreateAssessmentPageState extends State<CreateAssessmentPage> {
     if (nameController.text.trim().isEmpty ||
         startDateTime == null ||
         endDateTime == null) {
-      Get.snackbar('Error', 'Completa todos los campos');
+      Get.snackbar(
+        'Error',
+        'Completa todos los campos',
+        backgroundColor: white,
+        colorText: greenDark,
+      );
       return;
     }
 
     if (endDateTime!.isBefore(startDateTime!)) {
-      Get.snackbar('Error', 'La fecha final debe ser posterior a la inicial');
+      Get.snackbar(
+        'Error',
+        'La fecha final debe ser posterior a la inicial',
+        backgroundColor: white,
+        colorText: greenDark,
+      );
       return;
     }
 
@@ -113,12 +167,22 @@ class _CreateAssessmentPageState extends State<CreateAssessmentPage> {
     );
 
     if (controller.errorMessage.value.isNotEmpty) {
-      Get.snackbar('Error', controller.errorMessage.value);
+      Get.snackbar(
+        'Error',
+        controller.errorMessage.value,
+        backgroundColor: white,
+        colorText: greenDark,
+      );
       return;
     }
 
     Get.back();
-    Get.snackbar('Éxito', 'Evaluación creada correctamente');
+    Get.snackbar(
+      'Éxito',
+      'Evaluación creada correctamente',
+      backgroundColor: white,
+      colorText: greenDark,
+    );
   }
 
   @override
@@ -127,75 +191,265 @@ class _CreateAssessmentPageState extends State<CreateAssessmentPage> {
     super.dispose();
   }
 
+  Widget buildHeader() {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [greenLight, greenDark],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              IconButton(
+                onPressed: () => Get.back(),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                color: white,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
+              const SizedBox(height: 12),
+              const Center(
+                child: Text(
+                  'Crear Evaluación',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildSectionCard({required Widget child}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: greenLight, width: 1.4),
+      ),
+      child: child,
+    );
+  }
+
+  Widget buildFieldLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: greenDark,
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
+  Widget buildTextField() {
+    return TextField(
+      controller: nameController,
+      style: const TextStyle(
+        color: greenDark,
+        fontSize: 16,
+      ),
+      decoration: InputDecoration(
+        hintText: 'Escribe el nombre de la evaluación',
+        hintStyle: TextStyle(
+          color: greenDark.withValues(alpha: 0.55),
+          fontSize: 15,
+        ),
+        filled: true,
+        fillColor: white,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: greenLight,
+            width: 1.5,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: greenDark,
+            width: 1.5,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildDateButton({
+    required String title,
+    required String value,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+          decoration: BoxDecoration(
+            color: greenLight.withValues(alpha: 0.45),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: greenLight),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: greenDark,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                value.isEmpty ? 'Seleccionar' : value,
+                style: TextStyle(
+                  color: value.isEmpty
+                      ? greenDark.withValues(alpha: 0.65)
+                      : greenDark,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildVisibilityTile() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: greenLight.withValues(alpha: 0.35),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: greenLight),
+      ),
+      child: Row(
+        children: [
+          const Expanded(
+            child: Text(
+              'Visible para estudiantes',
+              style: TextStyle(
+                color: greenDark,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          CupertinoSwitch(
+            value: visibility,
+            activeTrackColor: greenDark,
+            inactiveTrackColor: greenLight,
+            onChanged: (val) {
+              setState(() {
+                visibility = val;
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildCreateButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: createAssessment,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: greenDark,
+          foregroundColor: white,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(vertical: 18),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+        ),
+        child: const Text(
+          'Crear evaluación',
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    const greenDark = Color(0xFF577F49);
-    const background = Color(0xFFF3F3F3);
-
     return Scaffold(
       backgroundColor: background,
-      appBar: AppBar(
-        title: const Text('Crear Evaluación'),
-        backgroundColor: greenDark,
-        foregroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: 'Nombre de la evaluación',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => pickDateTime(isStart: true),
-                    child: Text(
-                      startDateTime == null
-                          ? 'Inicio'
-                          : startDateTime.toString(),
+      body: Column(
+        children: [
+          buildHeader(),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(18),
+              child: Column(
+                children: [
+                  buildSectionCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        buildFieldLabel('Nombre de la evaluación'),
+                        buildTextField(),
+                        const SizedBox(height: 20),
+                        buildFieldLabel('Fechas'),
+                        Row(
+                          children: [
+                            buildDateButton(
+                              title: 'Inicio',
+                              value: formatDateTime(startDateTime),
+                              onTap: () => pickDateTime(isStart: true),
+                            ),
+                            const SizedBox(width: 12),
+                            buildDateButton(
+                              title: 'Fin',
+                              value: formatDateTime(endDateTime),
+                              onTap: () => pickDateTime(isStart: false),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        buildFieldLabel('Visibilidad'),
+                        buildVisibilityTile(),
+                      ],
                     ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => pickDateTime(isStart: false),
-                    child: Text(
-                      endDateTime == null
-                          ? 'Fin'
-                          : endDateTime.toString(),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            SwitchListTile(
-              title: const Text('Visible para estudiantes'),
-              value: visibility,
-              onChanged: (val) {
-                setState(() {
-                  visibility = val;
-                });
-              },
-            ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: createAssessment,
-                child: const Text('Crear evaluación'),
+                  const SizedBox(height: 24),
+                  buildCreateButton(),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
