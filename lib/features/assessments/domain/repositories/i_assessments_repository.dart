@@ -1,4 +1,4 @@
-import '../models/assessment.dart';
+import 'package:peer_assiment_app_1/features/assessments/domain/models/assessment.dart';
 
 abstract class IAssessmentsRepository {
   Future<void> createAssessment({

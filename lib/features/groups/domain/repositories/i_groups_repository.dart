@@ -1,5 +1,7 @@
-import '../models/group.dart';
-import '../models/group_member.dart';
+import 'package:get/get.dart';
+import 'package:peer_assiment_app_1/features/groups/domain/models/group.dart';
+import 'package:peer_assiment_app_1/features/groups/domain/models/group_member.dart';
+import 'package:peer_assiment_app_1/features/groups/domain/repositories/i_groups_repository.dart';
 
 abstract class IGroupsRepository {
   Future<List<Group>> getGroupsByCourse(

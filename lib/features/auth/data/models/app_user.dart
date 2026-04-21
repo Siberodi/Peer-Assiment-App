@@ -1,4 +1,4 @@
-import '../core/app_role.dart';
+import 'package:peer_assiment_app_1/core/app_role.dart';
 
 class AppUser {
   final String email;

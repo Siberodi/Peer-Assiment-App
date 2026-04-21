@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/authentication_controller.dart';
-import '../core/app_role.dart';
-import '../Home/home.dart';
-import '../Home/professor_home.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/core/app_role.dart';
+import 'package:peer_assiment_app_1/features/home/ui/pages/home.dart';
+import 'package:peer_assiment_app_1/features/home/ui/pages/professor_home.dart';
 
 class VerifyEmailScreen extends StatefulWidget {
   final String email;

@@ -5,8 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:app/controllers/authentication_controller.dart';
-import 'package:app/models/app_user.dart';
+import 'package:app/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:app/features/auth/data/models/app_user.dart';
 import 'package:app/core/app_role.dart';
 import 'package:app/features/assessments/ui/pages/teacher_assessment_results_page.dart';
 

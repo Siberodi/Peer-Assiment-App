@@ -1,6 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'i_local_preferences.dart';
+import 'package:peer_assiment_app_1/core/i_local_preferences.dart';
 
 class SharedPreferencesService implements ILocalPreferences {
   @override

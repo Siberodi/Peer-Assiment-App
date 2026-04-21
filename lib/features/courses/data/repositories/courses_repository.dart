@@ -1,7 +1,7 @@
-import '../../domain/models/course.dart';
-import '../../domain/repositories/i_courses_repository.dart';
-import '../datasources/local/i_courses_cache_source.dart';
-import '../datasources/remote/i_courses_source.dart';
+import 'package:peer_assiment_app_1/features/courses/domain/models/course.dart';
+import 'package:peer_assiment_app_1/features/courses/domain/repositories/i_courses_repository.dart';
+import 'package:peer_assiment_app_1/features/courses/data/datasources/local/i_courses_cache_source.dart';
+import 'package:peer_assiment_app_1/features/courses/data/datasources/remote/i_courses_source.dart';
 
 class CoursesRepository implements ICoursesRepository {
   final ICoursesSource source;

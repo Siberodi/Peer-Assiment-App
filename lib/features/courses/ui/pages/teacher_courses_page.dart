@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 
-import '../../../../controllers/authentication_controller.dart';
-import '../../../../core/shared_preferences_service.dart';
-import '../../data/datasources/local/courses_cache_source.dart';
-import '../../data/datasources/remote/courses_source_service.dart';
-import '../../data/repositories/courses_repository.dart';
-import '../viewmodels/courses_controller.dart';
-import '../../../groups/ui/pages/teacher_course_groups_page.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/core/shared_preferences_service.dart';
+import 'package:peer_assiment_app_1/features/courses/data/datasources/local/courses_cache_source.dart';
+import 'package:peer_assiment_app_1/features/courses/data/datasources/remote/courses_source_service.dart';
+import 'package:peer_assiment_app_1/features/courses/data/repositories/courses_repository.dart';
+import 'package:peer_assiment_app_1/features/courses/ui/viewmodels/courses_controller.dart';
+import 'package:peer_assiment_app_1/features/groups/ui/pages/teacher_course_groups_page.dart';
 
 class TeacherCoursesPage extends StatefulWidget {
   const TeacherCoursesPage({super.key});

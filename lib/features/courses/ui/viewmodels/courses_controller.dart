@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import '../../domain/models/course.dart';
-import '../../domain/repositories/i_courses_repository.dart';
+import 'package:peer_assiment_app_1/features/courses/domain/models/course.dart';
+import 'package:peer_assiment_app_1/features/courses/domain/repositories/i_courses_repository.dart';
 
 class CoursesController extends GetxController {
   final ICoursesRepository repository;

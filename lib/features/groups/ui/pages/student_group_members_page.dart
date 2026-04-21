@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 
-import '../../../../controllers/authentication_controller.dart';
-import '../../../../core/shared_preferences_service.dart';
-import '../../data/datasources/local/groups_cache_source.dart';
-import '../../data/datasources/remote/groups_source_service.dart';
-import '../../data/repositories/groups_repository.dart';
-import '../viewmodels/groups_controller.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/core/shared_preferences_service.dart';
+import 'package:peer_assiment_app_1/features/groups/data/datasources/local/groups_cache_source.dart';
+import 'package:peer_assiment_app_1/features/groups/data/datasources/remote/groups_source_service.dart';
+import 'package:peer_assiment_app_1/features/groups/data/repositories/groups_repository.dart';
+import 'package:peer_assiment_app_1/features/groups/ui/viewmodels/groups_controller.dart';
 
 class StudentGroupMembersPage extends StatefulWidget {
   final String groupCode;

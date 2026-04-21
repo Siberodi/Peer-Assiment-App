@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import '../../domain/models/assessment.dart';
-import '../../domain/repositories/i_assessments_repository.dart';
+import 'package:peer_assiment_app_1/features/assessments/domain/models/assessment.dart';
+import 'package:peer_assiment_app_1/features/assessments/domain/repositories/i_assessments_repository.dart';
 
 class AssessmentsController extends GetxController {
   final IAssessmentsRepository repository;

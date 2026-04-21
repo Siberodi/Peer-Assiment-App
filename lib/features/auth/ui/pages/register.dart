@@ -1,52 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/authentication_controller.dart';
-import '../core/app_role.dart';
-import '../Home/home.dart';
-import '../Home/professor_home.dart';
-import 'register.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/core/app_role.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/pages/login.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/pages/verify_email.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final controllerEmail = TextEditingController();
+  final controllerName = TextEditingController();
   final controllerPassword = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   final AuthenticationController authenticationController = Get.find();
 
   bool obscurePassword = true;
+  AppRole? selectedRole;
 
-  Future<void> _login() async {
-    try {
-      await authenticationController.signIn(
-        controllerEmail.text,
-        controllerPassword.text,
+  Future<void> _register() async {
+    if (selectedRole == null) {
+      Get.snackbar(
+        'Registro',
+        'Debes seleccionar si eres estudiante o docente',
+        snackPosition: SnackPosition.BOTTOM,
       );
+      return;
+    }
+
+    try {
+        print('UI register -> antes de signUp');
+        await authenticationController.signUp(
+          controllerEmail.text,
+          controllerPassword.text,
+          controllerName.text,
+          selectedRole!,
+        );
+        print('UI register -> después de signUp');
 
       if (Get.testMode) return;
 
-      final user = authenticationController.currentUser.value;
-
       Get.snackbar(
-        'Login',
-        'Inicio de sesión exitoso',
+        'Registro',
+        'Revisa tu correo para verificar la cuenta',
         snackPosition: SnackPosition.BOTTOM,
       );
 
-      if (user?.role == AppRole.student) {
-        Get.offAll(() => const HomeScreen());
-      } else {
-        Get.offAll(() => const ProfessorHomeScreen());
-      }
+        // AQUÍ EN VEZ DE IR AL HOME
+      Get.to(() => VerifyEmailScreen(
+          email: controllerEmail.text,
+          password: controllerPassword.text,
+          name: controllerName.text,
+          role: selectedRole!,
+        ));
+      
     } catch (err) {
       Get.snackbar(
-        'Login',
+        'Registro',
         err.toString().replaceFirst('Exception: ', ''),
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -56,6 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void dispose() {
     controllerEmail.dispose();
+    controllerName.dispose();
     controllerPassword.dispose();
     super.dispose();
   }
@@ -79,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 bottom: false,
                 child: Center(
                   child: Text(
-                    'Bienvenido',
+                    'Regístrate',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 28,
@@ -107,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Inicio de Sesión',
+                        'Registrarse',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
@@ -137,6 +153,29 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                           if (!value.contains('@')) {
                             return 'Correo inválido';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 28),
+                      const Text(
+                        'Nombre',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      TextFormField(
+                        key: const Key('nameField'),
+                        controller: controllerName,
+                        decoration: const InputDecoration(
+                          isDense: true,
+                          border: UnderlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Ingresa tu nombre';
                           }
                           return null;
                         },
@@ -175,23 +214,75 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (value == null || value.isEmpty) {
                             return 'Ingresa tu contraseña';
                           }
-                          if (value.length < 6) {
-                            return 'Mínimo 6 caracteres';
-                          }
+                          final password = value.trim();
+                          if (
+                                password.length < 8 ||
+                                !RegExp(r'[A-Z]').hasMatch(password) ||
+                                !RegExp(r'[a-z]').hasMatch(password) ||
+                                !RegExp(r'[0-9]').hasMatch(password) ||
+                                !RegExp(r'[!@#\$_-]').hasMatch(password)
+                              ) {
+                              return 'La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo (! @ # \$ _ -)';
+                            }
                           return null;
                         },
                       ),
-                      const SizedBox(height: 42),
+                      const SizedBox(height: 22),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              const Text(
+                                'Estudiante',
+                                style: TextStyle(
+                                  color: greenDark,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Checkbox(
+                                value: selectedRole == AppRole.student,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedRole = value == true ? AppRole.student : null;
+                                  });
+                                },
+                              )
+                            ],
+                          ),
+                          const SizedBox(width: 16),
+                          Row(
+                            children: [
+                              const Text(
+                                'Docente',
+                                style: TextStyle(
+                                  color: greenDark,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Checkbox(
+                                value: selectedRole == AppRole.teacher,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedRole = value == true ? AppRole.teacher : null;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 26),
                       SizedBox(
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
-                          key: const Key('loginButton'),
+                          key: const Key('registerButton'),
                           onPressed: () async {
                             FocusScope.of(context).unfocus();
 
                             if (formKey.currentState!.validate()) {
-                              await _login();
+                              await _register();
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -203,7 +294,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           child: const Text(
-                            'Inicio de Sesión',
+                            'Registrarse',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -216,16 +307,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            'No tienes cuenta? ',
+                            'Ya tienes cuenta? ',
                             style: TextStyle(
                               fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w500,
                               color: Colors.black87,
                             ),
                           ),
                           TextButton(
                             onPressed: () {
-                              Get.to(() => const RegisterScreen());
+                              Get.off(() => const LoginScreen());
                             },
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
@@ -233,7 +324,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
                             child: const Text(
-                              'Regístrate',
+                              'Inicia Sesión',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,

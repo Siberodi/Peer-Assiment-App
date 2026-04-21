@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 
-import '../../../../controllers/authentication_controller.dart';
-import '../../../../core/shared_preferences_service.dart';
-import '../../data/datasources/local/courses_cache_source.dart';
-import '../../data/datasources/remote/courses_source_service.dart';
-import '../../data/repositories/courses_repository.dart';
-import '../viewmodels/courses_controller.dart';
-import '../../../groups/ui/pages/student_course_groups_page.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/core/shared_preferences_service.dart';
+import 'package:peer_assiment_app_1/features/courses/data/datasources/local/courses_cache_source.dart';
+import 'package:peer_assiment_app_1/features/courses/data/datasources/remote/courses_source_service.dart';
+import 'package:peer_assiment_app_1/features/courses/data/repositories/courses_repository.dart';
+import 'package:peer_assiment_app_1/features/courses/ui/viewmodels/courses_controller.dart';
+import 'package:peer_assiment_app_1/features/groups/ui/pages/student_course_groups_page.dart';
+import 'package:peer_assiment_app_1/core/i_local_preferences.dart';
+
 
 class StudentCoursesPage extends StatefulWidget {
   const StudentCoursesPage({super.key});
@@ -22,37 +24,38 @@ class _StudentCoursesPageState extends State<StudentCoursesPage> {
   final AuthenticationController authController = Get.find();
 
   @override
-  void initState() {
-    super.initState();
+void initState() {
+  super.initState();
 
-    final source = CoursesSourceService(
-      dio: Dio(),
-      databaseBaseUrl: authController.databaseBaseUrl,
+  final source = CoursesSourceService(
+    dio: Dio(),
+    databaseBaseUrl: authController.databaseBaseUrl,
+  );
+
+  final ILocalPreferences localPreferences = SharedPreferencesService();
+
+  final cacheSource = CoursesCacheSource(localPreferences);
+
+  final repository = CoursesRepository(
+    source: source,
+    cacheSource: cacheSource,
+  );
+
+  coursesController = Get.put(
+    CoursesController(repository: repository),
+    tag: 'student_courses',
+  );
+
+  final studentEmail = authController.currentUser.value?.email;
+  final accessToken = authController.accessToken;
+
+  if (studentEmail != null && accessToken != null) {
+    coursesController.loadStudentCourses(
+      studentEmail: studentEmail,
+      accessToken: accessToken,
     );
-
-    final localPreferences = SharedPreferencesService();
-    final cacheSource = CoursesCacheSource(localPreferences);
-
-    final repository = CoursesRepository(
-      source: source,
-      cacheSource: cacheSource,
-    );
-
-    coursesController = Get.put(
-      CoursesController(repository: repository),
-      tag: 'student_courses',
-    );
-
-    final studentEmail = authController.currentUser.value?.email;
-    final accessToken = authController.accessToken;
-
-    if (studentEmail != null && accessToken != null) {
-      coursesController.loadStudentCourses(
-        studentEmail: studentEmail,
-        accessToken: accessToken,
-      );
-    }
   }
+}
 
   @override
   Widget build(BuildContext context) {

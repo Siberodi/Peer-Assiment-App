@@ -1,4 +1,4 @@
-import '../models/course.dart';
+import 'package:peer_assiment_app_1/features/courses/domain/models/course.dart';
 
 abstract class ICoursesRepository {
   Future<List<Course>> getTeacherCourses(

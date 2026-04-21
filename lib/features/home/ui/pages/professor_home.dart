@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
-import '../auth/login.dart';
-import '../controllers/authentication_controller.dart';
-import 'upload_csv.dart';
-import '../features/courses/ui/pages/teacher_courses_page.dart';
-import '../features/assessments/data/datasources/remote/assessments_source_service.dart';
-import '../features/assessments/data/repositories/assessments_repository.dart';
-import '../features/assessments/ui/viewmodels/assessments_controller.dart';
-import '../features/assessments/ui/pages/teacher_assessment_results_page.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/pages/login.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/home/ui/pages/upload_csv.dart';
+import 'package:peer_assiment_app_1/features/courses/ui/pages/teacher_courses_page.dart';
+import 'package:peer_assiment_app_1/features/assessments/data/datasources/remote/assessments_source_service.dart';
+import 'package:peer_assiment_app_1/features/assessments/data/repositories/assessments_repository.dart';
+import 'package:peer_assiment_app_1/features/assessments/ui/viewmodels/assessments_controller.dart';
+import 'package:peer_assiment_app_1/features/assessments/ui/pages/teacher_assessment_results_page.dart';
 
 class ProfessorHomeScreen extends StatefulWidget {
   const ProfessorHomeScreen({super.key});

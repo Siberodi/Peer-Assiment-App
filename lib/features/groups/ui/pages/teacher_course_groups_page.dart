@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 
-import '../../../../controllers/authentication_controller.dart';
-import '../../../../core/shared_preferences_service.dart';
-import '../../data/datasources/local/groups_cache_source.dart';
-import '../../data/datasources/remote/groups_source_service.dart';
-import '../../data/repositories/groups_repository.dart';
-import '../viewmodels/groups_controller.dart';
-import 'teacher_group_members_page.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/core/shared_preferences_service.dart';
+import 'package:peer_assiment_app_1/features/groups/data/datasources/local/groups_cache_source.dart';
+import 'package:peer_assiment_app_1/features/groups/data/datasources/remote/groups_source_service.dart';
+import 'package:peer_assiment_app_1/features/groups/data/repositories/groups_repository.dart';
+import 'package:peer_assiment_app_1/features/groups/ui/viewmodels/groups_controller.dart';
+import 'package:peer_assiment_app_1/features/groups/ui/pages/teacher_group_members_page.dart';
 
-import '../../../assessments/ui/pages/create_assessment_page.dart';
-import '../../../assessments/data/datasources/remote/assessments_source_service.dart';
-import '../../../assessments/data/repositories/assessments_repository.dart';
-import '../../../assessments/ui/viewmodels/assessments_controller.dart';
-import '../../../assessments/ui/pages/teacher_assessment_results_page.dart';
+import 'package:peer_assiment_app_1/features/assessments/ui/pages/create_assessment_page.dart';
+import 'package:peer_assiment_app_1/features/assessments/data/datasources/remote/assessments_source_service.dart';
+import 'package:peer_assiment_app_1/features/assessments/data/repositories/assessments_repository.dart';
+import 'package:peer_assiment_app_1/features/assessments/ui/viewmodels/assessments_controller.dart';
+import 'package:peer_assiment_app_1/features/assessments/ui/pages/teacher_assessment_results_page.dart';
 
 class TeacherCourseGroupsPage extends StatefulWidget {
   final String courseCode;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'controllers/authentication_controller.dart';
-import 'auth/login.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/pages/login.dart';
 
 void main() {
   Get.put(AuthenticationController());

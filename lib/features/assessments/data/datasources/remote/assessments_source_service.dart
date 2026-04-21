@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart' as d;
-import '../../../../../controllers/authentication_controller.dart';
-import 'i_assessments_source.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/assessments/data/datasources/remote/i_assessments_source.dart';
 
 class AssessmentsSourceService implements IAssessmentsSource {
   final d.Dio dioClient;

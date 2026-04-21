@@ -6,8 +6,8 @@ import 'package:dio/dio.dart' as dio;
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 
-import '../core/app_role.dart';
-import '../models/app_user.dart';
+import 'package:peer_assiment_app_1/core/app_role.dart';
+import 'package:peer_assiment_app_1/features/auth/data/models/app_user.dart';
 
 class AuthenticationController extends GetxController {
   final Rxn<AppUser> currentUser = Rxn<AppUser>();

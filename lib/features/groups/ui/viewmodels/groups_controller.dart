@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import '../../domain/models/group.dart';
-import '../../domain/models/group_member.dart';
-import '../../domain/repositories/i_groups_repository.dart';
+import 'package:peer_assiment_app_1/features/groups/domain/models/group.dart';
+import 'package:peer_assiment_app_1/features/groups/domain/models/group_member.dart';
+import 'package:peer_assiment_app_1/features/groups/domain/repositories/i_groups_repository.dart';
 
 class GroupsController extends GetxController {
   final IGroupsRepository repository;

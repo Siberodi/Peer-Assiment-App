@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../controllers/authentication_controller.dart';
-import '../viewmodels/assessments_controller.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/assessments/ui/viewmodels/assessments_controller.dart';
 
 class TeacherAssessmentResultsPage extends StatefulWidget {
   final String assessmentId;

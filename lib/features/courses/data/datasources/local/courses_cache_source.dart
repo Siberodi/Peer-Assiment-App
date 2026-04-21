@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import '../../../../../core/i_local_preferences.dart';
-import 'i_courses_cache_source.dart';
+import 'package:peer_assiment_app_1/core/i_local_preferences.dart';
+import 'package:peer_assiment_app_1/features/courses/data/datasources/local/i_courses_cache_source.dart';
 
 class CoursesCacheSource implements ICoursesCacheSource {
   final ILocalPreferences prefs;

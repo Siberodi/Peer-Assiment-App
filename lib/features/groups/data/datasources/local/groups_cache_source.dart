@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import '../../../../../core/i_local_preferences.dart';
-import ' i_groups_cache_source.dart';
+import 'package:peer_assiment_app_1/core/i_local_preferences.dart';
+import 'package:peer_assiment_app_1/features/groups/data/datasources/local/ i_groups_cache_source.dart';
 
 class GroupsCacheSource implements IGroupsCacheSource {
   final ILocalPreferences prefs;

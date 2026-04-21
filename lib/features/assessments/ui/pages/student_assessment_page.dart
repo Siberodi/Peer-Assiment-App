@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
-import '../../../../controllers/authentication_controller.dart';
-import '../../data/datasources/remote/assessments_source_service.dart';
-import '../../data/repositories/assessments_repository.dart';
-import '../viewmodels/assessments_controller.dart';
+
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/assessments/data/datasources/remote/assessments_source_service.dart';
+import 'package:peer_assiment_app_1/features/assessments/data/repositories/assessments_repository.dart';
+import 'package:peer_assiment_app_1/features/assessments/ui/viewmodels/assessments_controller.dart';
 
 class StudentAssessmentPage extends StatefulWidget {
   final String assessmentId;

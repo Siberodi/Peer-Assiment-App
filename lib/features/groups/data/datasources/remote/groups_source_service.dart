@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
-import '../../../../../controllers/authentication_controller.dart';
-import 'i_groups_source.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/groups/data/datasources/remote/i_groups_source.dart';
 
 class GroupsSourceService implements IGroupsSource {
   final Dio dio;
