@@ -7,7 +7,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 
 import 'package:peer_assiment_app_1/core/app_role.dart';
+import 'package:peer_assiment_app_1/core/shared_preferences_service.dart';
 import 'package:peer_assiment_app_1/features/auth/data/models/app_user.dart';
+import 'package:peer_assiment_app_1/features/courses/data/datasources/local/courses_cache_source.dart';
+import 'package:peer_assiment_app_1/features/groups/data/datasources/local/groups_cache_source.dart';
 
 class AuthenticationController extends GetxController {
   final Rxn<AppUser> currentUser = Rxn<AppUser>();
@@ -499,6 +502,17 @@ class AuthenticationController extends GetxController {
           createdGroupMembers.add(groupMemberKey);
         }
       }
+
+      final coursesCache = CoursesCacheSource(SharedPreferencesService());
+      final groupsCache = GroupsCacheSource(SharedPreferencesService());
+
+      await coursesCache.clearAllTeacherAndStudentCoursesCache();
+
+      for (final courseCode in createdCourses) {
+        await groupsCache.clearGroupsByCourseCache(courseCode);
+      }
+
+      await groupsCache.clearAllStudentGroupsCache();
     } on dio.DioException catch (e) {
       throw Exception(
         _extractErrorMessage(e, fallback: 'Error subiendo CSV'),

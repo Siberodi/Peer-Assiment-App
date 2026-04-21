@@ -32,4 +32,6 @@ abstract class IGroupsCacheSource {
     String courseCode,
     String studentEmail,
   );
+
+  Future<void> clearAllStudentGroupsCache();
 }

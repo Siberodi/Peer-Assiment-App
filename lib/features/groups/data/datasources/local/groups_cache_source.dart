@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:peer_assiment_app_1/core/i_local_preferences.dart';
 import 'package:peer_assiment_app_1/features/groups/data/datasources/local/ i_groups_cache_source.dart';
 
@@ -38,6 +39,7 @@ class GroupsCacheSource implements IGroupsCacheSource {
     try {
       final timestampStr =
           await prefs.getString(_groupsByCourseTimestampKey(courseCode));
+
       if (timestampStr == null) return false;
 
       final timestamp = DateTime.parse(timestampStr);
@@ -99,6 +101,7 @@ class GroupsCacheSource implements IGroupsCacheSource {
       final timestampStr = await prefs.getString(
         _studentGroupsByCourseTimestampKey(courseCode, studentEmail),
       );
+
       if (timestampStr == null) return false;
 
       final timestamp = DateTime.parse(timestampStr);
@@ -162,5 +165,18 @@ class GroupsCacheSource implements IGroupsCacheSource {
     await prefs.remove(
       _studentGroupsByCourseTimestampKey(courseCode, studentEmail),
     );
+  }
+
+  @override
+  Future<void> clearAllStudentGroupsCache() async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+
+    final keys = sharedPrefs.getKeys().where((key) {
+      return key.startsWith('student_groups_');
+    }).toList();
+
+    for (final key in keys) {
+      await prefs.remove(key);
+    }
   }
 }

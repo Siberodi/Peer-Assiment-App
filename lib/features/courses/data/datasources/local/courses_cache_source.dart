@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:peer_assiment_app_1/core/i_local_preferences.dart';
 import 'package:peer_assiment_app_1/features/courses/data/datasources/local/i_courses_cache_source.dart';
 
@@ -29,6 +30,7 @@ class CoursesCacheSource implements ICoursesCacheSource {
     try {
       final timestampStr =
           await prefs.getString(_teacherCoursesTimestampKey(teacherEmail));
+
       if (timestampStr == null) return false;
 
       final timestamp = DateTime.parse(timestampStr);
@@ -86,6 +88,7 @@ class CoursesCacheSource implements ICoursesCacheSource {
     try {
       final timestampStr =
           await prefs.getString(_studentCoursesTimestampKey(studentEmail));
+
       if (timestampStr == null) return false;
 
       final timestamp = DateTime.parse(timestampStr);
@@ -136,5 +139,19 @@ class CoursesCacheSource implements ICoursesCacheSource {
   Future<void> clearStudentCoursesCache(String studentEmail) async {
     await prefs.remove(_studentCoursesKey(studentEmail));
     await prefs.remove(_studentCoursesTimestampKey(studentEmail));
+  }
+
+  @override
+  Future<void> clearAllTeacherAndStudentCoursesCache() async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+
+    final keys = sharedPrefs.getKeys().where((key) {
+      return key.startsWith('teacher_courses_') ||
+          key.startsWith('student_courses_');
+    }).toList();
+
+    for (final key in keys) {
+      await prefs.remove(key);
+    }
   }
 }

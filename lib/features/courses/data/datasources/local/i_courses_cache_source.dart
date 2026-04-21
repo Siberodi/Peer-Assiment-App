@@ -24,4 +24,6 @@ abstract class ICoursesCacheSource {
   );
 
   Future<void> clearStudentCoursesCache(String studentEmail);
+
+  Future<void> clearAllTeacherAndStudentCoursesCache();
 }
