@@ -298,18 +298,7 @@ Esta integración continuará aplicándose en las siguientes etapas del desarrol
 ---
 
 
-## Propósito de al app
-
-El propósito principal de la aplicación es digitalizar y optimizar el proceso de evaluación entre pares dentro de trabajos académicos grupales. En lugar de depender de procesos manuales, hojas de cálculo o mecanismos externos dispersos, el sistema centraliza la gestión académica y el flujo de evaluación en una sola plataforma móvil.
-
-Además de permitir la evaluación, la aplicación busca:
-
-- mejorar la organización de cursos y grupos,
-- facilitar la configuración de evaluaciones,
-- consolidar automáticamente resultados,
-- y ofrecer una experiencia de usuario clara tanto para docentes como para estudiantes.
-
-## Funcionalidades principales
+## Funcionalidades principales 
 
 ### Para docentes
 - Registro e inicio de sesión.
