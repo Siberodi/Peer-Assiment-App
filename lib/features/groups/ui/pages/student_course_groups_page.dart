@@ -58,10 +58,11 @@ class _StudentCourseGroupsPageState extends State<StudentCourseGroupsPage> {
 
     if (accessToken != null && studentEmail != null) {
       groupsController.loadStudentGroupsByCourse(
-        courseCode: widget.courseCode,
-        studentEmail: studentEmail,
-        accessToken: accessToken,
-      );
+  courseCode: widget.courseCode,
+  studentEmail: studentEmail,
+  accessToken: accessToken,
+  forceRefresh: true,
+);
     }
   }
 

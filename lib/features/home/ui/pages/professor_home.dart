@@ -39,6 +39,17 @@ class _ProfessorHomeScreenState extends State<ProfessorHomeScreen> {
     }
   }
 
+  Future<void> _handleCsvUpload() async {
+    final uploaded = await Get.to<bool>(() => const UploadCsvScreen());
+
+    if (uploaded == true) {
+      await _reloadTeacherAssessments();
+      if (mounted) {
+        setState(() {});
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -126,10 +137,7 @@ class _ProfessorHomeScreenState extends State<ProfessorHomeScreen> {
                         width: double.infinity,
                         height: 52,
                         child: ElevatedButton.icon(
-                          onPressed: () async {
-                            await Get.to(() => const UploadCsvScreen());
-                            await _reloadTeacherAssessments();
-                          },
+                          onPressed: _handleCsvUpload,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: greenSoft,
                             foregroundColor: greenDark,
@@ -156,6 +164,9 @@ class _ProfessorHomeScreenState extends State<ProfessorHomeScreen> {
                           onPressed: () async {
                             await Get.to(() => const TeacherCoursesPage());
                             await _reloadTeacherAssessments();
+                            if (mounted) {
+                              setState(() {});
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: greenDark,

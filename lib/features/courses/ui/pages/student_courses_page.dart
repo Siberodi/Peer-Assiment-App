@@ -51,9 +51,10 @@ void initState() {
 
   if (studentEmail != null && accessToken != null) {
     coursesController.loadStudentCourses(
-      studentEmail: studentEmail,
-      accessToken: accessToken,
-    );
+  studentEmail: studentEmail,
+  accessToken: accessToken,
+  forceRefresh: true,
+);
   }
 }
 

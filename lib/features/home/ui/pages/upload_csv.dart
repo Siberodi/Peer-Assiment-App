@@ -24,6 +24,8 @@ class UploadCsvScreen extends StatelessWidget {
                 'Grupos y estudiantes cargados correctamente',
                 snackPosition: SnackPosition.BOTTOM,
               );
+
+              Get.back(result: true);
             } catch (e) {
               Get.snackbar(
                 'Error',

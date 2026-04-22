@@ -88,9 +88,10 @@ class _TeacherCourseGroupsPageState extends State<TeacherCourseGroupsPage> {
 
     if (accessToken != null) {
       groupsController.loadGroupsByCourse(
-        courseCode: widget.courseCode,
-        accessToken: accessToken,
-      );
+  courseCode: widget.courseCode,
+  accessToken: accessToken,
+  forceRefresh: true,
+);
 
       if (teacherEmail != null) {
         assessmentsController.loadTeacherAssessments(
