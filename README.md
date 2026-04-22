@@ -293,71 +293,431 @@ Las primeras pantallas implementadas en el proyecto utilizan la **estructura del
 Esta integración continuará aplicándose en las siguientes etapas del desarrollo para construir una experiencia de usuario consistente en toda la aplicación.
 
 ---
+# Detalles finales de la implementacion y propuesta 
 
-##  Pruebas Automatizadas
-
-Este proyecto incluye pruebas en dos niveles:
-
-### Nivel 1 - Widget Tests con Mockito
-Validan UI y comportamiento:
-- Home
-- Login
-- Register
-- Verify Email
-
-### Nivel 3 - Integración
-Valida flujo completo de autenticación usando:
-- UI real
-- Controller real
-- Red mockeada (FakeDio)
-
-Se implementaron pruebas automatizadas en el proyecto siguiendo dos niveles:
-
-Nivel 1 (Widget Tests):
-- HomeScreen
-- LoginScreen
-- RegisterScreen
-- VerifyEmailScreen
-
-Estas pruebas validan la interfaz gráfica, la interacción del usuario y la correcta renderización de elementos.
-
-Nivel 3 (Integración):
-- Se desarrolló un test para LoginScreen que utiliza:
-  - Widget real
-  - AuthenticationController real
-  - Cliente HTTP simulado (MOCK FakeDio)
-
-Este test valida el flujo completo de autenticación (login + consulta de usuario) sin depender de servicios externos.
-
-Ejecución de pruebas:
-flutter test -r expanded
+---
 
 
+## Propósito de al app
+
+El propósito principal de la aplicación es digitalizar y optimizar el proceso de evaluación entre pares dentro de trabajos académicos grupales. En lugar de depender de procesos manuales, hojas de cálculo o mecanismos externos dispersos, el sistema centraliza la gestión académica y el flujo de evaluación en una sola plataforma móvil.
+
+Además de permitir la evaluación, la aplicación busca:
+
+- mejorar la organización de cursos y grupos,
+- facilitar la configuración de evaluaciones,
+- consolidar automáticamente resultados,
+- y ofrecer una experiencia de usuario clara tanto para docentes como para estudiantes.
+
+## Funcionalidades principales
+
+### Para docentes
+- Registro e inicio de sesión.
+- Gestión de cursos.
+- Carga de archivos CSV para creación masiva de cursos, grupos y asignación de estudiantes.
+- Visualización de cursos y grupos.
+- Creación de evaluaciones.
+- Definición de nombre, fechas, visibilidad y estado de la evaluación.
+- Visualización de evaluaciones activas e inactivas.
+- Consulta de respuestas y resultados agregados.
+- Publicación de resultados para estudiantes.
+
+### Para estudiantes
+- Registro, verificación de correo e inicio de sesión.
+- Visualización de cursos asociados.
+- Visualización de grupos y compañeros.
+- Consulta de evaluaciones activas.
+- Evaluación de compañeros con criterios definidos.
+- Consulta de resultados publicados.
+
+## Alcance
+
+El alcance actual de la solución cubre el flujo académico esencial del proceso de evaluación entre pares:
+
+- autenticación por roles,
+- gestión básica de cursos y grupos,
+- carga de estructura académica mediante CSV,
+- creación y respuesta de evaluaciones,
+- consolidación y publicación de resultados,
+- y optimización de ciertas consultas mediante caché local.
+
+La aplicación se encuentra en un estado funcional para demostrar un flujo completo de uso dentro del contexto académico planteado.
+
+---
+
+# 2. Arquitectura de la solución
+
+La aplicación fue estructurada bajo un enfoque de **Clean Architecture**, organizado por módulos o features. Esta decisión permite mantener una separación clara de responsabilidades y facilita la evolución del sistema a medida que se agregan nuevas funcionalidades.
+
+## Enfoque general
+
+La arquitectura se divide en tres capas principales:
+
+### Presentation Layer
+Contiene la interfaz construida en Flutter y los controladores de estado utilizando **GetX**.  
+Aquí se encuentran:
+
+- páginas,
+- widgets,
+- controladores/viewmodels,
+- y lógica relacionada con la interacción del usuario.
+
+### Domain Layer
+Define las reglas del negocio y los contratos principales del sistema.  
+Aquí se encuentran:
+
+- modelos,
+- entidades,
+- interfaces de repositorios.
+
+Esta capa representa la lógica central del sistema y permanece desacoplada de detalles de infraestructura.
+
+### Data Layer
+Implementa el acceso a datos y conecta la aplicación con fuentes remotas y locales.  
+Aquí se encuentran:
+
+- datasources remotos,
+- datasources locales,
+- implementaciones de repositorios.
+
+## Organización por módulos
+
+El sistema se encuentra organizado por funcionalidades principales:
+
+- `auth`
+- `courses`
+- `groups`
+- `assessments`
+- `home`
+
+Esta estructura permite que cada módulo evolucione de manera más aislada, facilitando el mantenimiento y la escalabilidad.
+
+## Decisión arquitectónica principal
+
+Se decidió mantener **una sola aplicación móvil** con múltiples roles, en lugar de construir aplicaciones separadas para docentes y estudiantes. Esta decisión aporta:
+
+- mayor mantenibilidad,
+- menor duplicación de lógica,
+- consistencia de experiencia de usuario,
+- y una base de código más escalable.
+
+---
+
+# 3. Tecnologías utilizadas
+
+El proyecto fue desarrollado con las siguientes tecnologías y herramientas:
+
+- **Flutter**: framework principal para desarrollo móvil multiplataforma.
+- **Dart**: lenguaje de programación.
+- **GetX**: gestión de estado, navegación e inyección de dependencias.
+- **Dio**: cliente HTTP para comunicación con servicios externos.
+- **SharedPreferences**: almacenamiento local para implementación de caché.
+- **Mockito**: soporte para pruebas automatizadas.
+- **CSV package**: procesamiento de archivos CSV.
+- **File Picker**: selección de archivos desde el dispositivo.
+- **ROBLE API**: autenticación y persistencia de datos.
+
+---
+
+# 4. Funcionalidades implementadas
+
+## Gestión de autenticación
+- Registro de usuarios.
+- Verificación de correo.
+- Inicio y cierre de sesión.
+- Gestión de roles: docente y estudiante.
+- Renovación de token de acceso.
+
+## Gestión académica
+- Carga de estructura académica mediante CSV.
+- Creación de cursos.
+- Creación de grupos.
+- Registro de estudiantes por curso.
+- Registro de miembros por grupo.
+
+## Evaluación entre pares
+- Creación de evaluaciones por parte del docente.
+- Definición de fechas de inicio y fin.
+- Activación e inactivación según estado y tiempo.
+- Respuesta de evaluación por parte de estudiantes.
+- Validación de envío único por estudiante.
+- Consulta de respuestas por parte del docente.
+- Cálculo de resultados agregados.
+- Publicación de resultados.
+
+## Visualización de resultados
+- Consulta de resultados publicados en el perfil del estudiante.
+- Visualización de nombre de la evaluación, curso y promedio.
+- Distinción entre resultados provisionales y finales.
+
+---
+
+# 5. Gestión de caché
+
+Como parte de la optimización del sistema, se implementó una estrategia de caché local en los módulos de **courses** y **groups**.
+
+## Objetivo de la caché
+
+Reducir llamadas innecesarias a la API y mejorar la velocidad de carga de pantallas que consultan datos relativamente estables.
+
+## Datos cacheados
+
+### En `courses`
+- cursos del docente,
+- cursos del estudiante.
+
+### En `groups`
+- grupos por curso,
+- grupos del estudiante por curso.
+
+## Estrategia de funcionamiento
+
+La lógica de caché se implementó a través de:
+
+- una interfaz de caché (`ICoursesCacheSource`, `IGroupsCacheSource`),
+- una implementación concreta con `SharedPreferences`,
+- y repositorios que deciden si leer desde caché o desde la API.
+
+El flujo general es:
+
+1. la UI solicita datos al controller,
+2. el controller delega al repository,
+3. el repository verifica si la caché sigue vigente,
+4. si es válida, devuelve datos locales,
+5. si no es válida, consulta la API,
+6. guarda la nueva respuesta junto con un timestamp,
+7. y retorna los datos a la interfaz.
+
+## TTL e invalidación
+
+La caché incluye un timestamp que permite validar su vigencia mediante un TTL.
+
+Además, se implementó una invalidación manual en un caso crítico: la **subida del CSV**.  
+Como este proceso crea o modifica cursos, grupos y miembros, la caché de cursos y grupos se limpia automáticamente cuando la carga finaliza con éxito.
+
+También se incorporó `forceRefresh` en flujos específicos para garantizar que, después de ciertos eventos, la UI vuelva a consultar directamente la API.
+
+---
+
+# 6. Pruebas automatizadas
+
+El proyecto incluye pruebas automatizadas en distintos niveles.
+
+## Nivel 1 - Widget Tests
+Se implementaron pruebas para validar componentes y comportamientos de interfaz en pantallas como:
+
+- `HomeScreen`
+- `LoginScreen`
+- `RegisterScreen`
+- `VerifyEmailScreen`
+
+Estas pruebas verifican:
+
+- renderización de componentes,
+- interacción básica del usuario,
+- presencia de elementos esperados,
+- y comportamiento visual controlado.
+
+## Nivel 3 - Integración
+Se implementaron pruebas de integración para validar flujos completos del sistema, particularmente relacionados con autenticación y navegación.
+
+Estas pruebas utilizan:
+
+- interfaz real,
+- controller real,
+- red simulada mediante cliente mockeado.
+
+## Importancia de las pruebas
+Las pruebas automatizadas permitieron:
+
+- validar la estabilidad de la interfaz,
+- comprobar flujos completos de uso,
+- detectar regresiones durante cambios del proyecto,
+- y aumentar la confianza sobre la versión final funcional.
+
+---
+
+# 7. Estructura del proyecto
+
+Una versión simplificada de la estructura del proyecto es la siguiente:
+
+```text
+lib/
+├── core/
+├── features/
+│   ├── auth/
+│   ├── courses/
+│   ├── groups/
+│   ├── assessments/
+│   └── home/
+└── main.dart
+```
+Esta organización responde a un enfoque **modular basado en funcionalidades**, lo que permite que cada parte del sistema esté mejor separada, sea más fácil de mantener y pueda crecer de forma ordenada.
+
+### `main.dart`
+
+Es el punto de entrada de la aplicación.  
+Desde este archivo se inicializa Flutter, se configura la aplicación principal y se registran dependencias iniciales necesarias para arrancar el sistema.
+
+En términos prácticos, `main.dart` es el archivo que pone en marcha toda la app.
+
+---
+
+### `core/`
+
+La carpeta `core` contiene componentes compartidos por varios módulos del sistema.  
+Aquí se ubican recursos reutilizables que no pertenecen a una funcionalidad específica, pero que son necesarios para el funcionamiento general de la aplicación.
+
+Por ejemplo, en esta carpeta se incluyen:
+
+- definiciones globales como roles de usuario,
+- abstracciones para acceso a preferencias locales,
+- servicios compartidos como `SharedPreferencesService`,
+- y utilidades base que pueden ser reutilizadas por distintos módulos.
+
+El objetivo de `core` es centralizar elementos transversales y evitar duplicación de lógica.
+
+---
+
+### `features/`
+
+La carpeta `features` organiza el sistema por funcionalidades del negocio.  
+En lugar de agrupar únicamente por tipo de archivo, el proyecto se estructura por módulos funcionales, lo que mejora la mantenibilidad y hace más clara la relación entre lógica, datos e interfaz.
+
+Cada feature suele dividirse internamente en tres capas:
+
+- `data/`
+- `domain/`
+- `ui/`
+
+#### `data/`
+
+Contiene la lógica de acceso a datos. Aquí se ubican:
+
+- datasources remotos,
+- datasources locales,
+- implementaciones de caché,
+- implementaciones concretas de repositorios.
+
+Esta capa define cómo se obtiene, almacena o consulta la información.
+
+#### `domain/`
+
+Contiene la lógica central del negocio. Aquí se ubican:
+
+- modelos,
+- entidades,
+- contratos de repositorios.
+
+Esta capa representa qué necesita hacer el sistema, sin depender directamente de detalles de infraestructura.
+
+#### `ui/`
+
+Contiene la capa de presentación. Aquí se ubican:
+
+- páginas,
+- controladores o viewmodels,
+- widgets relacionados con la interacción del usuario.
+
+Esta capa es la que define la experiencia visual e interactiva de la aplicación.
+
+
+## Módulos principales
+
+### `features/auth/`
+
+Este módulo agrupa toda la lógica relacionada con autenticación y gestión del usuario.
+
+Incluye funcionalidades como:
+
+- registro de usuarios,
+- verificación de correo,
+- inicio y cierre de sesión,
+- manejo de roles,
+- control de sesión,
+- y refresco de token.
+
+Es un módulo crítico porque define el acceso al sistema y determina qué funcionalidades estarán disponibles según el rol autenticado.
+
+---
+
+### `features/courses/`
+
+Este módulo se encarga de la gestión de cursos.
+
+Aquí se implementa la lógica necesaria para:
+
+- consultar cursos del docente,
+- consultar cursos del estudiante,
+- almacenar caché de cursos,
+- y exponer esta información a la interfaz.
+
+Su función principal es representar la relación entre los usuarios y los espacios académicos dentro de la aplicación.
+
+---
+
+### `features/groups/`
+
+Este módulo administra la estructura de grupos y miembros.
+
+Incluye funcionalidades como:
+
+- consulta de grupos por curso,
+- consulta de grupos del estudiante,
+- consulta de miembros de un grupo,
+- almacenamiento en caché de grupos,
+- y acceso a compañeros asociados.
+
+Este módulo es esencial para el proceso de evaluación entre pares, ya que define sobre quiénes puede evaluar cada estudiante.
+
+---
+
+### `features/assessments/`
+
+Este módulo contiene la lógica relacionada con las evaluaciones.
+
+Aquí se maneja:
+
+- creación de evaluaciones,
+- consulta de evaluaciones activas e inactivas,
+- envío de respuestas por parte de los estudiantes,
+- consulta de respuestas,
+- consolidación de resultados,
+- publicación de resultados,
+- y visualización de métricas asociadas.
+
+Este módulo representa el núcleo funcional del sistema, ya que implementa el flujo principal de evaluación entre pares.
+
+---
+
+### `features/home/`
+
+Este módulo agrupa las pantallas principales de navegación según el rol del usuario.
+
+Aquí se ubican vistas como:
+
+- el home del estudiante,
+- el home del docente,
+- accesos rápidos a funcionalidades principales,
+- navegación hacia cursos, grupos y evaluaciones,
+- y pantallas auxiliares como la carga de CSV.
+
+Su propósito es centralizar la experiencia inicial del usuario dentro de la aplicación.
+
+---
+
+## Ventajas de esta estructura
+
+Esta organización del proyecto aporta varios beneficios:
+
+- **Separación clara de responsabilidades:** cada módulo tiene un propósito específico.
+- **Mayor mantenibilidad:** es más fácil ubicar dónde vive cada parte de la lógica.
+- **Escalabilidad:** se pueden agregar nuevas funcionalidades sin desordenar la base de código.
+- **Reutilización:** los recursos comunes se centralizan en `core`.
+- **Mejor alineación con Clean Architecture:** la estructura favorece el desacoplamiento entre interfaz, lógica de negocio y acceso a datos.
+
+En conjunto, esta estructura permite que la aplicación evolucione de manera ordenada, manteniendo coherencia técnica y facilitando tanto el desarrollo como las pruebas del sistema.
 ##  Cómo ejecutar
-
-```bash
-flutter pub get
-flutter test -r expanded
-
----
-
-# 5. MUY IMPORTANTE
-
-Antes de subir, asegúrate de NO incluir:
-
-- `build/`
-- `.dart_tool/`
-- `.idea/`
-
-Si no tienes `.gitignore`, dime y te lo doy.
-
----
-
-# RESULTADO FINAL
-
-
-1. Clonar el repo  
-2. Ejecutar:
 
 ```bash
 flutter pub get
