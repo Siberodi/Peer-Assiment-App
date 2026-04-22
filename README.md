@@ -195,69 +195,6 @@ Al integrar elementos de ambos diseños, el sistema final se beneficia de:
 
 Este enfoque colaborativo de diseño garantiza que el flujo final del sistema no se limite a una sola perspectiva, sino que represente una **solución sintetizada a partir de múltiples iteraciones de diseño y de la contribución conjunta del equipo**.
 
-## Propuestas seleccionadas
-
-- **Propuesta de Sibeli Rodriguez** 
-**link de figma en donde se encuentra diseño de arquitectura y flujo de trabajo:** https://www.figma.com/design/4j8UsgSlzQwDYfqMSoJR4C/Peer-Assessment-App-SibeliRodriguez?node-id=0-1&t=qiE0SfnopRlZp2vH-1
-<img width="924" height="474" alt="Captura de pantalla 2026-03-04 a la(s) 8 18 24 a m" src="https://github.com/user-attachments/assets/951632a4-3364-4ad0-8e9d-bc65bcd598f5" />
-
-- **Propuesta de Juan Morales**
-**link de figma en donde se encuentra diseño de arquitectura y flujo de trabajo:** https://www.figma.com/design/UaG4cOGVYFf9znask4ky0l/Peer-Review-App?node-id=0-1&t=SiUXcwRFr1pXpfpb-1
-<img width="718" height="723" alt="Captura de pantalla 2026-02-25 a la(s) 2 20 00 p m" src="https://github.com/user-attachments/assets/9cdbe970-6fca-4604-8436-723920cee85f" />
-
-En lugar de descartar uno de los diseños, el equipo adoptó una **estrategia de integración (merge)** para la experiencia de usuario y la estructura de las pantallas.
-
-El producto final combinará progresivamente:
-
-- Patrones de navegación  
-- Jerarquía de pantallas  
-- Lógica de interacción  
-- Flujo de datos entre módulos  
-
-Esta integración se realizará de forma **iterativa durante el proceso de desarrollo**, permitiendo al equipo evaluar la usabilidad y el comportamiento del sistema a medida que se construye la aplicación.
-
-A medida que avance el desarrollo, el equipo realizará las siguientes acciones:
-
-- Implementar los flujos principales del sistema.  
-- Comparar la usabilidad entre los distintos diseños propuestos.  
-- Integrar los elementos de interfaz que proporcionen la mejor experiencia de usuario.  
-- Refinar progresivamente las pantallas del sistema.  
-
-Este enfoque flexible garantiza que la aplicación final evolucione hacia una **interfaz más intuitiva, coherente y técnicamente sólida**.
-
-
-## Integración de Diseños en las Primeras Pantallas del Sistema (Login y Home)
-
-Como parte del proceso de desarrollo de la interfaz de usuario de la aplicación, el equipo adoptó una estrategia de **integración progresiva de los diseños propuestos por los diferentes integrantes**. Este enfoque busca aprovechar las fortalezas presentes en cada propuesta para construir una interfaz que combine una estructura clara de interacción con una identidad visual consistente.
-
-Para el **primer paso del flujo del sistema**, correspondiente al acceso inicial de los usuarios, se desarrollaron las pantallas de **Login** y **Home**, las cuales representan el punto de entrada principal a la aplicación.
-
-En esta etapa del desarrollo se utilizó como base **la estructura de interfaz propuesta por Sibeli Rodríguez**, específicamente en lo relacionado con:
-
-- La organización general de los elementos dentro de la pantalla.
-- La jerarquía visual de los componentes.
-- La disposición de los campos de autenticación.
-- La ubicación de los botones de acción.
-- La separación entre secciones de contenido y elementos interactivos.
-
-Este diseño proporciona una **estructura clara y funcional**, permitiendo que el usuario identifique rápidamente los elementos necesarios para iniciar sesión y navegar dentro de la aplicación.
-
-Sin embargo, con el objetivo de mantener una **identidad visual uniforme**, se decidió incorporar los elementos gráficos del diseño desarrollado por **Juan Sebastián**, particularmente en los siguientes aspectos:
-
-- **Paleta de colores del sistema**
-- **Tipografía utilizada en títulos y textos**
-- **Estilos de botones**
-- **Apariencia visual de los campos de entrada**
-
-Gracias a esta combinación, las primeras pantallas del sistema integran elementos de ambas propuestas de la siguiente manera:
-
-- **Estructura del layout:** Diseño de Sibeli Rodríguez  
-- **Estilo visual (colores y tipografía):** Diseño de Juan Sebastián  Morales
-
-Este enfoque permite validar en la práctica cómo interactúan ambos diseños dentro de la implementación real de la aplicación, permitiendo realizar ajustes y mejoras a medida que el desarrollo avanza.
-
-Además, esta estrategia facilita un proceso de diseño **iterativo**, en el cual las futuras pantallas del sistema continuarán integrando y refinando elementos de ambas propuestas con el objetivo de lograr una interfaz final que sea tanto **intuitiva para el usuario como visualmente coherente**.
-
 ---
 
 ## Diseños Originales Propuestos
@@ -281,16 +218,10 @@ Este diseño aporta principalmente los **elementos de identidad visual del siste
 
 ---
 
-## Resultado de la Integración
+## Disenos finales de la propuesta 
+https://www.figma.com/design/UaG4cOGVYFf9znask4ky0l/Peer-Review-App?node-id=0-1&p=f&t=weJsNB1AcAWkuVEj-0
 
-Las primeras pantallas implementadas en el proyecto utilizan la **estructura del diseño de Sibeli combinada con la identidad visual del diseño de Juan Sebastián**, generando una interfaz equilibrada que combina claridad estructural con coherencia visual.
 
-<img width="581" height="543" alt="Captura de pantalla 2026-03-09 a la(s) 7 42 42 p m" src="https://github.com/user-attachments/assets/024dbe50-5d90-46af-85b5-55f794b950bd" />
-<img width="225" height="679" alt="Captura de pantalla 2026-03-09 a la(s) 7 48 50 p m" src="https://github.com/user-attachments/assets/e19abe62-ea9a-4c57-9861-0ab1990bc9bb" />
-
-<img width="234" height="496" alt="Captura de pantalla 2026-03-09 a la(s) 7 49 42 p m" src="https://github.com/user-attachments/assets/c81a83f8-bde0-47ae-87d4-ffd75722442d" />
-
-Esta integración continuará aplicándose en las siguientes etapas del desarrollo para construir una experiencia de usuario consistente en toda la aplicación.
 
 ---
 # Estado actual de la implementación
