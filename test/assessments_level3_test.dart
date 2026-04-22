@@ -1,17 +1,14 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
-import 'package:mockito/mockito.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:mockito/mockito.dart';
 
-import 'package:app/controllers/authentication_controller.dart';
-import 'package:app/core/app_role.dart';
-import 'package:app/models/app_user.dart';
-import 'package:app/features/assessments/ui/viewmodels/assessments_controller.dart';
-import 'package:app/features/assessments/data/repositories/assessments_repository.dart';
-import 'package:app/features/assessments/data/datasources/remote/assessments_source_service.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/core/app_role.dart';
+import 'package:peer_assiment_app_1/features/auth/data/models/app_user.dart';
+import 'package:peer_assiment_app_1/features/assessments/ui/viewmodels/assessments_controller.dart';
+import 'package:peer_assiment_app_1/features/assessments/data/repositories/assessments_repository.dart';
+import 'package:peer_assiment_app_1/features/assessments/data/datasources/remote/assessments_source_service.dart';
 
 class FakeDio extends Mock implements dio.Dio {
   bool shouldThrow = false;
@@ -81,7 +78,7 @@ void main() {
 
     fakeDio = FakeDio();
 
-    authController = AuthenticationController(dio: fakeDio);
+    authController = AuthenticationController(dioClient: fakeDio);
     authController.currentUser.value = AppUser(
       email: 'teacher@test.com',
       name: 'Profesor Test',
@@ -89,8 +86,9 @@ void main() {
     );
 
     final source = AssessmentsSourceService(
-      dio: fakeDio,
+      dioClient: fakeDio,
       databaseBaseUrl: 'https://test.com/database/test',
+      authController: authController,
     );
 
     final repository = AssessmentsRepository(source: source);

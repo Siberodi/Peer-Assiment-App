@@ -5,10 +5,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:app/Home/home.dart';
-import 'package:app/controllers/authentication_controller.dart';
-import 'package:app/models/app_user.dart';
-import 'package:app/core/app_role.dart';
+import 'package:peer_assiment_app_1/features/home/ui/pages/home.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/auth/data/models/app_user.dart';
+import 'package:peer_assiment_app_1/core/app_role.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override

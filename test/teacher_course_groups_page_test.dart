@@ -5,10 +5,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:app/controllers/authentication_controller.dart';
-import 'package:app/models/app_user.dart';
-import 'package:app/core/app_role.dart';
-import 'package:app/features/groups/ui/pages/teacher_course_groups_page.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/auth/data/models/app_user.dart';
+import 'package:peer_assiment_app_1/features/assessments/domain/models/assessment.dart';
+import 'package:peer_assiment_app_1/features/assessments/domain/repositories/i_assessments_repository.dart';
+import 'package:peer_assiment_app_1/features/assessments/ui/viewmodels/assessments_controller.dart';
+import 'package:peer_assiment_app_1/core/app_role.dart';
+import 'package:peer_assiment_app_1/features/groups/domain/models/group.dart';
+import 'package:peer_assiment_app_1/features/groups/domain/models/group_member.dart';
+import 'package:peer_assiment_app_1/features/groups/domain/repositories/i_groups_repository.dart';
+import 'package:peer_assiment_app_1/features/groups/ui/pages/teacher_course_groups_page.dart';
+import 'package:peer_assiment_app_1/features/groups/ui/viewmodels/groups_controller.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -27,6 +34,95 @@ class MockAuthenticationController extends AuthenticationController with Mock {
 
   @override
   String get databaseBaseUrl => 'http://mockapi.com';
+}
+
+class FakeGroupsRepository implements IGroupsRepository {
+  @override
+  Future<List<Group>> getGroupsByCourse(
+    String courseCode,
+    String accessToken, {
+    bool forceRefresh = false,
+  }) async => [];
+
+  @override
+  Future<List<GroupMember>> getStudentGroupsByCourse(
+    String courseCode,
+    String studentEmail,
+    String accessToken, {
+    bool forceRefresh = false,
+  }) async => [];
+
+  @override
+  Future<List<GroupMember>> getStudentsByGroup(
+    String groupCode,
+    String accessToken,
+  ) async => [];
+}
+
+class FakeAssessmentsRepository implements IAssessmentsRepository {
+  @override
+  Future<void> createAssessment({
+    required String accessToken,
+    required String assessmentName,
+    required String courseCode,
+    required String courseName,
+    required String teacherEmail,
+    required bool visibility,
+    required String startAt,
+    required String endAt,
+    required bool status,
+  }) async {}
+
+  @override
+  Future<List<Map<String, dynamic>>> getAssessmentResponses({
+    required String accessToken,
+    required String assessmentId,
+  }) async => [];
+
+  @override
+  Future<List<Map<String, dynamic>>> getGroupMembers({
+    required String accessToken,
+    required String groupCode,
+  }) async => [];
+
+  @override
+  Future<bool> hasStudentSubmittedAssessment({
+    required String accessToken,
+    required String assessmentId,
+    required String evaluatorEmail,
+  }) async => false;
+
+  @override
+  Future<void> publishAssessmentResults({
+    required String accessToken,
+    required List<Map<String, dynamic>> records,
+  }) async {}
+
+  @override
+  Future<void> replaceAssessmentResults({
+    required String accessToken,
+    required String assessmentId,
+    required List<Map<String, dynamic>> records,
+  }) async {}
+
+  @override
+  Future<void> submitAssessmentResponses({
+    required String accessToken,
+    required List<Map<String, dynamic>> records,
+  }) async {}
+
+  @override
+  Future<List<Assessment>> getStudentAssessments({
+    required String accessToken,
+    required String courseCode,
+    required String groupCode,
+  }) async => [];
+
+  @override
+  Future<List<Assessment>> getTeacherAssessments({
+    required String accessToken,
+    required String teacherEmail,
+  }) async => [];
 }
 
 void main() {
@@ -50,6 +146,14 @@ void main() {
     );
 
     Get.put<AuthenticationController>(controller);
+    Get.put<GroupsController>(
+      GroupsController(repository: FakeGroupsRepository()),
+      tag: 'teacher_groups_TEST101',
+    );
+    Get.put<AssessmentsController>(
+      AssessmentsController(repository: FakeAssessmentsRepository()),
+      tag: 'course_assessments_TEST101',
+    );
   });
 
   tearDown(() {
@@ -60,7 +164,7 @@ void main() {
     'TeacherCourseGroupsPage muestra nombre del curso en AppBar',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        const GetMaterialApp(
           home: TeacherCourseGroupsPage(
             courseCode: 'TEST101',
             courseName: 'Curso Test',
@@ -69,9 +173,9 @@ void main() {
       );
 
       await tester.pump();
-      await tester.pump(const Duration(seconds: 1));
+      await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.textContaining('Curso Test'), findsOneWidget);
+      expect(find.text('Curso Test'), findsOneWidget);
     },
   );
 
@@ -95,7 +199,7 @@ void main() {
     'TeacherCourseGroupsPage muestra botón crear evaluación',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        const GetMaterialApp(
           home: TeacherCourseGroupsPage(
             courseCode: 'TEST101',
             courseName: 'Curso Test',
@@ -104,10 +208,10 @@ void main() {
       );
 
       await tester.pump();
-      await tester.pump(const Duration(seconds: 1));
+      await tester.pump(const Duration(milliseconds: 100));
 
       expect(
-        find.textContaining('Crear evaluación para este curso'),
+        find.text('Crear evaluación para este curso'),
         findsOneWidget,
       );
     },
@@ -117,7 +221,7 @@ void main() {
     'TeacherCourseGroupsPage muestra sección evaluaciones',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        const GetMaterialApp(
           home: TeacherCourseGroupsPage(
             courseCode: 'TEST101',
             courseName: 'Curso Test',
@@ -126,9 +230,9 @@ void main() {
       );
 
       await tester.pump();
-      await tester.pump(const Duration(seconds: 1));
+      await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.textContaining('Evaluaciones del curso'), findsOneWidget);
+      expect(find.text('Evaluaciones'), findsOneWidget);
     },
   );
 
@@ -136,7 +240,7 @@ void main() {
     'TeacherCourseGroupsPage muestra mensaje sin grupos',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        const GetMaterialApp(
           home: TeacherCourseGroupsPage(
             courseCode: 'TEST101',
             courseName: 'Curso Test',
@@ -145,9 +249,13 @@ void main() {
       );
 
       await tester.pump();
-      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.textContaining('No hay grupos'), findsWidgets);
+      await tester.tap(find.text('Grupos'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text('No hay grupos en este curso'), findsOneWidget);
     },
   );
 }

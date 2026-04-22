@@ -5,10 +5,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:app/features/auth/ui/viewmodels/authentication_controller.dart';
-import 'package:app/features/auth/data/models/app_user.dart';
-import 'package:app/core/app_role.dart';
-import 'package:app/features/assessments/ui/pages/teacher_assessment_results_page.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/auth/data/models/app_user.dart';
+import 'package:peer_assiment_app_1/features/assessments/domain/models/assessment.dart';
+import 'package:peer_assiment_app_1/features/assessments/domain/repositories/i_assessments_repository.dart';
+import 'package:peer_assiment_app_1/features/assessments/ui/viewmodels/assessments_controller.dart';
+import 'package:peer_assiment_app_1/core/app_role.dart';
+import 'package:peer_assiment_app_1/features/assessments/ui/pages/teacher_assessment_results_page.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -29,8 +32,75 @@ class MockAuthenticationController extends AuthenticationController with Mock {
   String get databaseBaseUrl => 'http://mockapi.com';
 }
 
+class FakeAssessmentsRepository implements IAssessmentsRepository {
+  @override
+  Future<void> createAssessment({
+    required String accessToken,
+    required String assessmentName,
+    required String courseCode,
+    required String courseName,
+    required String teacherEmail,
+    required bool visibility,
+    required String startAt,
+    required String endAt,
+    required bool status,
+  }) async {}
+
+  @override
+  Future<List<Map<String, dynamic>>> getAssessmentResponses({
+    required String accessToken,
+    required String assessmentId,
+  }) async => [];
+
+  @override
+  Future<List<Map<String, dynamic>>> getGroupMembers({
+    required String accessToken,
+    required String groupCode,
+  }) async => [];
+
+  @override
+  Future<bool> hasStudentSubmittedAssessment({
+    required String accessToken,
+    required String assessmentId,
+    required String evaluatorEmail,
+  }) async => false;
+
+  @override
+  Future<void> publishAssessmentResults({
+    required String accessToken,
+    required List<Map<String, dynamic>> records,
+  }) async {}
+
+  @override
+  Future<void> replaceAssessmentResults({
+    required String accessToken,
+    required String assessmentId,
+    required List<Map<String, dynamic>> records,
+  }) async {}
+
+  @override
+  Future<void> submitAssessmentResponses({
+    required String accessToken,
+    required List<Map<String, dynamic>> records,
+  }) async {}
+
+  @override
+  Future<List<Assessment>> getStudentAssessments({
+    required String accessToken,
+    required String courseCode,
+    required String groupCode,
+  }) async => [];
+
+  @override
+  Future<List<Assessment>> getTeacherAssessments({
+    required String accessToken,
+    required String teacherEmail,
+  }) async => [];
+}
+
 void main() {
   late MockAuthenticationController controller;
+  late AssessmentsController assessmentsController;
 
   setUpAll(() {
     HttpOverrides.global = MyHttpOverrides();
@@ -50,6 +120,13 @@ void main() {
     );
 
     Get.put<AuthenticationController>(controller);
+    assessmentsController = AssessmentsController(
+      repository: FakeAssessmentsRepository(),
+    );
+    Get.put<AssessmentsController>(
+      assessmentsController,
+      tag: 'professor_home_assessments',
+    );
   });
 
   tearDown(() {
@@ -91,7 +168,7 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
 
       expect(find.byType(Scaffold), findsOneWidget);
-      expect(find.byType(AppBar), findsOneWidget);
+      expect(find.byIcon(Icons.publish_rounded), findsOneWidget);
     },
   );
 

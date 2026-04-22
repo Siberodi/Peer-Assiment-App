@@ -1,7 +1,7 @@
 import 'package:peer_assiment_app_1/features/groups/domain/models/group.dart';
 import 'package:peer_assiment_app_1/features/groups/domain/models/group_member.dart';
 import 'package:peer_assiment_app_1/features/groups/domain/repositories/i_groups_repository.dart';
-import 'package:peer_assiment_app_1/features/groups/data/datasources/local/ i_groups_cache_source.dart';
+import 'package:peer_assiment_app_1/features/groups/data/datasources/local/i_groups_cache_source.dart';
 import 'package:peer_assiment_app_1/features/groups/data/datasources/remote/i_groups_source.dart';
 
 class GroupsRepository implements IGroupsRepository {

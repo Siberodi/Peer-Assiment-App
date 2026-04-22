@@ -1,14 +1,15 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:app/controllers/authentication_controller.dart';
-import 'package:app/models/app_user.dart';
-import 'package:app/core/app_role.dart';
-import 'package:app/features/assessments/ui/pages/create_assessment_page.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/auth/data/models/app_user.dart';
+import 'package:peer_assiment_app_1/core/app_role.dart';
+import 'package:peer_assiment_app_1/features/assessments/ui/pages/create_assessment_page.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -111,8 +112,8 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 
-      expect(find.byType(SwitchListTile), findsOneWidget);
-      expect(find.textContaining('Visible'), findsOneWidget);
+      expect(find.byType(CupertinoSwitch), findsOneWidget);
+      expect(find.textContaining('Visible para estudiantes'), findsOneWidget);
     },
   );
 
@@ -160,4 +161,3 @@ void main() {
   );
 
 }
-

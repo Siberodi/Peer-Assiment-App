@@ -5,10 +5,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:app/controllers/authentication_controller.dart';
-import 'package:app/models/app_user.dart';
-import 'package:app/core/app_role.dart';
-import 'package:app/features/courses/ui/pages/student_courses_page.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/auth/data/models/app_user.dart';
+import 'package:peer_assiment_app_1/core/app_role.dart';
+import 'package:peer_assiment_app_1/features/courses/domain/models/course.dart';
+import 'package:peer_assiment_app_1/features/courses/domain/repositories/i_courses_repository.dart';
+import 'package:peer_assiment_app_1/features/courses/ui/pages/student_courses_page.dart';
+import 'package:peer_assiment_app_1/features/courses/ui/viewmodels/courses_controller.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -27,6 +30,22 @@ class MockAuthenticationController extends AuthenticationController with Mock {
 
   @override
   String get databaseBaseUrl => 'http://mockapi.com';
+}
+
+class FakeCoursesRepository implements ICoursesRepository {
+  @override
+  Future<List<Course>> getStudentCourses(
+    String studentEmail,
+    String accessToken, {
+    bool forceRefresh = false,
+  }) async => [];
+
+  @override
+  Future<List<Course>> getTeacherCourses(
+    String teacherEmail,
+    String accessToken, {
+    bool forceRefresh = false,
+  }) async => [];
 }
 
 void main() {
@@ -50,6 +69,10 @@ void main() {
     );
 
     Get.put<AuthenticationController>(controller);
+    Get.put<CoursesController>(
+      CoursesController(repository: FakeCoursesRepository()),
+      tag: 'student_courses',
+    );
   });
 
   tearDown(() {
@@ -102,8 +125,8 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
 
       expect(
-        find.textContaining('No perteneces a cursos'),
-        findsWidgets,
+        find.text('No perteneces a cursos todavía'),
+        findsOneWidget,
       );
     },
   );

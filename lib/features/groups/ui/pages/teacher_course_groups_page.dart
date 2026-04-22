@@ -35,6 +35,9 @@ class _TeacherCourseGroupsPageState extends State<TeacherCourseGroupsPage> {
   late final GroupsController groupsController;
   late final AssessmentsController assessmentsController;
   final AuthenticationController authController = Get.find();
+  String get _groupsControllerTag => 'teacher_groups_${widget.courseCode}';
+  String get _assessmentsControllerTag =>
+      'course_assessments_${widget.courseCode}';
 
   int selectedTab = 0;
 
@@ -49,49 +52,61 @@ class _TeacherCourseGroupsPageState extends State<TeacherCourseGroupsPage> {
   void initState() {
     super.initState();
 
-    final source = GroupsSourceService(
-      dio: Dio(),
-      databaseBaseUrl: authController.databaseBaseUrl,
-      authController: authController,
-    );
+    if (Get.isRegistered<GroupsController>(tag: _groupsControllerTag)) {
+      groupsController = Get.find<GroupsController>(tag: _groupsControllerTag);
+    } else {
+      final source = GroupsSourceService(
+        dio: Dio(),
+        databaseBaseUrl: authController.databaseBaseUrl,
+        authController: authController,
+      );
 
-    final cacheSource = GroupsCacheSource(
-      SharedPreferencesService(),
-    );
+      final cacheSource = GroupsCacheSource(
+        SharedPreferencesService(),
+      );
 
-    final repository = GroupsRepository(
-      source: source,
-      cacheSource: cacheSource,
-    );
+      final repository = GroupsRepository(
+        source: source,
+        cacheSource: cacheSource,
+      );
 
-    groupsController = Get.put(
-      GroupsController(repository: repository),
-      tag: 'teacher_groups_${widget.courseCode}',
-    );
+      groupsController = Get.put(
+        GroupsController(repository: repository),
+        tag: _groupsControllerTag,
+      );
+    }
 
-    final assessmentsSource = AssessmentsSourceService(
-  dioClient: Dio(),
-  databaseBaseUrl: authController.databaseBaseUrl,
-  authController: authController,
-);
-    final assessmentsRepository = AssessmentsRepository(
-      source: assessmentsSource,
-    );
+    if (Get.isRegistered<AssessmentsController>(
+      tag: _assessmentsControllerTag,
+    )) {
+      assessmentsController = Get.find<AssessmentsController>(
+        tag: _assessmentsControllerTag,
+      );
+    } else {
+      final assessmentsSource = AssessmentsSourceService(
+        dioClient: Dio(),
+        databaseBaseUrl: authController.databaseBaseUrl,
+        authController: authController,
+      );
+      final assessmentsRepository = AssessmentsRepository(
+        source: assessmentsSource,
+      );
 
-    assessmentsController = Get.put(
-      AssessmentsController(repository: assessmentsRepository),
-      tag: 'course_assessments_${widget.courseCode}',
-    );
+      assessmentsController = Get.put(
+        AssessmentsController(repository: assessmentsRepository),
+        tag: _assessmentsControllerTag,
+      );
+    }
 
     final accessToken = authController.accessToken;
     final teacherEmail = authController.currentUser.value?.email;
 
     if (accessToken != null) {
       groupsController.loadGroupsByCourse(
-  courseCode: widget.courseCode,
-  accessToken: accessToken,
-  forceRefresh: true,
-);
+        courseCode: widget.courseCode,
+        accessToken: accessToken,
+        forceRefresh: true,
+      );
 
       if (teacherEmail != null) {
         assessmentsController.loadTeacherAssessments(

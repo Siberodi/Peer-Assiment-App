@@ -28,6 +28,7 @@ class _TeacherGroupMembersPageState
     extends State<TeacherGroupMembersPage> {
   late final GroupsController groupsController;
   final AuthenticationController authController = Get.find();
+  String get _controllerTag => 'group_members_${widget.groupCode}';
 
   static const Color greenDark = Color(0xFF517A46);
   static const Color greenLight = Color(0xFFCAEDC0);
@@ -38,25 +39,29 @@ class _TeacherGroupMembersPageState
   void initState() {
     super.initState();
 
-    final source = GroupsSourceService(
-      dio: Dio(),
-      databaseBaseUrl: authController.databaseBaseUrl,
-      authController: authController,
-    );
+    if (Get.isRegistered<GroupsController>(tag: _controllerTag)) {
+      groupsController = Get.find<GroupsController>(tag: _controllerTag);
+    } else {
+      final source = GroupsSourceService(
+        dio: Dio(),
+        databaseBaseUrl: authController.databaseBaseUrl,
+        authController: authController,
+      );
 
-    final cacheSource = GroupsCacheSource(
-      SharedPreferencesService(),
-    );
+      final cacheSource = GroupsCacheSource(
+        SharedPreferencesService(),
+      );
 
-    final repository = GroupsRepository(
-      source: source,
-      cacheSource: cacheSource,
-    );
+      final repository = GroupsRepository(
+        source: source,
+        cacheSource: cacheSource,
+      );
 
-    groupsController = Get.put(
-      GroupsController(repository: repository),
-      tag: 'group_members_${widget.groupCode}',
-    );
+      groupsController = Get.put(
+        GroupsController(repository: repository),
+        tag: _controllerTag,
+      );
+    }
 
     final accessToken = authController.accessToken;
 

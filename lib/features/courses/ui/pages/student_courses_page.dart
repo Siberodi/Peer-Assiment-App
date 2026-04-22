@@ -22,41 +22,45 @@ class StudentCoursesPage extends StatefulWidget {
 class _StudentCoursesPageState extends State<StudentCoursesPage> {
   late final CoursesController coursesController;
   final AuthenticationController authController = Get.find();
+  static const String _controllerTag = 'student_courses';
 
   @override
-void initState() {
-  super.initState();
+  void initState() {
+    super.initState();
 
-  final source = CoursesSourceService(
-    dio: Dio(),
-    databaseBaseUrl: authController.databaseBaseUrl,
-  );
+    if (Get.isRegistered<CoursesController>(tag: _controllerTag)) {
+      coursesController = Get.find<CoursesController>(tag: _controllerTag);
+    } else {
+      final source = CoursesSourceService(
+        dio: Dio(),
+        databaseBaseUrl: authController.databaseBaseUrl,
+      );
 
-  final ILocalPreferences localPreferences = SharedPreferencesService();
+      final ILocalPreferences localPreferences = SharedPreferencesService();
+      final cacheSource = CoursesCacheSource(localPreferences);
 
-  final cacheSource = CoursesCacheSource(localPreferences);
+      final repository = CoursesRepository(
+        source: source,
+        cacheSource: cacheSource,
+      );
 
-  final repository = CoursesRepository(
-    source: source,
-    cacheSource: cacheSource,
-  );
+      coursesController = Get.put(
+        CoursesController(repository: repository),
+        tag: _controllerTag,
+      );
+    }
 
-  coursesController = Get.put(
-    CoursesController(repository: repository),
-    tag: 'student_courses',
-  );
+    final studentEmail = authController.currentUser.value?.email;
+    final accessToken = authController.accessToken;
 
-  final studentEmail = authController.currentUser.value?.email;
-  final accessToken = authController.accessToken;
-
-  if (studentEmail != null && accessToken != null) {
-    coursesController.loadStudentCourses(
-  studentEmail: studentEmail,
-  accessToken: accessToken,
-  forceRefresh: true,
-);
+    if (studentEmail != null && accessToken != null) {
+      coursesController.loadStudentCourses(
+        studentEmail: studentEmail,
+        accessToken: accessToken,
+        forceRefresh: true,
+      );
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {

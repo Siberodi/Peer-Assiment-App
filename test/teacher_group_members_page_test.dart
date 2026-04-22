@@ -5,10 +5,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:app/controllers/authentication_controller.dart';
-import 'package:app/models/app_user.dart';
-import 'package:app/core/app_role.dart';
-import 'package:app/features/groups/ui/pages/teacher_group_members_page.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/auth/data/models/app_user.dart';
+import 'package:peer_assiment_app_1/core/app_role.dart';
+import 'package:peer_assiment_app_1/features/groups/domain/models/group.dart';
+import 'package:peer_assiment_app_1/features/groups/domain/models/group_member.dart';
+import 'package:peer_assiment_app_1/features/groups/domain/repositories/i_groups_repository.dart';
+import 'package:peer_assiment_app_1/features/groups/ui/pages/teacher_group_members_page.dart';
+import 'package:peer_assiment_app_1/features/groups/ui/viewmodels/groups_controller.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -27,6 +31,29 @@ class MockAuthenticationController extends AuthenticationController with Mock {
 
   @override
   String get databaseBaseUrl => 'http://mockapi.com';
+}
+
+class FakeGroupsRepository implements IGroupsRepository {
+  @override
+  Future<List<Group>> getGroupsByCourse(
+    String courseCode,
+    String accessToken, {
+    bool forceRefresh = false,
+  }) async => [];
+
+  @override
+  Future<List<GroupMember>> getStudentGroupsByCourse(
+    String courseCode,
+    String studentEmail,
+    String accessToken, {
+    bool forceRefresh = false,
+  }) async => [];
+
+  @override
+  Future<List<GroupMember>> getStudentsByGroup(
+    String groupCode,
+    String accessToken,
+  ) async => [];
 }
 
 void main() {
@@ -50,6 +77,10 @@ void main() {
     );
 
     Get.put<AuthenticationController>(controller);
+    Get.put<GroupsController>(
+      GroupsController(repository: FakeGroupsRepository()),
+      tag: 'group_members_G1',
+    );
   });
 
   tearDown(() {
@@ -60,7 +91,7 @@ void main() {
     'TeacherGroupMembersPage muestra nombre del grupo en AppBar',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        const GetMaterialApp(
           home: TeacherGroupMembersPage(
             groupCode: 'G1',
             groupName: 'Grupo Test',
@@ -68,8 +99,7 @@ void main() {
         ),
       );
 
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
 
       expect(find.textContaining('Grupo Test'), findsOneWidget);
     },
@@ -95,7 +125,7 @@ void main() {
     'TeacherGroupMembersPage renderiza estructura básica',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        const GetMaterialApp(
           home: TeacherGroupMembersPage(
             groupCode: 'G1',
             groupName: 'Grupo Test',
@@ -103,11 +133,10 @@ void main() {
         ),
       );
 
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
 
       expect(find.byType(Scaffold), findsOneWidget);
-      expect(find.byType(AppBar), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_back_ios_new_rounded), findsOneWidget);
     },
   );
 
@@ -115,7 +144,7 @@ void main() {
     'TeacherGroupMembersPage muestra mensaje sin estudiantes',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        const GetMaterialApp(
           home: TeacherGroupMembersPage(
             groupCode: 'G1',
             groupName: 'Grupo Test',
@@ -123,12 +152,11 @@ void main() {
         ),
       );
 
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpAndSettle();
 
       expect(
-        find.textContaining('No hay estudiantes'),
-        findsWidgets,
+        find.text('No hay estudiantes en este grupo'),
+        findsOneWidget,
       );
     },
   );

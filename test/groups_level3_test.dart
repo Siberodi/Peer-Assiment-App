@@ -1,17 +1,15 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
-import 'package:mockito/mockito.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:mockito/mockito.dart';
 
-import 'package:app/controllers/authentication_controller.dart';
-import 'package:app/core/app_role.dart';
-import 'package:app/models/app_user.dart';
-import 'package:app/features/groups/ui/viewmodels/groups_controller.dart';
-import 'package:app/features/groups/data/repositories/groups_repository.dart';
-import 'package:app/features/groups/data/datasources/remote/groups_source_service.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/core/app_role.dart';
+import 'package:peer_assiment_app_1/features/auth/data/models/app_user.dart';
+import 'package:peer_assiment_app_1/features/groups/data/datasources/local/i_groups_cache_source.dart';
+import 'package:peer_assiment_app_1/features/groups/ui/viewmodels/groups_controller.dart';
+import 'package:peer_assiment_app_1/features/groups/data/repositories/groups_repository.dart';
+import 'package:peer_assiment_app_1/features/groups/data/datasources/remote/groups_source_service.dart';
 
 class FakeDio extends Mock implements dio.Dio {
   bool shouldThrow = false;
@@ -49,6 +47,73 @@ class FakeDio extends Mock implements dio.Dio {
   }
 }
 
+class FakeGroupsCacheSource implements IGroupsCacheSource {
+  final Map<String, List<Map<String, dynamic>>> _groupsByCourse = {};
+  final Map<String, List<Map<String, dynamic>>> _studentGroupsByCourse = {};
+
+  String _studentKey(String courseCode, String studentEmail) =>
+      '$courseCode|$studentEmail';
+
+  @override
+  Future<void> cacheGroupsByCourse(
+    String courseCode,
+    List<Map<String, dynamic>> groups,
+  ) async {
+    _groupsByCourse[courseCode] = groups;
+  }
+
+  @override
+  Future<void> cacheStudentGroupsByCourse(
+    String courseCode,
+    String studentEmail,
+    List<Map<String, dynamic>> groups,
+  ) async {
+    _studentGroupsByCourse[_studentKey(courseCode, studentEmail)] = groups;
+  }
+
+  @override
+  Future<void> clearAllStudentGroupsCache() async {
+    _studentGroupsByCourse.clear();
+  }
+
+  @override
+  Future<void> clearGroupsByCourseCache(String courseCode) async {
+    _groupsByCourse.remove(courseCode);
+  }
+
+  @override
+  Future<void> clearStudentGroupsByCourseCache(
+    String courseCode,
+    String studentEmail,
+  ) async {
+    _studentGroupsByCourse.remove(_studentKey(courseCode, studentEmail));
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getCachedGroupsByCourse(
+    String courseCode,
+  ) async {
+    return _groupsByCourse[courseCode] ?? [];
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getCachedStudentGroupsByCourse(
+    String courseCode,
+    String studentEmail,
+  ) async {
+    return _studentGroupsByCourse[_studentKey(courseCode, studentEmail)] ?? [];
+  }
+
+  @override
+  Future<bool> isGroupsByCourseCacheValid(String courseCode) async => false;
+
+  @override
+  Future<bool> isStudentGroupsByCourseCacheValid(
+    String courseCode,
+    String studentEmail,
+  ) async => false;
+}
+
 void main() {
   late FakeDio fakeDio;
   late AuthenticationController authController;
@@ -60,7 +125,7 @@ void main() {
 
     fakeDio = FakeDio();
 
-    authController = AuthenticationController(dio: fakeDio);
+    authController = AuthenticationController(dioClient: fakeDio);
     authController.currentUser.value = AppUser(
       email: 'teacher@test.com',
       name: 'Profesor Test',
@@ -70,11 +135,14 @@ void main() {
     final source = GroupsSourceService(
       dio: fakeDio,
       databaseBaseUrl: 'https://test.com/database/test',
+      authController: authController,
     );
 
-    final repository = GroupsRepository(source: source);
+    final cacheSource = FakeGroupsCacheSource();
 
-    groupsController = GroupsController(repository: repository);
+    groupsController = GroupsController(
+      repository: GroupsRepository(source: source, cacheSource: cacheSource),
+    );
 
     Get.put<AuthenticationController>(authController);
   });

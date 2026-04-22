@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:app/auth/login.dart';
-import 'package:app/controllers/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/pages/login.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
 
 class FakeDio extends Mock implements dio.Dio {
   String? lastPostUrl;
@@ -78,7 +78,7 @@ void main() {
     Get.testMode = true;
 
     fakeDio = FakeDio();
-    controller = AuthenticationController(dio: fakeDio);
+    controller = AuthenticationController(dioClient: fakeDio);
 
     Get.put<AuthenticationController>(controller);
   });

@@ -28,41 +28,46 @@ class StudentCourseGroupsPage extends StatefulWidget {
 class _StudentCourseGroupsPageState extends State<StudentCourseGroupsPage> {
   late final GroupsController groupsController;
   final AuthenticationController authController = Get.find();
+  String get _controllerTag => 'student_groups_${widget.courseCode}';
 
   @override
   void initState() {
     super.initState();
 
-    final source = GroupsSourceService(
-      dio: Dio(),
-      databaseBaseUrl: authController.databaseBaseUrl,
-      authController: authController,
-    );
+    if (Get.isRegistered<GroupsController>(tag: _controllerTag)) {
+      groupsController = Get.find<GroupsController>(tag: _controllerTag);
+    } else {
+      final source = GroupsSourceService(
+        dio: Dio(),
+        databaseBaseUrl: authController.databaseBaseUrl,
+        authController: authController,
+      );
 
-    final cacheSource = GroupsCacheSource(
-      SharedPreferencesService(),
-    );
+      final cacheSource = GroupsCacheSource(
+        SharedPreferencesService(),
+      );
 
-    final repository = GroupsRepository(
-      source: source,
-      cacheSource: cacheSource,
-    );
+      final repository = GroupsRepository(
+        source: source,
+        cacheSource: cacheSource,
+      );
 
-    groupsController = Get.put(
-      GroupsController(repository: repository),
-      tag: 'student_groups_${widget.courseCode}',
-    );
+      groupsController = Get.put(
+        GroupsController(repository: repository),
+        tag: _controllerTag,
+      );
+    }
 
     final accessToken = authController.accessToken;
     final studentEmail = authController.currentUser.value?.email;
 
     if (accessToken != null && studentEmail != null) {
       groupsController.loadStudentGroupsByCourse(
-  courseCode: widget.courseCode,
-  studentEmail: studentEmail,
-  accessToken: accessToken,
-  forceRefresh: true,
-);
+        courseCode: widget.courseCode,
+        studentEmail: studentEmail,
+        accessToken: accessToken,
+        forceRefresh: true,
+      );
     }
   }
 

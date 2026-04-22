@@ -20,6 +20,7 @@ class TeacherCoursesPage extends StatefulWidget {
 class _TeacherCoursesPageState extends State<TeacherCoursesPage> {
   late final CoursesController coursesController;
   final AuthenticationController authController = Get.find();
+  static const String _controllerTag = 'teacher_courses';
 
   static const Color greenDark = Color(0xFF517A46);
   static const Color greenLight = Color(0xFFCAEDC0);
@@ -27,38 +28,42 @@ class _TeacherCoursesPageState extends State<TeacherCoursesPage> {
   static const Color subtitleColor = Color(0xFF5E738B);
 
   @override
-void initState() {
-  super.initState();
+  void initState() {
+    super.initState();
 
-  final source = CoursesSourceService(
-    dio: Dio(),
-    databaseBaseUrl: authController.databaseBaseUrl,
-  );
+    if (Get.isRegistered<CoursesController>(tag: _controllerTag)) {
+      coursesController = Get.find<CoursesController>(tag: _controllerTag);
+    } else {
+      final source = CoursesSourceService(
+        dio: Dio(),
+        databaseBaseUrl: authController.databaseBaseUrl,
+      );
 
-  final localPreferences = SharedPreferencesService();
-  final cacheSource = CoursesCacheSource(localPreferences);
+      final localPreferences = SharedPreferencesService();
+      final cacheSource = CoursesCacheSource(localPreferences);
 
-  final repository = CoursesRepository(
-    source: source,
-    cacheSource: cacheSource,
-  );
+      final repository = CoursesRepository(
+        source: source,
+        cacheSource: cacheSource,
+      );
 
-  coursesController = Get.put(
-    CoursesController(repository: repository),
-    tag: 'teacher_courses',
-  );
+      coursesController = Get.put(
+        CoursesController(repository: repository),
+        tag: _controllerTag,
+      );
+    }
 
-  final teacherEmail = authController.currentUser.value?.email;
-  final accessToken = authController.accessToken;
+    final teacherEmail = authController.currentUser.value?.email;
+    final accessToken = authController.accessToken;
 
-  if (teacherEmail != null && accessToken != null) {
-    coursesController.loadTeacherCourses(
-      teacherEmail: teacherEmail,
-      accessToken: accessToken,
-      forceRefresh: true,
-    );
+    if (teacherEmail != null && accessToken != null) {
+      coursesController.loadTeacherCourses(
+        teacherEmail: teacherEmail,
+        accessToken: accessToken,
+        forceRefresh: true,
+      );
+    }
   }
-}
 
   Widget buildHeader() {
     return Container(

@@ -5,10 +5,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mockito/mockito.dart';
 
-import 'package:app/features/auth/ui/viewmodels/authentication_controller.dart';
-import 'package:app/features/auth/data/models/app_user.dart';
-import 'package:app/core/app_role.dart';
-import 'package:app/features/courses/ui/pages/teacher_courses_page.dart';
+import 'package:peer_assiment_app_1/features/auth/ui/viewmodels/authentication_controller.dart';
+import 'package:peer_assiment_app_1/features/auth/data/models/app_user.dart';
+import 'package:peer_assiment_app_1/core/app_role.dart';
+import 'package:peer_assiment_app_1/features/courses/domain/models/course.dart';
+import 'package:peer_assiment_app_1/features/courses/domain/repositories/i_courses_repository.dart';
+import 'package:peer_assiment_app_1/features/courses/ui/pages/teacher_courses_page.dart';
+import 'package:peer_assiment_app_1/features/courses/ui/viewmodels/courses_controller.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -27,6 +30,22 @@ class MockAuthenticationController extends AuthenticationController with Mock {
 
   @override
   String get databaseBaseUrl => 'http://mockapi.com';
+}
+
+class FakeCoursesRepository implements ICoursesRepository {
+  @override
+  Future<List<Course>> getStudentCourses(
+    String studentEmail,
+    String accessToken, {
+    bool forceRefresh = false,
+  }) async => [];
+
+  @override
+  Future<List<Course>> getTeacherCourses(
+    String teacherEmail,
+    String accessToken, {
+    bool forceRefresh = false,
+  }) async => [];
 }
 
 void main() {
@@ -50,6 +69,10 @@ void main() {
     );
 
     Get.put<AuthenticationController>(controller);
+    Get.put<CoursesController>(
+      CoursesController(repository: FakeCoursesRepository()),
+      tag: 'teacher_courses',
+    );
   });
 
   tearDown(() {
@@ -60,15 +83,15 @@ void main() {
     'TeacherCoursesPage muestra título Mis Cursos',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        const GetMaterialApp(
           home: TeacherCoursesPage(),
         ),
       );
 
       await tester.pump();
-      await tester.pump(const Duration(seconds: 1));
+      await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.textContaining('Mis Cursos'), findsOneWidget);
+      expect(find.text('Mi cursos'), findsOneWidget);
     },
   );
 
@@ -76,16 +99,16 @@ void main() {
     'TeacherCoursesPage renderiza estructura básica',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        const GetMaterialApp(
           home: TeacherCoursesPage(),
         ),
       );
 
       await tester.pump();
-      await tester.pump(const Duration(seconds: 1));
+      await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.byType(Scaffold), findsOneWidget);
-      expect(find.byType(AppBar), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_back_ios_new_rounded), findsOneWidget);
     },
   );
 
@@ -93,17 +116,17 @@ void main() {
     'TeacherCoursesPage muestra mensaje sin cursos',
     (WidgetTester tester) async {
       await tester.pumpWidget(
-        const MaterialApp(
+        const GetMaterialApp(
           home: TeacherCoursesPage(),
         ),
       );
 
       await tester.pump();
-      await tester.pump(const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 100));
 
       expect(
-        find.textContaining('No tienes cursos registrados'),
-        findsWidgets,
+        find.text('No tienes cursos registrados todavía'),
+        findsOneWidget,
       );
     },
   );
