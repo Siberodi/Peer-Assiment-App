@@ -711,3 +711,29 @@ En conjunto, esta estructura permite que la aplicación evolucione de manera ord
 ```bash
 flutter pub get
 flutter test -r expanded
+```
+
+---
+
+## Link a videos demo con explicacion
+
+- Demo de gestión académica: creación de usuarios, cursos, registro de estudiantes, procesamiento de CSV y verificación de grupos. Link: https://youtu.be/OTvEsbAeYAU
+- Demo de evaluación y reportes. Link: https://youtu.be/FNSj_MzvMVM
+- Pruebas de widget: ejecución y explicación cubriendo todos los widgets con mocks de controladores. Link: https://youtu.be/1kJik5O0iW4
+- Pruebas de integración: flujo completo (profesor/estudiante) usando mock de cliente HTTP. Link: https://youtu.be/1kJik5O0iW4
+- Implementación de caché: decisiones de diseño, datos almacenados y gestión (lectura/escritura/invalidez). Link: https://youtu.be/D729hQP_WD8
+- Revisión del código: explicación del enfoque de arquitectura limpia (no archivo por archivo). Link: https://youtu.be/RnnTs1lVo3U
+
+
+ ## Participación en pruebas con CEDU
+
+El equipo desarrollador de este proyecto manifiesta su interés en que la aplicación sea evaluada en escenarios reales con cursos y profesores.
+
+Entendemos que esto implica la cesión del código a la universidad para permitir su uso, evaluación y posibles modificaciones futuras, manteniendo el reconocimiento de los autores originales.
+
+Integrantes del equipo:
+- Alejandro Fontalvo Gómez
+- Juan Morales Rincón
+- Valerie Perez Contreras
+- Sibeli Rodriguez Díaz
+
