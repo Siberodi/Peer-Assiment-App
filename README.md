@@ -6,7 +6,7 @@ La aplicación busca apoyar procesos de **evaluación entre pares**, proporciona
 
 ---
 
-# Metas y Alcance de la Propuesta
+# `Metas y alcance inicial de la propuesta`
 
 ## Metas del Proyecto
 
@@ -293,7 +293,7 @@ Las primeras pantallas implementadas en el proyecto utilizan la **estructura del
 Esta integración continuará aplicándose en las siguientes etapas del desarrollo para construir una experiencia de usuario consistente en toda la aplicación.
 
 ---
-# Detalles finales de la implementacion y propuesta 
+# Estado actual de la implementación
 
 ---
 
